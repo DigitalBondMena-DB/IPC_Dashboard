@@ -1,0 +1,31 @@
+@import 'tailwindcss';
+@theme {
+  --color-primary-500: #197bfd;
+  --color-black-400: #0e0e0e;
+  --color-gray-600: #6f6f6f;
+  --color-gray-700: #e5e7eb;
+  --color-gray-704: #b0b0b0;
+}
+@layer base {
+  body {
+    font-family: 'Inter', sans-serif;
+  }
+  button {
+    @apply cursor-pointer;
+  }
+  .form-control {
+    @apply w-full px-3 py-2.5 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent;
+  }
+  .form-group label {
+    @apply block font-semibold mb-1.5;
+  }
+  .form-group {
+    @apply mb-6;
+  }
+  .form-group .input-container {
+    @apply relative;
+  }
+  .form-group .my-icon {
+    @apply absolute inset-e-3 top-1/2 -translate-y-1/2;
+  }
+}
