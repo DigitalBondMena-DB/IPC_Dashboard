@@ -1,4 +1,5 @@
-import { computed, effect, inject, Injectable, signal } from '@angular/core';
+import { ILoginResponse } from '@/features/auth/interfaces/auth';
+import { computed, inject, Injectable, signal } from '@angular/core';
 import { Router } from '@angular/router';
 
 @Injectable({
@@ -6,29 +7,29 @@ import { Router } from '@angular/router';
 })
 export class AuthService {
   private readonly _Router = inject(Router);
-  private readonly TOKEN_STORAGE = 'userToken';
-  private _token = signal<string | null>(null);
-  public token = this._token.asReadonly();
-  isAuthenticated = computed(() => !!this._token());
+  private readonly USERDATA_STORAGE = 'userData';
+  private _userData = signal<ILoginResponse | null>(null);
+  public userData = this._userData.asReadonly();
+  isAuthenticated = computed(() => !!this._userData()?.token);
   constructor() {
     this.initializeFromStorage();
   }
   private initializeFromStorage(): void {
-    const storedToken = localStorage.getItem(this.TOKEN_STORAGE);
-    if (storedToken) {
-      this._token.set(storedToken);
+    const storedUserData = localStorage.getItem(this.USERDATA_STORAGE);
+    if (storedUserData) {
+      this._userData.set(JSON.parse(storedUserData));
     }
   }
-  setToken(token: string): void {
-    this._token.set(token);
-    localStorage.setItem(this.TOKEN_STORAGE, token);
+  setUserData(userData: ILoginResponse): void {
+    this._userData.set(userData);
+    localStorage.setItem(this.USERDATA_STORAGE, JSON.stringify(userData));
   }
-  clearToken(): void {
-    this._token.set(null);
-    localStorage.removeItem(this.TOKEN_STORAGE);
+  clearUserData(): void {
+    this._userData.set(null);
+    localStorage.removeItem(this.USERDATA_STORAGE);
   }
   logout(): void {
-    this.clearToken();
+    this.clearUserData();
     this._Router.navigate(['/login']);
   }
 }

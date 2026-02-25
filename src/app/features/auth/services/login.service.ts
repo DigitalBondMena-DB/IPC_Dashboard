@@ -13,9 +13,7 @@ export class LoginService extends HttpService {
   login(data: ILoginData): Observable<ILoginResponse> {
     return this.post<ILoginResponse>(API_CONFIG.ENDPOINTS.LOGIN, data).pipe(
       tap((response: ILoginResponse) => {
-        console.log(response);
-
-        this._AuthService.setToken(response.token);
+        this._AuthService.setUserData(response);
       }),
     );
   }

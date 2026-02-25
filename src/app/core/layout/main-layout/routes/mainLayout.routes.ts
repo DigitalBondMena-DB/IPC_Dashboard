@@ -4,6 +4,6 @@ export default [
   {
     path: '',
     loadComponent: () =>
-      import('@features/auth/login-page/login-page.component').then((m) => m.LoginPageComponent),
+      import('@features/home/home-page/home-page.component').then((m) => m.HomePageComponent),
   },
 ] as Routes;

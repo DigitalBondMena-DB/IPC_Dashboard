@@ -19,6 +19,31 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
       }
     </div>
   `,
+  styles: `
+    .radio-input {
+      width: 22.76px;
+      height: 22.76px;
+      border-radius: 50%;
+      background-color: var(--color-primary-500);
+      appearance: none;
+      position: relative;
+    }
+    .radio-input::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background-color: var(--color-white);
+    }
+    .radio-input:checked {
+      background-color: var(--color-white);
+      border: 2px solid var(--color-primary-500);
+    }
+  `,
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,

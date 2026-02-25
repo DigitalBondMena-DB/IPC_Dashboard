@@ -2,9 +2,24 @@
 @theme {
   --color-primary-500: #197bfd;
   --color-black-400: #0e0e0e;
+  --color-gray-200: #f9f9f9;
+  --color-gray-300: #929292;
   --color-gray-600: #6f6f6f;
   --color-gray-700: #e5e7eb;
+  --color-gray-703: #4b5563;
   --color-gray-704: #b0b0b0;
+  --color-gray-706: #eff6ff;
+  --color-red-100: #dc2626;
+  @keyframes slide-down {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
 }
 @layer base {
   body {
@@ -27,5 +42,20 @@
   }
   .form-group .my-icon {
     @apply absolute inset-e-3 top-1/2 -translate-y-1/2;
+  }
+}
+@layer utilities {
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    @apply bg-gray-200 rounded-full hover:bg-gray-300 transition-colors;
+  }
+  .animate-slide-down {
+    animation: slide-down 0.2s ease-out forwards;
   }
 }
