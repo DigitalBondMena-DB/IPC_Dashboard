@@ -1,17 +1,5 @@
-import {
-  Component,
-  input,
-  output,
-  signal,
-  forwardRef,
-  ChangeDetectionStrategy,
-} from '@angular/core';
-import {
-  ControlValueAccessor,
-  NG_VALUE_ACCESSOR,
-  ReactiveFormsModule,
-  FormControl,
-} from '@angular/forms';
+import { Component, input, signal, forwardRef, ChangeDetectionStrategy } from '@angular/core';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/forms';
 import { LucideAngularModule } from 'lucide-angular';
 import { CommonModule } from '@angular/common';
 
@@ -28,7 +16,7 @@ import { CommonModule } from '@angular/common';
           [id]="id()"
           [type]="inputType()"
           [placeholder]="placeholder()"
-          [class]="'form-control ' + (hasError() ? 'border-red-500' : '')"
+          [class]="'form-control ' + (hasError() ? 'border-red-500' : '') + ' ' + class()"
           [value]="value()"
           (input)="onInput($event)"
           (blur)="onBlur()"
@@ -66,6 +54,7 @@ import { CommonModule } from '@angular/common';
 })
 export class BInputComponent implements ControlValueAccessor {
   id = input<string>('');
+  class = input<string>('');
   label = input<string>('');
   placeholder = input<string>('');
   type = input<'text' | 'password' | 'email'>('text');

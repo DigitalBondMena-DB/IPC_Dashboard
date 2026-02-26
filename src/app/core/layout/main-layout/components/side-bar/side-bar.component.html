@@ -1,9 +1,22 @@
-<div class="sidebar-wrapper flex flex-col h-full bg-white border-e border-gray-100 w-[287px]">
-  <div class="p-6 flex items-center gap-2.5 border-b-2 border-gray-200">
+<div
+  class="sidebar-wrapper flex flex-col h-full bg-white border-e border-gray-100 transition-[width] duration-300"
+  [class.w-[90px]]="isCollapsed()"
+  [class.w-[287px]]="!isCollapsed()"
+>
+  <div class="p-6 flex items-center gap-2.5 border-b-2 border-gray-200 relative">
     <div>
       <img src="/assets/images/shared/ipc-logo.webp" alt="ipc logo" width="48" height="48" />
     </div>
-    <span class="text-primary-500 font-bold text-sm leading-tight">HealthTrack M&E</span>
+    @if (!isCollapsed()) {
+      <span class="text-primary-500 font-bold text-sm leading-tight">HealthTrack M&E</span>
+    }
+    <button (click)="toggleSidebar()">
+      <lucide-angular
+        [img]="isCollapsed() ? icons['ArrowRightToLine'] : icons['ArrowLeftToLine']"
+        size="16"
+        class="text-primary-500 z-50 absolute inset-e-0 top-1/2 -translate-y-1/2 translate-x-1/2"
+      />
+    </button>
   </div>
 
   <nav class="flex-1 py-2 overflow-y-auto custom-scrollbar">
@@ -24,17 +37,21 @@
                     [class.text-primary-500]="item.expanded"
                   />
                 }
-                <span
-                  class="font-medium group-hover:text-primary-500"
-                  [class.text-primary-500]="item.expanded"
-                  >{{ item.label }}</span
-                >
+                @if (!isCollapsed()) {
+                  <span
+                    class="font-medium group-hover:text-primary-500"
+                    [class.text-primary-500]="item.expanded"
+                    >{{ item.label }}</span
+                  >
+                }
               </div>
-              <lucide-icon
-                [img]="icons['ChevronDown']"
-                class="w-4 h-4 text-gray-400 transition-transform duration-200"
-                [class.rotate-180]="item.expanded"
-              />
+              @if (!isCollapsed()) {
+                <lucide-icon
+                  [img]="icons['ChevronDown']"
+                  class="w-4 h-4 text-gray-400 transition-transform duration-200"
+                  [class.rotate-180]="item.expanded"
+                />
+              }
             </button>
 
             @if (item.expanded) {
@@ -64,9 +81,11 @@
                   class="w-5 h-5 group-hover:text-primary-500"
                 />
               }
-              <span class="font-medium items-text text-lg group-hover:text-primary-500">{{
-                item.label
-              }}</span>
+              @if (!isCollapsed()) {
+                <span class="font-medium items-text text-lg group-hover:text-primary-500"
+                  >{{ item.label }}
+                </span>
+              }
             </a>
           }
         </div>
@@ -74,54 +93,58 @@
     </div>
   </nav>
 
-  <div class="px-4 py-2 mb-6">
-    <div
-      class="bg-primary-500 bg-[url('/assets/images/sidebar/survay-bg-texture.png')] bg-cover bg-center rounded-2xl p-5 text-white relative overflow-hidden group shadow-lg shadow-primary-200"
-    >
-      <div class="relative z-10 flex flex-col items-center">
-        <div class="bg-gray-706 size-8 rounded-full mb-2 flex items-center justify-center">
-          <lucide-icon [img]="icons['Survey']" size="14" class="text-primary-500" />
+  @if (!isCollapsed()) {
+    <div class="px-4 py-2 mb-6 transition-[width] duration-300">
+      <div
+        class="bg-primary-500 bg-[url('/assets/images/sidebar/survay-bg-texture.png')] bg-cover bg-center rounded-2xl p-5 text-white relative overflow-hidden group shadow-lg shadow-primary-200"
+      >
+        <div class="relative z-10 flex flex-col items-center">
+          <div class="bg-gray-706 size-8 rounded-full mb-2 flex items-center justify-center">
+            <lucide-icon [img]="icons['Survey']" size="14" class="text-primary-500" />
+          </div>
+          <p class="text-sm font-medium mb-4 leading-relaxed text-center">
+            Switch to Survey Builder Mode.
+          </p>
+          <button
+            class="bg-white text-primary-500 text-sm font-semibold py-1.5 px-3 rounded-2xl flex items-center gap-1.5 justify-center shadow-md active:scale-95 transition-transform"
+          >
+            <lucide-icon [img]="icons['Plus']" size="24" />
+            Create Survey
+          </button>
         </div>
-        <p class="text-sm font-medium mb-4 leading-relaxed text-center">
-          Switch to Survey Builder Mode.
-        </p>
-        <button
-          class="bg-white text-primary-500 text-sm font-semibold py-1.5 px-3 rounded-2xl flex items-center gap-1.5 justify-center shadow-md active:scale-95 transition-transform"
-        >
-          <lucide-icon [img]="icons['Plus']" size="24" />
-          Create Survey
-        </button>
       </div>
     </div>
-  </div>
+  }
 
   <!-- Profile Section -->
   <div class="border-t border-gray-200 p-4">
     <div class="flex items-center justify-between">
-      <div class="flex items-center gap-3">
-        <p-avatar
-          image="assets/images/shared/user-avatar.png"
-          shape="circle"
-          size="large"
-          class="ring-2 ring-transparent hover:ring-primary-100 transition-all cursor-pointer"
-          [style]="{ width: '44px', height: '44px' }"
-        />
-        <div class="flex flex-col">
-          <span class="text-sm font-medium text-black-400">{{ userData()?.user?.name }}</span>
-          <span
-            class="text-[10px] text-gray-703 whitespace-nowrap overflow-hidden text-ellipsis w-32"
-            title="sarahahmed12@gmail.com"
-            >sarahahmed12@gmail.com</span
-          >
+      @if (!isCollapsed()) {
+        <div class="flex items-center gap-3">
+          <p-avatar
+            image="assets/images/shared/user-avatar.png"
+            shape="circle"
+            size="large"
+            class="ring-2 ring-transparent hover:ring-primary-100 transition-all cursor-pointer"
+            [style]="{ width: '44px', height: '44px' }"
+          />
+          <div class="flex flex-col">
+            <span class="text-sm font-medium text-black-400">{{ userData()?.user?.name }}</span>
+            <span
+              class="text-[10px] text-gray-703 whitespace-nowrap overflow-hidden text-ellipsis w-32"
+              title="sarahahmed12@gmail.com"
+              >sarahahmed12@gmail.com</span
+            >
+          </div>
         </div>
-      </div>
+      }
       <button
         (click)="logout()"
         pTooltip="Logout"
         tooltipPosition="top"
         class="text-red-100 p-2 hover:bg-red-50 hover:text-red-500 rounded-xl transition-all active:scale-90"
       >
-        <lucide-icon [img]="icons['Logout']" size="18" />
+        <lucide-icon [img]="icons['Logout']" [size]="!isCollapsed() ? 18 : 24" />
       </button>
     </div>
   </div>

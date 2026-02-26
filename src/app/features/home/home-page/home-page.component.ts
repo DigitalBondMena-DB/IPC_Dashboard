@@ -1,71 +1,18 @@
-import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
-import {
-  LucideAngularModule,
-  Users,
-  Building2,
-  Network,
-  Settings2,
-  Hospital,
-} from 'lucide-angular';
-
-interface StatCard {
-  label: string;
-  value: string;
-  type: 'large' | 'small';
-  theme: string;
-  id: string;
-  icon: any;
-  illustration?: string;
-}
+import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
+import { HomeService } from '../services/home.service';
+import { IHomeResponse } from '../interfaces/home';
+import { HttpResourceRef } from '@angular/common/http';
+import { TopBarComponent } from '@/core/layout/main-layout/components/top-bar/top-bar.component';
 
 @Component({
   selector: 'app-home-page',
-  imports: [LucideAngularModule],
   templateUrl: './home-page.component.html',
   styleUrl: './home-page.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [TopBarComponent],
 })
 export class HomePageComponent {
-  statsCards = signal<StatCard[]>([
-    {
-      id: 'total-users',
-      label: 'Total Users',
-      value: '40,689',
-      type: 'large',
-      theme: 'bg-stats-1',
-      icon: Users,
-    },
-    {
-      id: 'total-divisions',
-      label: 'Total Divisions',
-      value: '40,689',
-      type: 'large',
-      theme: 'bg-stats-2',
-      icon: Building2,
-    },
-    {
-      id: 'total-health-directorates',
-      label: 'Total Health Directorates',
-      value: '40,689',
-      type: 'small',
-      theme: 'bg-stats-3',
-      icon: Network,
-    },
-    {
-      id: 'health-management',
-      label: 'Health Management',
-      value: '40,689',
-      type: 'small',
-      theme: 'bg-stats-4',
-      icon: Settings2,
-    },
-    {
-      id: 'total-hospitals',
-      label: 'Total Hospitals',
-      value: '40,689',
-      type: 'small',
-      theme: 'bg-stats-5',
-      icon: Hospital,
-    },
-  ]);
+  private homeService = inject(HomeService);
+  private homeResponse: HttpResourceRef<IHomeResponse | undefined> = this.homeService.getHomeData();
+  counts = computed(() => this.homeResponse.value()?.data.counts);
 }

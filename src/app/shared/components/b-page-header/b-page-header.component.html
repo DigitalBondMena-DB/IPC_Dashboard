@@ -1,0 +1,21 @@
+<div class="page-header">
+  <div class="header-left">
+    <span class="page-title">{{ title() }}</span>
+    <div class="search-container">
+      <lucide-angular [img]="searchIcon" [size]="18" class="search-icon" />
+      <input
+        type="text"
+        class="search-input"
+        [placeholder]="placeholder()"
+        (input)="onSearchChange($event)"
+      />
+    </div>
+  </div>
+
+  @if (showCreateButton()) {
+    <button class="create-btn" (click)="onCreateClick()">
+      <lucide-angular [img]="plusIcon" [size]="18" />
+      {{ createButtonLabel() }}
+    </button>
+  }
+</div>

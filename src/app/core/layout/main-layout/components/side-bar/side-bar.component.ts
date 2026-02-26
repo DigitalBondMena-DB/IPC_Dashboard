@@ -10,6 +10,8 @@ import {
   LogOut,
   ChevronDown,
   LucideIconData,
+  ArrowLeftToLine,
+  ArrowRightToLine,
 } from 'lucide-angular';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 
@@ -27,6 +29,7 @@ import { AuthService } from '@/core/services/auth.service';
 })
 export class SideBarComponent {
   private readonly _AuthService = inject(AuthService);
+  isCollapsed = signal(false);
   userData = computed(() => this._AuthService.userData());
   readonly icons: Record<string, LucideIconData> = {
     Dashboard: House,
@@ -37,31 +40,50 @@ export class SideBarComponent {
     Plus: Plus,
     Logout: LogOut,
     ChevronDown: ChevronDown,
+    ArrowLeftToLine: ArrowLeftToLine,
+    ArrowRightToLine: ArrowRightToLine,
   };
 
   menuItems = signal<NavItem[]>([
-    { label: 'Dashboard', icon: 'Dashboard', routerLink: '/dashboard' },
+    { label: 'Dashboard', icon: 'Dashboard', routerLink: '/' },
     { label: 'Divisions', icon: 'Divisions', routerLink: '/divisions' },
     {
       label: 'Entities',
       icon: 'Entities',
       expanded: false,
-      children: [{ label: 'All Entities', routerLink: '/entities' }],
+      children: [
+        { label: 'Health Directorate', routerLink: '/health-directorate' },
+        { label: 'Health Division', routerLink: '/health-division' },
+        { label: 'Hospitals', routerLink: '/hospitals' },
+        { label: 'Authorities', routerLink: '/authorities' },
+        { label: "Authority's Hospitals", routerLink: '/authorities-hospitals' },
+      ],
     },
     {
       label: 'User Management',
       icon: 'Users',
       expanded: false,
-      children: [{ label: 'Users list', routerLink: '/users' }],
+      children: [
+        { label: 'Super Admin', routerLink: '/super-admin-users' },
+        { label: 'Health Directorate', routerLink: '/health-directorate-users' },
+        { label: 'Health Division', routerLink: '/health-division-users' },
+        { label: 'Hospitals', routerLink: '/hospitals-users' },
+        { label: 'Authorities', routerLink: '/authorities-users' },
+        { label: "Authority's Hospitals", routerLink: '/authorities-hospitals-users' },
+      ],
     },
   ]);
-
   toggleSubMenu(item: NavItem) {
+    if (this.isCollapsed()) {
+      this.toggleSidebar();
+    }
     this.menuItems.update((items) =>
       items.map((i) => (i === item ? { ...i, expanded: !i.expanded } : i)),
     );
   }
-
+  toggleSidebar() {
+    this.isCollapsed.update((prev) => !prev);
+  }
   logout() {
     this._AuthService.logout();
   }
