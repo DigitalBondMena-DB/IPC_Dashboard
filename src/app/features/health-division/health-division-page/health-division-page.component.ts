@@ -14,6 +14,7 @@ import { MessageService } from 'primeng/api';
     <app-b-page-header
       title="Health Divisions"
       createButtonLabel="Create Division"
+      [showSearch]="true"
       (searchChange)="onSearch($event)"
       (createClick)="onCreate()"
     />
@@ -43,7 +44,7 @@ export class HealthDivisionPageComponent {
 
   readonly columns: ITableColumn[] = [
     { field: 'name', header: 'Name', sortable: true },
-    { field: 'health_directorate_name', header: 'Directorate', sortable: true },
+    { field: 'directorate', header: 'Directorate', sortable: true },
     { field: 'updated_at', header: 'Last Update', sortable: true, type: 'date' },
     { field: 'updated_by', header: 'Updated By', sortable: true },
     { field: 'is_active', header: 'Actions', type: 'toggle' },

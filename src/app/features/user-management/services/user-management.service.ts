@@ -1,7 +1,7 @@
 import { API_CONFIG } from '@/core/config/api.config';
 import { HttpService } from '@/core/services/http.service';
 import { HttpResourceRef } from '@angular/common/http';
-import { Injectable, Signal } from '@angular/core';
+import { computed, Injectable, Signal } from '@angular/core';
 import { Observable } from 'rxjs';
 
 export interface IUser {
@@ -24,24 +24,40 @@ export class UserManagementService extends HttpService {
 
   getUsers(
     endpoint: string,
+    userType: string,
     params: Signal<Record<string, string | number>>,
   ): HttpResourceRef<any | undefined> {
-    return this.get<any>(endpoint, params);
+    const mergedParams = computed(() => ({
+      ...params(),
+      entity_type: userType,
+    }));
+    return this.get<any>(endpoint, mergedParams);
   }
 
-  getUserById(endpoint: string, id: string): HttpResourceRef<IUser | undefined> {
-    return this.get<IUser>(`${endpoint}/${id}`);
+  getUserById(endpoint: string, userType: string, id: string): HttpResourceRef<IUser | undefined> {
+    const params = computed(() => ({
+      type: userType,
+    }));
+    return this.get<IUser>(`${endpoint}/${id}`, params);
   }
 
-  createUser(endpoint: string, data: any): Observable<any> {
-    return this.post<any>(endpoint, data);
+  createUser(endpoint: string, userType: string, data: any): Observable<any> {
+    return this.post<any>(endpoint, {
+      ...data,
+      type: userType,
+    });
   }
 
-  updateUser(endpoint: string, id: string, data: any): Observable<any> {
-    return this.http.put<any>(`${API_CONFIG.BASE_URL}${endpoint}/${id}`, data);
+  updateUser(endpoint: string, userType: string, id: string, data: any): Observable<any> {
+    return this.http.put<any>(`${API_CONFIG.BASE_URL}${endpoint}/${id}`, {
+      ...data,
+      type: userType,
+    });
   }
 
-  toggleUser(endpoint: string, id: string): Observable<any> {
-    return this.post<any>(`${endpoint}/${id}/toggle`, {});
+  toggleUser(endpoint: string, userType: string, id: string): Observable<any> {
+    return this.post<any>(`${endpoint}/${id}/toggle`, {
+      type: userType,
+    });
   }
 }

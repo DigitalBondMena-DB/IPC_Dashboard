@@ -78,7 +78,7 @@ export class UserListComponent {
     return p;
   });
 
-  resource = this._Service.getUsers(this.config().endpoint, this.params);
+  resource = this._Service.getUsers(this.config().endpoint, this.config().userType, this.params);
 
   tableData = computed(() => this.resource.value()?.data ?? []);
   totalRecords = computed(() => this.resource.value()?.total ?? 0);
@@ -106,7 +106,7 @@ export class UserListComponent {
   }
 
   onToggle(event: { item: any }): void {
-    this._Service.toggleUser(this.config().endpoint, event.item.id).subscribe({
+    this._Service.toggleUser(this.config().endpoint, this.config().userType, event.item.id).subscribe({
       next: () => {
         this.resource.reload();
         this._MessageService.add({ summary: 'Success', detail: 'User toggled successfully' });

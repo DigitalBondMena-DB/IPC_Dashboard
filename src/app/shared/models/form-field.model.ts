@@ -6,4 +6,7 @@ export interface IFormField {
   options?: { label: string; value: any }[];
   validators?: any[];
   colSpan?: string;
+  filter?: boolean;
+  virtualScroll?: boolean;
+  loading?: boolean;
 }

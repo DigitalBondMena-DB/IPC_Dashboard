@@ -17,7 +17,7 @@ export class BPageHeaderComponent {
   placeholder = input<string>('Search for...');
   createButtonLabel = input<string>('Create');
   showCreateButton = input<boolean>(true);
-
+  showSearch = input<boolean>(false);
   // Outputs
   searchChange = output<string>();
   createClick = output<void>();

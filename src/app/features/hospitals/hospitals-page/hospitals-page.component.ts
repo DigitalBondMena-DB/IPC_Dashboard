@@ -15,6 +15,7 @@ import { MessageService } from 'primeng/api';
       title="Hospitals"
       createButtonLabel="Create Hospital"
       (searchChange)="onSearch($event)"
+      [showSearch]="true"
       (createClick)="onCreate()"
     />
 

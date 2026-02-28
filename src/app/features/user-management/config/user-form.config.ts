@@ -6,6 +6,7 @@ export const getUserFormConfig = (
   entityKey: string,
   entityOptions: { label: string; value: any }[],
   isEdit: boolean = false,
+  isOptionsLoading: boolean = false,
 ): IFormField[] => {
   const fields: IFormField[] = [
     {
@@ -40,6 +41,9 @@ export const getUserFormConfig = (
       options: entityOptions,
       validators: [Validators.required],
       colSpan: 'col-span-1',
+      filter: true,
+      virtualScroll: true,
+      loading: isOptionsLoading,
     },
   ];
 

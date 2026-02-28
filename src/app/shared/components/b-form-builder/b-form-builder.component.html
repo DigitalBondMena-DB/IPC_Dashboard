@@ -1,44 +1,38 @@
 <form [formGroup]="form" (ngSubmit)="onSubmit()" class="form-builder">
   <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6 items-center text0 text-black-400">
     @for (field of fields(); track field.key) {
-      <div [class]="field.colSpan || 'col-span-1'">
-        @switch (field.type) {
-          @case ('select') {
-            <app-b-select
-              [id]="field.key"
-              [label]="field.label"
-              [placeholder]="field.placeholder || ''"
-              [options]="field.options || []"
-              [formControlName]="field.key"
-            />
-          }
-          @case ('checkbox') {
-            <app-b-checkbox [id]="field.key" [label]="field.label" [formControlName]="field.key" />
-          }
-          @default {
-            <app-b-input
-              [id]="field.key"
-              [label]="field.label"
-              type="text"
-              class="placeholder:text-gray-704"
-              [placeholder]="field.placeholder || ''"
-              [formControlName]="field.key"
-              [hasError]="isTouched(field.key) && !isValid(field.key)"
-              [errorMessage]="
+    <div [class]="field.colSpan || 'col-span-1'">
+      @switch (field.type) {
+      @case ('select') {
+      <app-b-select [id]="field.key" [label]="field.label" [placeholder]="field.placeholder || ''"
+        [options]="field.options || []" [filter]="field.filter || false" [virtualScroll]="field.virtualScroll || false"
+        [loading]="field.loading || false" [formControlName]="field.key"
+        (onSearch)="onSearch.emit({ key: field.key, text: $event })"
+        (onScrollPagination)="onScrollPagination.emit({ key: field.key, event: $event })"
+        [hasError]="isTouched(field.key) && !isValid(field.key)" [errorMessage]="
                 isTouched(field.key) && !isValid(field.key) ? field.label + ' is required' : null
-              "
-            />
-          }
-        }
-      </div>
+              " />
+      }
+      @case ('checkbox') {
+      <app-b-checkbox [id]="field.key" [label]="field.label" [formControlName]="field.key" />
+      }
+      @default {
+      <app-b-input [id]="field.key" [label]="field.label" type="text" class="placeholder:text-gray-704"
+        [placeholder]="field.placeholder || ''" [formControlName]="field.key"
+        [hasError]="isTouched(field.key) && !isValid(field.key)" [errorMessage]="
+                isTouched(field.key) && !isValid(field.key) ? field.label + ' is required' : null
+              " />
+      }
+      }
+    </div>
     }
-    <div class="form-actions mt-10">
+    <div class="form-actions" [class]="fields().length % 2 == 0 ? 'col-span-2 mt-10' : ''">
       <button type="button" class="btn-cancel" (click)="onCancel()" [disabled]="loading()">
         {{ cancelLabel() }}
       </button>
-      <button type="submit" class="btn-submit" [disabled]="loading() || form.pristine">
+      <button type="submit" class="btn-submit" [disabled]="loading() || form.invalid">
         @if (loading()) {
-          <span class="loader mr-2"></span>
+        <span class="loader mr-2"></span>
         }
         {{ submitLabel() }}
       </button>

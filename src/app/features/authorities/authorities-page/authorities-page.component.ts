@@ -13,6 +13,7 @@ import { MessageService } from 'primeng/api';
   template: `
     <app-b-page-header
       title="Authorities"
+      [showSearch]="true"
       createButtonLabel="Create Authority"
       (searchChange)="onSearch($event)"
       (createClick)="onCreate()"

@@ -51,7 +51,29 @@ export class BDataTableComponent {
   readonly retryIcon = RotateCcw;
 
   // Row sizes
-  readonly rowOptions = [10, 17, 25, 50];
+  dynamicRowOptions = computed(() => {
+    const total = this.totalRecords();
+    const options = [
+      { label: '10', value: 10 },
+      { label: '50', value: 50 },
+      { label: '100', value: 100 },
+    ];
+
+    const filtered = options.filter((opt) => opt.value <= total);
+
+    // Add "All" option if it's not already exactly one of the options above
+    // or if no options are filtered (total < 10)
+    if (!filtered.find((opt) => opt.value === total) && total > 0) {
+      filtered.push({ label: 'All', value: total });
+    }
+
+    // Ensure we always have at least the current rows count as an option if total is 0 or something else
+    if (filtered.length === 0 && total === 0) {
+      filtered.push({ label: '10', value: 10 });
+    }
+
+    return filtered;
+  });
   readonly skeletonRows = Array(8).fill(0);
 
   // Computed

@@ -1,0 +1,10 @@
+@reference "tailwindcss";
+
+.custom-select {
+    width: 100%;
+}
+
+.p-select {
+    @apply w-full !bg-white !border !border-[#e5e7eb] rounded-lg transition-all duration-200;
+
+}

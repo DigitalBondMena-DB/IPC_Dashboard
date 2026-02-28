@@ -4,16 +4,26 @@ export const API_CONFIG = {
     LOGIN: 'login',
     HOME: 'home',
     CATEGORIES: 'categories',
-    HEALTH_DIRECTORATES: 'health-directorates',
-    HEALTH_DIVISIONS: 'health-divisions',
-    HOSPITALS: 'entities',
-    AUTHORITIES: 'authorities',
-    AUTHORITY_HOSPITALS: 'authority-hospitals',
-    USERS_SUPER_ADMIN: 'super-admins',
-    USERS_HEALTH_DIRECTORATE: 'health-directorate-users',
-    USERS_HEALTH_DIVISION: 'health-division-users',
-    USERS_HOSPITAL: 'hospital-users',
-    USERS_AUTHORITY: 'authority-users',
-    USERS_AUTHORITY_HOSPITAL: 'authority-hospital-users',
+    ENTITIES: {
+      BASE: 'entities',
+      TYPE: {
+        HEALTH_DIRECTORATE: 'governorate',
+        HEALTH_DIVISION: 'medical_area',
+        HOSPITAL: 'hospital',
+        AUTHORITY: 'authority',
+        AUTHORITY_HOSPITAL: 'authority_hospital', // Assumed from the context
+      },
+    },
+    USERS: {
+      BASE: 'users',
+      TYPE: {
+        SUPER_ADMIN: 'super_admin',
+        HEALTH_DIRECTORATE: 'governorate',
+        HEALTH_DIVISION: 'medical_area',
+        HOSPITAL: 'hospital',
+        AUTHORITY: 'authority',
+        AUTHORITY_HOSPITAL: 'authority_hospital',
+      },
+    },
   },
 };

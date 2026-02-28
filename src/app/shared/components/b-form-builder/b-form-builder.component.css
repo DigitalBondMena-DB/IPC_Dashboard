@@ -1,10 +1,11 @@
 @reference "tailwindcss";
+
 .form-builder {
   @apply w-full;
 }
 
 .form-actions {
-  @apply flex justify-end gap-4;
+  @apply flex justify-center gap-4;
 }
 
 .btn-submit {
@@ -29,6 +30,7 @@
   0% {
     transform: rotate(0deg);
   }
+
   100% {
     transform: rotate(360deg);
   }

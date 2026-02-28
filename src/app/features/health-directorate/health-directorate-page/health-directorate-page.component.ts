@@ -14,6 +14,7 @@ import { MessageService } from 'primeng/api';
     <app-b-page-header
       title="Health Directorates"
       createButtonLabel="Create Directorate"
+      [showSearch]="true"
       (searchChange)="onSearch($event)"
       (createClick)="onCreate()"
     />

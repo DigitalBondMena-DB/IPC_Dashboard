@@ -1,7 +1,7 @@
 import { API_CONFIG } from '@/core/config/api.config';
 import { HttpService } from '@/core/services/http.service';
 import { HttpResourceRef } from '@angular/common/http';
-import { Injectable, Signal } from '@angular/core';
+import { computed, Injectable, Signal } from '@angular/core';
 import { Observable } from 'rxjs';
 
 export interface IAuthority {
@@ -19,25 +19,40 @@ export class AuthoritiesService extends HttpService {
   getAuthorities(
     params: Signal<Record<string, string | number>>,
   ): HttpResourceRef<any | undefined> {
-    return this.get<any>(API_CONFIG.ENDPOINTS.AUTHORITIES, params);
+    const mergedParams = computed(() => ({
+      ...params(),
+      type: API_CONFIG.ENDPOINTS.ENTITIES.TYPE.AUTHORITY,
+    }));
+    return this.get<any>(API_CONFIG.ENDPOINTS.ENTITIES.BASE, mergedParams);
   }
 
   getAuthorityById(id: string): HttpResourceRef<IAuthority | undefined> {
-    return this.get<IAuthority>(`${API_CONFIG.ENDPOINTS.AUTHORITIES}/${id}`);
+    const params = computed(() => ({
+      type: API_CONFIG.ENDPOINTS.ENTITIES.TYPE.AUTHORITY,
+    }));
+    return this.get<IAuthority>(`${API_CONFIG.ENDPOINTS.ENTITIES.BASE}/${id}`, params);
   }
 
   createAuthority(data: any): Observable<any> {
-    return this.post<any>(API_CONFIG.ENDPOINTS.AUTHORITIES, data);
+    return this.post<any>(API_CONFIG.ENDPOINTS.ENTITIES.BASE, {
+      ...data,
+      type: API_CONFIG.ENDPOINTS.ENTITIES.TYPE.AUTHORITY,
+    });
   }
 
   updateAuthority(id: string, data: any): Observable<any> {
     return this.http.put<any>(
-      `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.AUTHORITIES}/${id}`,
-      data,
+      `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.ENTITIES.BASE}/${id}`,
+      {
+        ...data,
+        type: API_CONFIG.ENDPOINTS.ENTITIES.TYPE.AUTHORITY,
+      },
     );
   }
 
   toggleAuthority(id: string): Observable<any> {
-    return this.post<any>(`${API_CONFIG.ENDPOINTS.AUTHORITIES}/${id}/toggle`, {});
+    return this.post<any>(`${API_CONFIG.ENDPOINTS.ENTITIES.BASE}/${id}/toggle`, {
+      type: API_CONFIG.ENDPOINTS.ENTITIES.TYPE.AUTHORITY,
+    });
   }
 }

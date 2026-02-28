@@ -33,6 +33,8 @@ export class BFormBuilderComponent implements OnInit {
   // Outputs
   formSubmit = output<any>();
   formCancel = output<void>();
+  onSearch = output<{ key: string; text: string }>();
+  onScrollPagination = output<{ key: string; event: any }>();
 
   form!: FormGroup;
 
