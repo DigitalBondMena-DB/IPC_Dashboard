@@ -1,7 +1,0 @@
-<app-b-page-header title="Divisions" createButtonLabel="Create Division" [showSearch]="true"
-  (searchChange)="onSearch($event)" (createClick)="onCreateDivision()" />
-
-<app-b-data-table [columns]="columns" [data]="tableData()" [totalRecords]="totalRecords()" [rows]="tableState().perPage"
-  [page]="tableState().page" [loading]="isLoading()" [error]="hasError()" (pageChange)="onPageChange($event)"
-  (sortChange)="onSortChange($event)" (rowsChange)="onRowsChange($event)" (retryLoad)="onRetry()"
-  (toggleChange)="onToggle($event)" (editClick)="onEdit($event)" />

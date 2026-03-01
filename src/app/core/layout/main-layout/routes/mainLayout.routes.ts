@@ -8,27 +8,177 @@ export default [
   },
   {
     path: 'divisions',
-    loadChildren: () => import('@features/divisions/divisions.routes'),
+    children: [
+      {
+        path: '',
+        loadComponent: () =>
+          import('@features/entity-management/entity-list/entity-list.component').then(
+            (m) => m.EntityListComponent,
+          ),
+        data: { type: 'DIVISION' },
+      },
+      {
+        path: 'create',
+        loadComponent: () =>
+          import('@features/entity-management/entity-id/entity-id.component').then(
+            (m) => m.EntityIdComponent,
+          ),
+        data: { type: 'DIVISION' },
+      },
+      {
+        path: 'edit/:id',
+        loadComponent: () =>
+          import('@features/entity-management/entity-id/entity-id.component').then(
+            (m) => m.EntityIdComponent,
+          ),
+        data: { type: 'DIVISION' },
+      },
+    ],
   },
   {
     path: 'health-directorate',
-    loadChildren: () => import('@features/health-directorate/health-directorate.routes'),
+    children: [
+      {
+        path: '',
+        loadComponent: () =>
+          import('@features/entity-management/entity-list/entity-list.component').then(
+            (m) => m.EntityListComponent,
+          ),
+        data: { type: 'HEALTH_DIRECTORATE' },
+      },
+      {
+        path: 'create',
+        loadComponent: () =>
+          import('@features/entity-management/entity-id/entity-id.component').then(
+            (m) => m.EntityIdComponent,
+          ),
+        data: { type: 'HEALTH_DIRECTORATE' },
+      },
+      {
+        path: 'edit/:id',
+        loadComponent: () =>
+          import('@features/entity-management/entity-id/entity-id.component').then(
+            (m) => m.EntityIdComponent,
+          ),
+        data: { type: 'HEALTH_DIRECTORATE' },
+      },
+    ],
   },
   {
     path: 'health-division',
-    loadChildren: () => import('@features/health-division/health-division.routes'),
+    children: [
+      {
+        path: '',
+        loadComponent: () =>
+          import('@features/entity-management/entity-list/entity-list.component').then(
+            (m) => m.EntityListComponent,
+          ),
+        data: { type: 'HEALTH_DIVISION' },
+      },
+      {
+        path: 'create',
+        loadComponent: () =>
+          import('@features/entity-management/entity-id/entity-id.component').then(
+            (m) => m.EntityIdComponent,
+          ),
+        data: { type: 'HEALTH_DIVISION' },
+      },
+      {
+        path: 'edit/:id',
+        loadComponent: () =>
+          import('@features/entity-management/entity-id/entity-id.component').then(
+            (m) => m.EntityIdComponent,
+          ),
+        data: { type: 'HEALTH_DIVISION' },
+      },
+    ],
   },
   {
     path: 'hospitals',
-    loadChildren: () => import('@features/hospitals/hospitals.routes'),
+    children: [
+      {
+        path: '',
+        loadComponent: () =>
+          import('@features/entity-management/entity-list/entity-list.component').then(
+            (m) => m.EntityListComponent,
+          ),
+        data: { type: 'HOSPITAL' },
+      },
+      {
+        path: 'create',
+        loadComponent: () =>
+          import('@features/entity-management/entity-id/entity-id.component').then(
+            (m) => m.EntityIdComponent,
+          ),
+        data: { type: 'HOSPITAL' },
+      },
+      {
+        path: 'edit/:id',
+        loadComponent: () =>
+          import('@features/entity-management/entity-id/entity-id.component').then(
+            (m) => m.EntityIdComponent,
+          ),
+        data: { type: 'HOSPITAL' },
+      },
+    ],
   },
   {
     path: 'authorities',
-    loadChildren: () => import('@features/authorities/authorities.routes'),
+    children: [
+      {
+        path: '',
+        loadComponent: () =>
+          import('@features/entity-management/entity-list/entity-list.component').then(
+            (m) => m.EntityListComponent,
+          ),
+        data: { type: 'AUTHORITY' },
+      },
+      {
+        path: 'create',
+        loadComponent: () =>
+          import('@features/entity-management/entity-id/entity-id.component').then(
+            (m) => m.EntityIdComponent,
+          ),
+        data: { type: 'AUTHORITY' },
+      },
+      {
+        path: 'edit/:id',
+        loadComponent: () =>
+          import('@features/entity-management/entity-id/entity-id.component').then(
+            (m) => m.EntityIdComponent,
+          ),
+        data: { type: 'AUTHORITY' },
+      },
+    ],
   },
   {
     path: 'authorities-hospitals',
-    loadChildren: () => import('@features/authority-hospitals/authority-hospitals.routes'),
+    children: [
+      {
+        path: '',
+        loadComponent: () =>
+          import('@features/entity-management/entity-list/entity-list.component').then(
+            (m) => m.EntityListComponent,
+          ),
+        data: { type: 'AUTHORITY_HOSPITAL' },
+      },
+      {
+        path: 'create',
+        loadComponent: () =>
+          import('@features/entity-management/entity-id/entity-id.component').then(
+            (m) => m.EntityIdComponent,
+          ),
+        data: { type: 'AUTHORITY_HOSPITAL' },
+      },
+      {
+        path: 'edit/:id',
+        loadComponent: () =>
+          import('@features/entity-management/entity-id/entity-id.component').then(
+            (m) => m.EntityIdComponent,
+          ),
+        data: { type: 'AUTHORITY_HOSPITAL' },
+      },
+    ],
   },
   {
     path: '',
