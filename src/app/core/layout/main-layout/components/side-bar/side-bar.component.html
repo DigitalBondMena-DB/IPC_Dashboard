@@ -31,7 +31,7 @@
             >
               <div class="flex items-center gap-3">
                 @if (item.icon) {
-                  <lucide-icon
+                  <lucide-angular
                     [img]="icons[item.icon]"
                     class="w-5 h-5 group-hover:text-primary-500"
                     [class.text-primary-500]="item.expanded"
@@ -46,7 +46,7 @@
                 }
               </div>
               @if (!isCollapsed()) {
-                <lucide-icon
+                <lucide-angular
                   [img]="icons['ChevronDown']"
                   class="w-4 h-4 text-gray-400 transition-transform duration-200"
                   [class.rotate-180]="item.expanded"
@@ -75,7 +75,7 @@
               class="flex px-6 text-gray-300 items-center gap-3 p-3 rounded-xl transition-all hover:bg-gray-50 group"
             >
               @if (item.icon) {
-                <lucide-icon
+                <lucide-angular
                   [img]="icons[item.icon]"
                   size="24"
                   class="w-5 h-5 group-hover:text-primary-500"
@@ -100,7 +100,7 @@
       >
         <div class="relative z-10 flex flex-col items-center">
           <div class="bg-gray-706 size-8 rounded-full mb-2 flex items-center justify-center">
-            <lucide-icon [img]="icons['Survey']" size="14" class="text-primary-500" />
+            <lucide-angular [img]="icons['Survey']" size="14" class="text-primary-500" />
           </div>
           <p class="text-sm font-medium mb-4 leading-relaxed text-center">
             Switch to Survey Builder Mode.
@@ -108,7 +108,7 @@
           <button
             class="bg-white text-primary-500 text-sm font-semibold py-1.5 px-3 rounded-2xl flex items-center gap-1.5 justify-center shadow-md active:scale-95 transition-transform"
           >
-            <lucide-icon [img]="icons['Plus']" size="24" />
+            <lucide-angular [img]="icons['Plus']" size="24" />
             Create Survey
           </button>
         </div>
@@ -144,7 +144,7 @@
         tooltipPosition="top"
         class="text-red-100 p-2 hover:bg-red-50 hover:text-red-500 rounded-xl transition-all active:scale-90"
       >
-        <lucide-icon [img]="icons['Logout']" [size]="!isCollapsed() ? 18 : 24" />
+        <lucide-angular [img]="icons['LogOut']" [size]="isCollapsed() ? 24 : 18" />
       </button>
     </div>
   </div>

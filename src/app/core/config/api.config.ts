@@ -11,13 +11,12 @@ export const API_CONFIG = {
         HEALTH_DIVISION: 'medical_area',
         HOSPITAL: 'hospital',
         AUTHORITY: 'authority',
-        AUTHORITY_HOSPITAL: 'authority_hospital', // Assumed from the context
       },
     },
     USERS: {
       BASE: 'users',
       TYPE: {
-        SUPER_ADMIN: 'super_admin',
+        SUPER_ADMIN: 'ministry',
         HEALTH_DIRECTORATE: 'governorate',
         HEALTH_DIVISION: 'medical_area',
         HOSPITAL: 'hospital',

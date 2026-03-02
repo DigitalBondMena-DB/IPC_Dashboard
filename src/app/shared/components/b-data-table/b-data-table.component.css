@@ -2,7 +2,7 @@
 .table-container {
   background: #fff;
   border-radius: 12px;
-  overflow: hidden;
+  overflow-x: auto;
   border: 1px solid #f0f0f0;
 }
 
@@ -115,11 +115,11 @@
   transition: 0.3s ease;
 }
 
-.toggle-switch input:checked+.toggle-slider {
+.toggle-switch input:checked + .toggle-slider {
   background-color: var(--color-primary-500, #197bfd);
 }
 
-.toggle-switch input:checked+.toggle-slider::before {
+.toggle-switch input:checked + .toggle-slider::before {
   transform: translateX(20px);
 }
 

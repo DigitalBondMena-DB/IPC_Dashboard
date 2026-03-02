@@ -38,7 +38,7 @@ export class SideBarComponent {
     Users: Users,
     Survey: ClipboardList,
     Plus: Plus,
-    Logout: LogOut,
+    LogOut: LogOut,
     ChevronDown: ChevronDown,
     ArrowLeftToLine: ArrowLeftToLine,
     ArrowRightToLine: ArrowRightToLine,

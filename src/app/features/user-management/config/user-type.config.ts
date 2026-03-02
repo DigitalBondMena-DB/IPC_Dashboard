@@ -9,6 +9,7 @@ export const USER_TYPE_CONFIG: Record<string, any> = {
     entityKey: 'division_id',
     entityEndpoint: API_CONFIG.ENDPOINTS.CATEGORIES,
     navPath: '/super-admin-users',
+    dependencies: ['generalDivisions'],
   },
   HEALTH_DIRECTORATE: {
     title: 'Health Directorate Users',
@@ -19,6 +20,7 @@ export const USER_TYPE_CONFIG: Record<string, any> = {
     entityEndpoint: API_CONFIG.ENDPOINTS.ENTITIES.BASE,
     entityType: API_CONFIG.ENDPOINTS.ENTITIES.TYPE.HEALTH_DIRECTORATE,
     navPath: '/health-directorate-users',
+    dependencies: ['directorates'],
   },
   HEALTH_DIVISION: {
     title: 'Health Division Users',
@@ -29,6 +31,7 @@ export const USER_TYPE_CONFIG: Record<string, any> = {
     entityEndpoint: API_CONFIG.ENDPOINTS.ENTITIES.BASE,
     entityType: API_CONFIG.ENDPOINTS.ENTITIES.TYPE.HEALTH_DIVISION,
     navPath: '/health-division-users',
+    dependencies: ['directorates', 'healthDivisions'],
   },
   HOSPITAL: {
     title: 'Hospital Users',
@@ -39,6 +42,7 @@ export const USER_TYPE_CONFIG: Record<string, any> = {
     entityEndpoint: API_CONFIG.ENDPOINTS.ENTITIES.BASE,
     entityType: API_CONFIG.ENDPOINTS.ENTITIES.TYPE.HOSPITAL,
     navPath: '/hospitals-users',
+    dependencies: ['directorates', 'healthDivisions', 'hospitals'],
   },
   AUTHORITY: {
     title: 'Authority Users',
@@ -49,6 +53,7 @@ export const USER_TYPE_CONFIG: Record<string, any> = {
     entityEndpoint: API_CONFIG.ENDPOINTS.ENTITIES.BASE,
     entityType: API_CONFIG.ENDPOINTS.ENTITIES.TYPE.AUTHORITY,
     navPath: '/authorities-users',
+    dependencies: [],
   },
   AUTHORITY_HOSPITAL: {
     title: "Authority's Hospital Users",
@@ -57,7 +62,8 @@ export const USER_TYPE_CONFIG: Record<string, any> = {
     entityLabel: 'Authority Hospital',
     entityKey: 'authority_hospital_id',
     entityEndpoint: API_CONFIG.ENDPOINTS.ENTITIES.BASE,
-    entityType: API_CONFIG.ENDPOINTS.ENTITIES.TYPE.AUTHORITY_HOSPITAL,
+    entityType: API_CONFIG.ENDPOINTS.ENTITIES.TYPE.HOSPITAL,
     navPath: '/authorities-hospitals-users',
+    dependencies: ['authorities', 'hospitals'],
   },
 };

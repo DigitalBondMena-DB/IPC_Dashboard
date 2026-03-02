@@ -13,10 +13,14 @@ export class HttpService {
     return this.http.post<T>(API_CONFIG.BASE_URL + endpoint, data);
   }
   get<T>(endpoint: string, params?: Signal<any>): HttpResourceRef<T | undefined> {
-    return httpResource<T>(() => ({
-      url: API_CONFIG.BASE_URL + endpoint,
-      method: 'GET',
-      params: params?.(),
-    }));
+    return httpResource<T>(() => {
+      const p = params?.();
+      if (p === null) return undefined;
+      return {
+        url: API_CONFIG.BASE_URL + endpoint,
+        method: 'GET',
+        params: p,
+      };
+    });
   }
 }

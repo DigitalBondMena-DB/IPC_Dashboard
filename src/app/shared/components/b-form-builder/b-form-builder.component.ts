@@ -1,10 +1,19 @@
-import { Component, input, output, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
+import {
+  Component,
+  input,
+  output,
+  OnInit,
+  ChangeDetectionStrategy,
+  inject,
+  effect,
+} from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { IFormField } from '@shared/models/form-field.model';
 import { BInputComponent } from '../b-input/b-input.component';
 import { BSelectComponent } from '../b-select/b-select.component';
 import { BCheckboxComponent } from '../b-checkbox/b-checkbox.component';
+import { BMultiSelectComponent } from '../b-multi-select/b-multi-select.component';
 
 @Component({
   selector: 'app-b-form-builder',
@@ -15,6 +24,7 @@ import { BCheckboxComponent } from '../b-checkbox/b-checkbox.component';
     BInputComponent,
     BSelectComponent,
     BCheckboxComponent,
+    BMultiSelectComponent,
   ],
   templateUrl: './b-form-builder.component.html',
   styleUrl: './b-form-builder.component.css',
@@ -29,14 +39,25 @@ export class BFormBuilderComponent implements OnInit {
   submitLabel = input<string>('Save Changes');
   cancelLabel = input<string>('Cancel');
   loading = input<boolean>(false);
+  groupValidators = input<any[]>([]);
 
   // Outputs
   formSubmit = output<any>();
   formCancel = output<void>();
   onSearch = output<{ key: string; text: string }>();
   onScrollPagination = output<{ key: string; event: any }>();
+  onValueChange = output<{ key: string; value: any }>();
 
   form!: FormGroup;
+
+  constructor() {
+    effect(() => {
+      const data = this.initialData();
+      if (this.form && data) {
+        this.form.patchValue(data, { emitEvent: false });
+      }
+    });
+  }
 
   ngOnInit(): void {
     this.buildForm();
@@ -50,7 +71,14 @@ export class BFormBuilderComponent implements OnInit {
       group[field.key] = [data[field.key] || '', field.validators || []];
     });
 
-    this.form = this.fb.group(group);
+    this.form = this.fb.group(group, { validators: this.groupValidators() });
+
+    // Listen for changes
+    Object.keys(this.form.controls).forEach((key) => {
+      this.form.get(key)?.valueChanges.subscribe((value) => {
+        this.onValueChange.emit({ key, value });
+      });
+    });
   }
 
   onSubmit(): void {
@@ -75,5 +103,21 @@ export class BFormBuilderComponent implements OnInit {
 
   isValid(key: string): boolean {
     return this.form.get(key)?.valid || false;
+  }
+
+  getErrorMessage(field: IFormField): string | null {
+    const control = this.form.get(field.key);
+    if (!control || !control.touched || (control.valid && !control.hasError('passwordMismatch')))
+      return null;
+
+    if (control.hasError('required')) return `${field.label} is required`;
+    if (control.hasError('email')) return 'Invalid email address';
+    if (control.hasError('minlength')) {
+      const requiredLength = control.errors?.['minlength']?.requiredLength;
+      return `${field.label} must be at least ${requiredLength} characters`;
+    }
+    if (control.hasError('passwordMismatch')) return 'Passwords do not match';
+
+    return `${field.label} is invalid`;
   }
 }

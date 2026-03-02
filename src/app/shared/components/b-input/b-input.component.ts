@@ -1,6 +1,6 @@
 import { Component, input, signal, forwardRef, ChangeDetectionStrategy } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/forms';
-import { LucideAngularModule } from 'lucide-angular';
+import { LucideAngularModule, Eye, EyeOff } from 'lucide-angular';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -59,8 +59,8 @@ export class BInputComponent implements ControlValueAccessor {
   placeholder = input<string>('');
   type = input<'text' | 'password' | 'email'>('text');
   icon = input<any>();
-  eyeIcon = input<any>();
-  eyeOffIcon = input<any>();
+  eyeIcon = input<any>(Eye);
+  eyeOffIcon = input<any>(EyeOff);
   errorMessage = input<string | null>(null);
 
   value = signal<string>('');

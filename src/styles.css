@@ -57,20 +57,26 @@
   .p-select-label {
     --p-select-color: black;
   }
-
-  .custom-select-panel {
+  .p-multiselect-label {
+    --p-chip-background: theme(--color-gray-706);
+    --p-chip-color: theme(--color-black-400);
+  }
+  .custom-select-panel,
+  .custom-multiselect-panel {
     @apply !bg-white !border !border-[#e5e7eb] rounded-lg transition-all duration-200;
     --p-select-option-focus-background: theme(--color-gray-706);
     --p-select-option-color: theme(--color-black-400);
+    --p-multiselect-option-color: theme(--color-black-400);
+    --p-multiselect-option-focus-background: theme(--color-gray-706);
+    --p-multiselect-option-focus-color: theme(--color-black-400);
+    --p-multiselect-option-selected-color: theme(--color-black-400);
+    --p-checkbox-background: theme(--color-gray-706);
     --p-select-option-focus-color: theme(--color-black-400);
     --p-inputtext-background: theme(--color-gray-706);
     --p-inputtext-color: theme(--color-black-400);
     --p-virtualscroller-loader-mask-background: theme(--color-gray-706);
     --p-virtualscroller-loader-mask-color: theme(--color-black-400);
     --p-select-option-selected-color: theme(--color-black-400);
-
-
-
     .p-virtualscroller::-webkit-scrollbar {
       width: 8px;
     }

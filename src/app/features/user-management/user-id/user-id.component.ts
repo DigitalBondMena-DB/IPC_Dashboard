@@ -1,4 +1,11 @@
-import { Component, ChangeDetectionStrategy, inject, computed, signal, effect } from '@angular/core';
+import {
+  Component,
+  ChangeDetectionStrategy,
+  inject,
+  computed,
+  signal,
+  effect,
+} from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { BPageHeaderComponent } from '@shared/components/b-page-header/b-page-header.component';
@@ -7,6 +14,8 @@ import { UserManagementService } from '../services/user-management.service';
 import { getUserFormConfig } from '../config/user-form.config';
 import { USER_TYPE_CONFIG } from '../config/user-type.config';
 import { MessageService } from 'primeng/api';
+import { passwordMatchValidator } from '@shared/validators/password-match.validator';
+import { API_CONFIG } from '@/core/config/api.config';
 
 @Component({
   selector: 'app-user-id',
@@ -22,14 +31,16 @@ import { MessageService } from 'primeng/api';
         </div>
       } @else {
         <app-b-form-builder
-          [fields]="formConfig()"
+          [fields]="fields()"
           [initialData]="userData()"
           [submitLabel]="submitLabel()"
           [loading]="isSubmitting()"
+          [groupValidators]="groupValidators"
           (formSubmit)="onSubmit($event)"
           (formCancel)="onCancel()"
           (onSearch)="onDropdownSearch($event)"
           (onScrollPagination)="onDropdownScroll($event)"
+          (onValueChange)="onValueChange($event)"
         />
       }
     </div>
@@ -50,78 +61,224 @@ export class UserIdComponent {
   title = computed(() => `${this.isEdit() ? 'Edit' : 'Create'} ${this.config().entityLabel} User`);
   submitLabel = computed(() => `${this.isEdit() ? 'Update' : 'Create'} User`);
 
+  readonly formValues = signal<Record<string, any>>({});
+  readonly groupValidators = [passwordMatchValidator()];
+
   // User data for editing
   userResource = this.isEdit()
     ? this._Service.getUserById(this.config().endpoint, this.config().userType, this.id()!)
     : null;
-  userData = computed(() => this.userResource?.value() || {});
+  userData = computed(() => {
+    const data = this.userResource?.value() || {};
+    if (this.isEdit()) {
+      // Sync formValues with initial user data
+      setTimeout(() => this.formValues.set({ ...data }));
+    }
+    return data;
+  });
   isLoading = computed(() => this.userResource?.isLoading() || false);
 
-  // Entity options with search and scroll
-  searchTerm = signal('');
-  optionsPage = signal(1);
-  accumulatedOptions = signal<any[]>([]);
-
-  optionsParams = computed(() => ({
-    page: this.optionsPage(),
-    per_page: 50,
-    search: this.searchTerm(),
-    ...(this.config().entityType ? { type: this.config().entityType } : {}),
-  }));
-
-  optionsResource = this._Service.get<any>(this.config().entityEndpoint, this.optionsParams);
-
-  // Effect to append results for infinite scroll
-  private _optionsEffect = effect(() => {
-    const response = this.optionsResource.value();
-    if (response?.data) {
-      if (this.optionsPage() === 1) {
-        this.accumulatedOptions.set(response.data);
-      } else {
-        this.accumulatedOptions.update((prev) => [...prev, ...response.data]);
+  // Relational data management
+  private depsState = signal<
+    Record<
+      string,
+      {
+        searchTerm: any;
+        page: any;
+        accumulated: any;
+        resource: any;
       }
-    }
+    >
+  >({});
+
+  constructor() {
+    this.initDependencies();
+  }
+
+  private initDependencies(): void {
+    const deps = this.config().dependencies || [];
+    const state: any = {};
+
+    deps.forEach((dep: string) => {
+      const depConfig = this.getDepConfig(dep);
+      const searchTerm = signal('');
+      const page = signal(1);
+
+      const params = computed(() => {
+        const values = this.formValues();
+        const userType = this.config().userType;
+        const fieldsConfig = getUserFormConfig(userType, {}, this.isEdit());
+        const fieldDef = fieldsConfig.find((f: any) => f.key === depConfig.key);
+
+        let parentId = null;
+        if (fieldDef?.dependsOn) {
+          parentId = values[fieldDef.dependsOn];
+          if (!parentId) return null;
+        }
+
+        return {
+          page: page(),
+          per_page: 50,
+          search: searchTerm(),
+          ...(depConfig.type ? { type: depConfig.type } : {}),
+          ...(parentId ? { parent_id: parentId } : {}),
+        };
+      });
+
+      const resource = this._Service.get<any>(depConfig.endpoint, params);
+      const accumulated = signal<any[]>([]);
+
+      effect(
+        () => {
+          const res = resource.value();
+          if (res?.data) {
+            if (page() === 1) accumulated.set(res.data);
+            else accumulated.update((prev) => [...prev, ...res.data]);
+          } else if (!res && !resource.isLoading()) {
+            accumulated.set([]);
+          }
+        },
+        { allowSignalWrites: true },
+      );
+
+      state[depConfig.key] = { searchTerm, page, accumulated, resource };
+    });
+
+    this.depsState.set(state);
+  }
+
+  private getDepConfig(dep: string): { key: string; endpoint: string; type?: string } {
+    const mapping: Record<string, any> = {
+      directorates: {
+        key: 'health_directorate_id',
+        endpoint: API_CONFIG.ENDPOINTS.ENTITIES.BASE,
+        type: API_CONFIG.ENDPOINTS.ENTITIES.TYPE.HEALTH_DIRECTORATE,
+      },
+      healthDivisions: {
+        key: 'health_division_id',
+        endpoint: API_CONFIG.ENDPOINTS.ENTITIES.BASE,
+        type: API_CONFIG.ENDPOINTS.ENTITIES.TYPE.HEALTH_DIVISION,
+      },
+      hospitals: {
+        key: 'hospital_id',
+        endpoint: API_CONFIG.ENDPOINTS.ENTITIES.BASE,
+        type: API_CONFIG.ENDPOINTS.ENTITIES.TYPE.HOSPITAL,
+      },
+      authorities: {
+        key: 'authority_id',
+        endpoint: API_CONFIG.ENDPOINTS.ENTITIES.BASE,
+        type: API_CONFIG.ENDPOINTS.ENTITIES.TYPE.AUTHORITY,
+      },
+      generalDivisions: {
+        key: 'division_id',
+        endpoint: API_CONFIG.ENDPOINTS.CATEGORIES,
+      },
+    };
+    return mapping[dep];
+  }
+
+  fields = computed(() => {
+    const s = this.depsState();
+    const depsObj: any = {};
+    const userType = this.config().userType;
+
+    Object.keys(s).forEach((key) => {
+      const state = s[key];
+      const options = state.accumulated().map((i: any) => ({ label: i.name, value: i.id }));
+      const res = state.resource.value();
+      if (res && state.page() < res.last_page) {
+        options.push({ label: null, value: null });
+      }
+
+      const configKey = this.getConfigKeyFromProp(key);
+      depsObj[configKey] = options;
+      depsObj[`is${configKey.charAt(0).toUpperCase() + configKey.slice(1)}Loading`] =
+        state.resource.isLoading();
+    });
+
+    const values = this.formValues();
+    const rawFields = getUserFormConfig(userType, depsObj, this.isEdit());
+
+    return rawFields.map((field: any) => {
+      if (field.dependsOn) {
+        const parentValue = values[field.dependsOn];
+        return {
+          ...field,
+          disabled: !parentValue,
+        };
+      }
+      return field;
+    });
   });
 
-  entityOptions = computed(() => {
-    const options = this.accumulatedOptions().map((item: any) => ({
-      label: item.name,
-      value: item.id,
-    }));
-    const res = this.optionsResource.value();
-    if (res && this.optionsPage() < res.last_page) {
-      options.push({ label: null, value: null });
-    }
-    return options;
-  });
-  isOptionsLoading = computed(() => this.optionsResource.isLoading());
-
-  formConfig = computed(() =>
-    getUserFormConfig(
-      this.config().entityLabel,
-      this.config().entityKey,
-      this.entityOptions(),
-      this.isEdit(),
-      this.optionsResource.isLoading(),
-    ),
-  );
+  private getConfigKeyFromProp(prop: string): string {
+    const mapping: Record<string, string> = {
+      health_directorate_id: 'directorates',
+      health_division_id: 'healthDivisions',
+      hospital_id: 'hospitals',
+      authority_id: 'authorities',
+      division_id: 'generalDivisions',
+    };
+    return mapping[prop] || prop;
+  }
 
   isSubmitting = signal(false);
 
+  onValueChange(event: { key: string; value: any }) {
+    const userType = this.config().userType;
+    const fields = getUserFormConfig(userType, {}, this.isEdit());
+
+    const clearDependents = (key: string, valuesObj: any) => {
+      fields.forEach((f: any) => {
+        if (f.dependsOn === key) {
+          valuesObj[f.key] = null;
+          clearDependents(f.key, valuesObj);
+        }
+      });
+    };
+
+    this.formValues.update((prev) => {
+      if (prev[event.key] === event.value) return prev;
+      const newValues = { ...prev, [event.key]: event.value };
+      clearDependents(event.key, newValues);
+      return newValues;
+    });
+
+    const resetState = (key: string) => {
+      const state = this.depsState();
+      Object.keys(state).forEach((k) => {
+        const fieldDef = fields.find((f: any) => f.key === k);
+
+        if (fieldDef?.dependsOn === key) {
+          state[k].page.set(1);
+          state[k].searchTerm.set('');
+          state[k].accumulated.set([]);
+          resetState(k);
+        }
+      });
+    };
+
+    resetState(event.key);
+  }
+
   onDropdownSearch(event: { key: string; text: string }) {
-    this.searchTerm.set(event.text);
-    this.optionsPage.set(1);
+    const state = this.depsState()[event.key];
+    if (state) {
+      state.searchTerm.set(event.text);
+      state.page.set(1);
+    }
   }
 
   onDropdownScroll(event: { key: string; event: any }) {
-    const res = this.optionsResource.value();
-    if (!res || this.optionsResource.isLoading()) return;
+    const state = this.depsState()[event.key];
+    if (!state || state.resource.isLoading()) return;
 
+    const res = state.resource.value();
     const lastVisible = event.event.last;
-    const currentCount = this.accumulatedOptions().length;
+    const currentCount = state.accumulated().length;
 
-    if (lastVisible >= currentCount - 1 && this.optionsPage() < res.last_page) {
-      this.optionsPage.update((p) => p + 1);
+    if (res && lastVisible >= currentCount - 1 && state.page() < res.last_page) {
+      state.page.update((p: number) => p + 1);
     }
   }
 
@@ -131,12 +288,11 @@ export class UserIdComponent {
     const endpoint = this.config().endpoint;
     const userType = this.config().userType;
 
-    // Prepare data (for edit, password fields might be omitted)
-    const data = { ...formData };
+    const payload = this.preparePayload(formData);
 
     const obs = id
-      ? this._Service.updateUser(endpoint, userType, id, data)
-      : this._Service.createUser(endpoint, userType, data);
+      ? this._Service.updateUser(endpoint, userType, id, payload)
+      : this._Service.createUser(endpoint, userType, payload);
 
     obs.subscribe({
       next: () => {
@@ -155,6 +311,50 @@ export class UserIdComponent {
         });
       },
     });
+  }
+
+  private preparePayload(formData: any): any {
+    const payload = { ...formData };
+
+    // 1. Extract entity_id based on priority (deepest first)
+    // Priority: hospital_id > health_division_id > health_directorate_id > authority_id
+    if (formData.hospital_id) {
+      payload.entity_id = formData.hospital_id;
+    } else if (formData.health_division_id) {
+      payload.entity_id = formData.health_division_id;
+    } else if (formData.health_directorate_id) {
+      payload.entity_id = formData.health_directorate_id;
+    } else if (formData.authority_id) {
+      payload.entity_id = formData.authority_id;
+    }
+
+    // 2. Handle category_ids (Division)
+    // If division_id is present (Ministry/Super Admin), send it as category_ids array
+    if (formData.division_id) {
+      payload.category_ids = [formData.division_id];
+    }
+    // If category_ids is already an array (multiselect for Hospital/Authority), keep it as is.
+    // Ensure if it's a single value it becomes an array.
+    if (payload.category_ids && !Array.isArray(payload.category_ids)) {
+      payload.category_ids = [payload.category_ids];
+    }
+
+    // 3. Cleanup: Remove intermediate entity keys used for cascading UI
+    const entityKeys = [
+      'hospital_id',
+      'health_division_id',
+      'health_directorate_id',
+      'authority_id',
+      'division_id',
+    ];
+
+    entityKeys.forEach((key) => {
+      // Only delete if it's not the same as entity_id OR if we explicitly want to clean up
+      // We explicitly want to clean up because the API expects entity_id or category_ids
+      delete payload[key];
+    });
+
+    return payload;
   }
 
   onCancel(): void {
