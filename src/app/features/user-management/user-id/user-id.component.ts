@@ -70,13 +70,59 @@ export class UserIdComponent {
     : null;
   userData = computed(() => {
     const data = this.userResource?.value() || {};
+    const transformed = this.isEdit() ? this.transformUserData(data) : data;
+
     if (this.isEdit()) {
-      // Sync formValues with initial user data
-      setTimeout(() => this.formValues.set({ ...data }));
+      // Sync formValues with initial user data to trigger cascading dependencies
+      setTimeout(() => this.formValues.set({ ...transformed }));
     }
-    return data;
+    return transformed;
   });
   isLoading = computed(() => this.userResource?.isLoading() || false);
+
+  private transformUserData(data: any): any {
+    if (!data) return {};
+    const transformed = { ...data };
+
+    // Handle nested entity hierarchy (Hospital -> Medical Area -> Directorate)
+    // The API might return an 'entity' or 'hospital' or 'medical_area' object based on the user type
+    // In the user's example, the top-level is the hospital itself or contains the entity info
+
+    // We'll trace using the known structure: id, parent_id, and parent object
+    // For Hospital: hospital_id = data.id, health_division_id = data.parent_id, health_directorate_id = data.parent?.parent_id
+
+    const type = this.config().userType;
+
+    if (
+      type === API_CONFIG.ENDPOINTS.USERS.TYPE.HOSPITAL ||
+      type === API_CONFIG.ENDPOINTS.USERS.TYPE.AUTHORITY_HOSPITAL
+    ) {
+      transformed.hospital_id = data.id;
+      transformed.health_division_id = data.parent_id;
+      if (data.parent) {
+        transformed.health_directorate_id = data.parent.parent_id;
+      }
+    } else if (type === API_CONFIG.ENDPOINTS.USERS.TYPE.HEALTH_DIVISION) {
+      transformed.health_division_id = data.id;
+      transformed.health_directorate_id = data.parent_id;
+    } else if (type === API_CONFIG.ENDPOINTS.USERS.TYPE.HEALTH_DIRECTORATE) {
+      transformed.health_directorate_id = data.id;
+    } else if (type === API_CONFIG.ENDPOINTS.USERS.TYPE.AUTHORITY) {
+      transformed.authority_id = data.id;
+    } else if (type === API_CONFIG.ENDPOINTS.USERS.TYPE.SUPER_ADMIN) {
+      // Handle divisions for Super Admin if they come back as an array
+      if (data.categories && Array.isArray(data.categories) && data.categories.length > 0) {
+        transformed.division_id = data.categories[0].id;
+      }
+    }
+
+    // Handle categories -> category_ids array for all
+    if (data.categories && Array.isArray(data.categories)) {
+      transformed.category_ids = data.categories.map((c: any) => c.id);
+    }
+
+    return transformed;
+  }
 
   // Relational data management
   private depsState = signal<

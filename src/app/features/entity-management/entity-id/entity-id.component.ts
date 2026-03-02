@@ -78,45 +78,26 @@ export class EntityIdComponent {
     if (!data) return {};
     const transformed = { ...data };
 
-    // Handle nested parents recursively or tracers
-    // Based on user example: Hospital -> parent (Division) -> parent_id (Directorate)
-    // We'll trace parent objects and their parent_ids
-    let currentParent = data.parent;
-    let currentEntity = data;
+    // Handle nested parents (e.g. Hospital -> Division -> Directorate)
+    // Trace parent object and their parent_ids
+    const type = (data.type || this.config().entity_type)?.toUpperCase();
 
-    while (currentEntity) {
-      const type = (currentEntity.type || this.config().parent_type)?.toUpperCase();
-      const parentTypeKeyMap: Record<string, string> = {
-        HEALTH_DIRECTORATE: 'health_directorate_id',
-        HEALTH_DIVISION: 'health_division_id',
-        AUTHORITY: 'authority_id',
-        MEDICAL_AREA: 'health_division_id', // Handle potential alias
-        GOVERNORATE: 'health_directorate_id', // Handle potential alias
-      };
-
-      const key = parentTypeKeyMap[type];
-      if (key && !transformed[key]) {
-        transformed[key] = currentEntity.id;
+    if (type === 'HOSPITAL') {
+      // Trace: Hospital.parent_id (Division) -> Hospital.parent.parent_id (Directorate)
+      transformed.health_division_id = data.parent_id;
+      if (data.parent) {
+        transformed.health_directorate_id = data.parent.parent_id;
       }
-
-      // Move up: if currentEntity has parent_id but no parent object,
-      // we might need to rely on the parent_id inside the current parent object
-      const nextParentId = currentEntity.parent_id;
-
-      if (currentEntity.parent) {
-        currentEntity = currentEntity.parent;
-      } else if (nextParentId && !currentParent) {
-        // If we only have parent_id but no object, we can't know the type easily
-        // unless we assume the hierarchy. For now, let's stick to the nested objects.
-        currentEntity = null;
-      } else {
-        currentEntity = null;
-      }
+    } else if (type === 'MEDICAL_AREA' || type === 'HEALTH_DIVISION') {
+      // Trace: Area.parent_id (Directorate)
+      transformed.health_directorate_id = data.parent_id;
+    } else if (type === 'AUTHORITY_HOSPITAL') {
+      transformed.authority_id = data.parent_id;
     }
 
-    // Handle categories -> category_ids
+    // Handle categories -> category_ids array
     if (data.categories && Array.isArray(data.categories)) {
-      transformed['category_ids'] = data.categories.map((c: any) => c.id);
+      transformed.category_ids = data.categories.map((c: any) => c.id);
     }
 
     // Update formValues with initial data to trigger dependencies
@@ -155,7 +136,7 @@ export class EntityIdComponent {
 
       const params = computed(() => {
         const values = this.formValues();
-        const fieldsConfig = this.config().formFields(deps); // Call to get field definitions
+        const fieldsConfig = this.config().formFields(deps);
         const fieldDef = fieldsConfig.find((f: any) => f.key === depConfig.key);
 
         let parentId = null;
@@ -355,14 +336,30 @@ export class EntityIdComponent {
   private preparePayload(formData: any): any {
     const payload = { ...formData };
 
-    // Determine parent_id based on priority: health_division_id > health_directorate_id > authority_id
+    // Extract entity_id based on priority (deepest first)
     if (formData.health_division_id) {
-      payload.parent_id = formData.health_division_id;
+      payload.entity_id = formData.health_division_id;
     } else if (formData.health_directorate_id) {
-      payload.parent_id = formData.health_directorate_id;
+      payload.entity_id = formData.health_directorate_id;
     } else if (formData.authority_id) {
-      payload.parent_id = formData.authority_id;
+      payload.entity_id = formData.authority_id;
     }
+
+    // Handle category_ids (General Division)
+    if (payload.category_ids && !Array.isArray(payload.category_ids)) {
+      payload.category_ids = [payload.category_ids];
+    } else if (formData.division_id) {
+      payload.category_ids = [formData.division_id];
+    }
+
+    // Cleanup intermediate keys
+    const entityKeys = [
+      'health_division_id',
+      'health_directorate_id',
+      'authority_id',
+      'division_id',
+    ];
+    entityKeys.forEach((key) => delete payload[key]);
 
     return payload;
   }

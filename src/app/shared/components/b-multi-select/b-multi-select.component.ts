@@ -29,10 +29,12 @@ import { Subject, debounceTime, distinctUntilChanged } from 'rxjs';
       <div class="input-container">
         <p-multiSelect
           [id]="id()"
+          [appendTo]="'body'"
           [options]="options()"
           [placeholder]="placeholder()"
           [disabled]="disabled()"
           [filter]="filter()"
+          [selectAll]="false"
           [loading]="loading()"
           [showClear]="true"
           [class]="'w-full custom-multiselect ' + (hasError() ? 'border-red-500' : '')"

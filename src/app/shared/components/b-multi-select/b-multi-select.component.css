@@ -7,3 +7,6 @@
 .p-multiselect {
   @apply w-full !bg-white !border !border-[#e5e7eb] rounded-lg transition-all duration-200;
 }
+.p-multiselect-header .p-checkbox {
+  display: none !important;
+}
