@@ -142,10 +142,12 @@ export class BDataTableComponent {
   }
 
   onToggle(item: any, field: string): void {
+    if (item.can_be_edited === false) return;
     this.toggleChange.emit({ item, field, value: !item[field] });
   }
 
   onEdit(item: any): void {
+    if (item.can_be_edited === false) return;
     this.editClick.emit(item);
   }
 

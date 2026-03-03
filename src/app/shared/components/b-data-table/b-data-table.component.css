@@ -141,6 +141,19 @@
   background: #d0e3ff;
 }
 
+.edit-btn:disabled {
+  background: #f5f5f5;
+  color: #999;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.toggle-switch.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
 /* Skeleton Loading */
 .skeleton-row td {
   padding: 14px 24px;

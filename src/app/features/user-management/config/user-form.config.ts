@@ -8,6 +8,14 @@ export const getUserFormConfig = (
 ): IFormField[] => {
   const commonFields: IFormField[] = [
     {
+      key: 'name',
+      label: 'User Name',
+      type: 'text',
+      placeholder: 'Enter user name...',
+      validators: [Validators.required],
+      colSpan: 'col-span-1',
+    },
+    {
       key: 'email',
       label: 'Email',
       type: 'email',
@@ -20,7 +28,7 @@ export const getUserFormConfig = (
       label: 'Phone',
       type: 'text',
       placeholder: 'Enter phone number...',
-      validators: [Validators.required],
+      validators: [Validators.required, Validators.pattern(/^[0-9]+$/)],
       colSpan: 'col-span-1',
     },
     {
@@ -46,14 +54,6 @@ export const getUserFormConfig = (
   switch (userType) {
     case 'ministry': // SUPER_ADMIN
       roleFields = [
-        {
-          key: 'name',
-          label: 'Super Admin Name',
-          type: 'text',
-          placeholder: 'Enter Super Admin name...',
-          validators: [Validators.required],
-          colSpan: 'col-span-1',
-        },
         {
           key: 'category_ids',
           label: 'Division',
@@ -262,7 +262,7 @@ export const getUserFormConfig = (
       break;
   }
 
-  const fields = [...roleFields, ...commonFields];
+  const fields = [...commonFields, ...roleFields];
 
   if (!isEdit) {
     fields.push();

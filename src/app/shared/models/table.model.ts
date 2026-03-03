@@ -2,6 +2,7 @@ export interface ITableColumn {
   field: string;
   header: string;
   sortable?: boolean;
+  is_active_actions?: boolean;
   type?: 'text' | 'date' | 'toggle';
 }
 

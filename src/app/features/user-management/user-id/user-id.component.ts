@@ -84,7 +84,6 @@ export class UserIdComponent {
     if (!data) return {};
     const transformed = { ...data };
     const type = this.config().userType;
-    console.log(type);
 
     if (
       type === API_CONFIG.ENDPOINTS.USERS.TYPE.HOSPITAL ||
@@ -96,8 +95,6 @@ export class UserIdComponent {
         transformed.health_directorate_id = data.parent.parent_id;
       }
     } else if (type === API_CONFIG.ENDPOINTS.USERS.TYPE.HEALTH_DIVISION) {
-      console.log(data.entity_id);
-
       transformed.health_division_id = data.id;
       transformed.health_directorate_id = data.entity_id;
     } else if (type === API_CONFIG.ENDPOINTS.USERS.TYPE.HEALTH_DIRECTORATE) {
@@ -140,6 +137,7 @@ export class UserIdComponent {
 
     deps.forEach((dep: string) => {
       const depConfig = this.getDepConfig(dep);
+
       const searchTerm = signal('');
       const page = signal(1);
 
@@ -223,19 +221,23 @@ export class UserIdComponent {
 
     Object.keys(s).forEach((key) => {
       const state = s[key];
-      const options = state.accumulated().map((i: any) => ({ label: i.name, value: i.id }));
+      const filterdOptions = state.accumulated().filter((e: any) => e.is_active);
+      const options = filterdOptions.map((i: any) => ({ label: i.name, value: i.id }));
+
       const res = state.resource.value();
       if (res && state.page() < res.last_page) {
         options.push({ label: null, value: null });
       }
 
       const configKey = this.getConfigKeyFromProp(key);
+
       depsObj[configKey] = options;
       depsObj[`is${configKey.charAt(0).toUpperCase() + configKey.slice(1)}Loading`] =
         state.resource.isLoading();
     });
 
     const values = this.formValues();
+
     const rawFields = getUserFormConfig(userType, depsObj, this.isEdit());
 
     return rawFields.map((field: any) => {

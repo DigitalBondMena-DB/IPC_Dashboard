@@ -1,125 +1,134 @@
-@if (loading()) {
-<div class="table-container">
-  <table class="data-table">
-    <thead>
-      <tr>
-        @for (col of columns(); track col.field) {
-        <th>{{ col.header }}</th>
-        }
-      </tr>
-    </thead>
-    <tbody>
-      @for (_ of skeletonRows; track $index) {
-      <tr class="skeleton-row">
-        @for (col of columns(); track col.field) {
-        <td>
-          <div class="skeleton-cell">
-            <div class="skeleton-bar"></div>
-          </div>
-        </td>
-        }
-      </tr>
-      }
-    </tbody>
-  </table>
-</div>
-} @else if (error()) {
-<div class="error-container">
-  <lucide-angular [img]="retryIcon" [size]="48" class="error-icon" />
-  <p class="error-title">Failed to load data</p>
-  <p class="error-subtitle">Something went wrong. Please try again.</p>
-  <button class="retry-btn" (click)="retryLoad.emit()">
-    <lucide-angular [img]="retryIcon" [size]="16" />
-    Retry
-  </button>
-</div>
-} @else {
-<div class="table-container custom-scrollbar">
-  <table class="data-table">
-    <thead>
-      <tr>
-        @for (col of columns(); track col.field) {
-        <th [class.sortable]="col.sortable" (click)="onSort(col)">
-          <div class="th-content">
-            {{ col.header }}
-            @if (getSortIcon(col); as icon) {
-            <lucide-angular [img]="icon" [size]="16" class="sort-icon" />
+@if (error()) {
+  <div class="error-container">
+    <lucide-angular [img]="retryIcon" [size]="48" class="error-icon" />
+    <p class="error-title">Failed to load data</p>
+    <p class="error-subtitle">Something went wrong. Please try again.</p>
+    <button class="retry-btn" (click)="retryLoad.emit()">
+      <lucide-angular [img]="retryIcon" [size]="16" />
+      Retry
+    </button>
+  </div>
+} @else if (loading()) {
+  <div class="table-container">
+    <table class="data-table">
+      <thead>
+        <tr>
+          @for (col of columns(); track col.field) {
+            <th>{{ col.header }}</th>
+          }
+        </tr>
+      </thead>
+      <tbody>
+        @for (_ of skeletonRows; track $index) {
+          <tr class="skeleton-row">
+            @for (col of columns(); track col.field) {
+              <td>
+                <div class="skeleton-cell">
+                  <div class="skeleton-bar"></div>
+                </div>
+              </td>
             }
-          </div>
-        </th>
+          </tr>
         }
-      </tr>
-    </thead>
-    <tbody>
-      @for (row of data(); track $index) {
-      <tr>
-        @for (col of columns(); track col.field) {
-        <td>
-          @switch (col.type) {
-          @case ('date') {
-          {{ row[col.field] | date: 'MMM dd, yyyy' }}
+      </tbody>
+    </table>
+  </div>
+} @else {
+  <div class="table-container custom-scrollbar">
+    <table class="data-table">
+      <thead>
+        <tr>
+          @for (col of columns(); track col.field) {
+            <th [class.sortable]="col.sortable" (click)="onSort(col)">
+              <div class="th-content">
+                {{ col.header }}
+                @if (getSortIcon(col); as icon) {
+                  <lucide-angular [img]="icon" [size]="16" class="sort-icon" />
+                }
+              </div>
+            </th>
           }
-          @case ('toggle') {
-          <div class="actions-cell">
-            <label class="toggle-switch">
-              <input type="checkbox" [checked]="row[col.field]" (change)="onToggle(row, col.field)" />
-              <span class="toggle-slider"></span>
-            </label>
-            <button class="edit-btn" (click)="onEdit(row)">
-              <lucide-angular [img]="pencilIcon" [size]="16" />
-            </button>
-          </div>
-          }
-          @default {
-          <p class="line-clamp-1">
-            {{ row[col.field] ?? 'N/A' }}
-          </p>
-          }
-          }
-        </td>
+        </tr>
+      </thead>
+      <tbody>
+        @for (row of data(); track $index) {
+          <tr>
+            @for (col of columns(); track col.field) {
+              <td>
+                @switch (col.type) {
+                  @case ('date') {
+                    {{ row[col.field] | date: 'MMM dd, yyyy' }}
+                  }
+                  @case ('toggle') {
+                    <div class="actions-cell">
+                      <label class="toggle-switch" [class.disabled]="row.can_be_edited === false">
+                        <input
+                          type="checkbox"
+                          [checked]="row[col.field]"
+                          [disabled]="row.can_be_edited === false"
+                          (change)="onToggle(row, col.field)"
+                        />
+                        <span class="toggle-slider"></span>
+                      </label>
+                      <button
+                        class="edit-btn"
+                        [disabled]="row.can_be_edited === false"
+                        (click)="onEdit(row)"
+                      >
+                        <lucide-angular [img]="pencilIcon" [size]="16" />
+                      </button>
+                    </div>
+                  }
+                  @default {
+                    <p class="line-clamp-1">
+                      {{ row[col.field] ?? 'N/A' }}
+                    </p>
+                  }
+                }
+              </td>
+            }
+          </tr>
+        } @empty {
+          <tr>
+            <td [attr.colspan]="columns().length" class="empty-cell">No data found</td>
+          </tr>
         }
-      </tr>
-      } @empty {
-      <tr>
-        <td [attr.colspan]="columns().length" class="empty-cell">No data found</td>
-      </tr>
-      }
-    </tbody>
-  </table>
-</div>
-
-<!-- Pagination -->
-<div class="pagination-bar">
-  <div class="pagination-left">
-    <span class="show-label">Show</span>
-    <select class="rows-select" (change)="onRowsChange($event)">
-      @for (opt of dynamicRowOptions(); track opt.value) {
-      <option [value]="opt.value" [selected]="opt.value === rows()">{{ opt.label }}</option>
-      }
-    </select>
-    <span class="records-info">
-      Showing data {{ startRecord() }} to {{ endRecord() }} of {{ totalRecords() }} entries
-    </span>
+      </tbody>
+    </table>
   </div>
 
-  <div class="pagination-right">
-    <button class="page-btn nav-btn" [disabled]="page() === 1" (click)="onPrev()">
-      <lucide-angular [img]="chevronLeftIcon" [size]="16" />
-    </button>
+  <!-- Pagination -->
+  <div class="pagination-bar">
+    <div class="pagination-left">
+      <span class="show-label">Show</span>
+      <select class="rows-select" (change)="onRowsChange($event)">
+        @for (opt of dynamicRowOptions(); track opt.value) {
+          <option [value]="opt.value" [selected]="opt.value === rows()">{{ opt.label }}</option>
+        }
+      </select>
+      <span class="records-info">
+        Showing data {{ startRecord() }} to {{ endRecord() }} of {{ totalRecords() }} entries
+      </span>
+    </div>
 
-    @for (p of visiblePages(); track $index) {
-    @if (p === '...') {
-    <span class="page-dots">...</span>
-    } @else {
-    <button class="page-btn" [class.active]="p === page()" (click)="onPageChange(p)">
-      {{ p }}
-    </button>
-    }
-    }
+    <div class="pagination-right">
+      <button class="page-btn nav-btn" [disabled]="page() === 1" (click)="onPrev()">
+        <lucide-angular [img]="chevronLeftIcon" [size]="16" />
+      </button>
 
-    <button class="page-btn nav-btn" [disabled]="page() === lastPage()" (click)="onNext()">
-      <lucide-angular [img]="chevronRightIcon" [size]="16" />
-    </button>
+      @for (p of visiblePages(); track $index) {
+        @if (p === '...') {
+          <span class="page-dots">...</span>
+        } @else {
+          <button class="page-btn" [class.active]="p === page()" (click)="onPageChange(p)">
+            {{ p }}
+          </button>
+        }
+      }
+
+      <button class="page-btn nav-btn" [disabled]="page() === lastPage()" (click)="onNext()">
+        <lucide-angular [img]="chevronRightIcon" [size]="16" />
+      </button>
+    </div>
   </div>
-</div>
 }
