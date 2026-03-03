@@ -84,6 +84,7 @@ export class UserIdComponent {
     if (!data) return {};
     const transformed = { ...data };
     const type = this.config().userType;
+    console.log(type);
 
     if (type === API_CONFIG.ENDPOINTS.USERS.TYPE.HOSPITAL) {
       transformed.hospital_id = data.id;
@@ -95,12 +96,12 @@ export class UserIdComponent {
       transformed.hospital_id = data.id;
       transformed.authority_id = data.parent_id;
     } else if (type === API_CONFIG.ENDPOINTS.USERS.TYPE.HEALTH_DIVISION) {
-      transformed.health_division_id = data.id;
-      transformed.health_directorate_id = data.entity_id;
+      transformed.health_division_id = data.entity_id;
+      transformed.health_directorate_id = data.entity.parent_id;
     } else if (type === API_CONFIG.ENDPOINTS.USERS.TYPE.HEALTH_DIRECTORATE) {
-      transformed.health_directorate_id = data.id;
+      transformed.health_directorate_id = data.entity_id;
     } else if (type === API_CONFIG.ENDPOINTS.USERS.TYPE.AUTHORITY) {
-      transformed.authority_id = data.id;
+      transformed.authority_id = data.entity_id;
     } else if (type === API_CONFIG.ENDPOINTS.USERS.TYPE.SUPER_ADMIN) {
       if (data.categories && Array.isArray(data.categories) && data.categories.length > 0) {
         transformed.division_id = data.categories[0].id;

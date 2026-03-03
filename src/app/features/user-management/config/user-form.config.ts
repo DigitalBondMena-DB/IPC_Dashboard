@@ -6,7 +6,7 @@ export const getUserFormConfig = (
   deps: any = {},
   isEdit: boolean = false,
 ): IFormField[] => {
-  const commonFields: IFormField[] = [
+  const higherInputs: IFormField[] = [
     {
       key: 'name',
       label: 'User Name',
@@ -25,18 +25,20 @@ export const getUserFormConfig = (
     },
     {
       key: 'phone_number',
-      label: 'Phone',
+      label: 'Phone Number',
       type: 'text',
       placeholder: 'Enter phone number...',
       validators: [Validators.required, Validators.pattern(/^[0-9]+$/)],
       colSpan: 'col-span-1',
     },
+  ];
+  const lowerInputs: IFormField[] = [
     {
       key: 'password',
       label: 'Password',
       type: 'password',
       placeholder: '********',
-      validators: [Validators.minLength(8)],
+      validators: [],
       colSpan: 'col-span-1',
     },
     {
@@ -123,18 +125,18 @@ export const getUserFormConfig = (
           loading: deps.isDirectoratesLoading,
         },
 
-        // {
-        //   key: 'health_division_id',
-        //   label: 'Division Name',
-        //   type: 'select',
-        //   placeholder: 'Select Division',
-        //   options: deps.healthDivisions || [],
-        //   validators: [Validators.required],
-        //   colSpan: 'col-span-1',
-        //   filter: true,
-        //   loading: deps.isHealthDivisionsLoading,
-        //   dependsOn: 'health_directorate_id',
-        // },
+        {
+          key: 'health_division_id',
+          label: 'Division Name',
+          type: 'select',
+          placeholder: 'Select Division',
+          options: deps.healthDivisions || [],
+          validators: [Validators.required],
+          colSpan: 'col-span-1',
+          filter: true,
+          loading: deps.isHealthDivisionsLoading,
+          dependsOn: 'health_directorate_id',
+        },
       ];
       break;
 
@@ -257,7 +259,7 @@ export const getUserFormConfig = (
       break;
   }
 
-  const fields = [...commonFields, ...roleFields];
+  const fields = [...higherInputs, ...roleFields, ...lowerInputs];
 
   if (!isEdit) {
     fields.push();

@@ -5,7 +5,7 @@ export const USER_TYPE_CONFIG: Record<string, any> = {
     title: 'Super Admins',
     endpoint: API_CONFIG.ENDPOINTS.USERS.BASE,
     userType: API_CONFIG.ENDPOINTS.USERS.TYPE.SUPER_ADMIN,
-    entityLabel: 'Division',
+    entityLabel: 'Super Admin',
     columns: [
       { field: 'name', header: 'Name', sortable: true },
       { field: 'email', header: 'Email', sortable: true },
@@ -23,11 +23,11 @@ export const USER_TYPE_CONFIG: Record<string, any> = {
     title: 'Health Directorate Users',
     endpoint: API_CONFIG.ENDPOINTS.USERS.BASE,
     userType: API_CONFIG.ENDPOINTS.USERS.TYPE.HEALTH_DIRECTORATE,
-    entityLabel: 'Health Directorate',
+    entityLabel: 'User',
     columns: [
       { field: 'name', header: 'Name', sortable: true },
       { field: 'email', header: 'Email', sortable: true },
-      { field: 'phone_number', header: 'Phone number', sortable: true },
+      { field: 'phone_number', header: 'Phone Number', sortable: true },
       { field: 'directorate', header: 'Directorate', sortable: true },
       { field: 'updated_at', header: 'Last Update', sortable: true, type: 'date' },
       { field: 'updated_by', header: 'Updated By', sortable: true },
@@ -42,7 +42,7 @@ export const USER_TYPE_CONFIG: Record<string, any> = {
     title: 'Health Division Users',
     endpoint: API_CONFIG.ENDPOINTS.USERS.BASE,
     userType: API_CONFIG.ENDPOINTS.USERS.TYPE.HEALTH_DIVISION,
-    entityLabel: 'Health Division',
+    entityLabel: 'User',
     columns: [
       { field: 'name', header: 'Name', sortable: true },
       { field: 'email', header: 'Email', sortable: true },
@@ -62,7 +62,7 @@ export const USER_TYPE_CONFIG: Record<string, any> = {
     title: 'Hospital Users',
     endpoint: API_CONFIG.ENDPOINTS.USERS.BASE,
     userType: API_CONFIG.ENDPOINTS.USERS.TYPE.HOSPITAL,
-    entityLabel: 'Hospital',
+    entityLabel: 'User',
     columns: [
       { field: 'name', header: 'Name', sortable: true },
       { field: 'email', header: 'Email', sortable: true },
@@ -83,7 +83,7 @@ export const USER_TYPE_CONFIG: Record<string, any> = {
     title: 'Authority Users',
     endpoint: API_CONFIG.ENDPOINTS.USERS.BASE,
     userType: API_CONFIG.ENDPOINTS.USERS.TYPE.AUTHORITY,
-    entityLabel: 'Authority',
+    entityLabel: 'User',
     columns: [
       { field: 'name', header: 'Username', sortable: true },
       { field: 'email', header: 'Email', sortable: true },
@@ -102,7 +102,7 @@ export const USER_TYPE_CONFIG: Record<string, any> = {
     title: "Authority's Hospital Users",
     endpoint: API_CONFIG.ENDPOINTS.USERS.BASE,
     userType: API_CONFIG.ENDPOINTS.USERS.TYPE.AUTHORITY_HOSPITAL,
-    entityLabel: 'Authority Hospital',
+    entityLabel: 'User',
     columns: [
       { field: 'name', header: 'Username', sortable: true },
       { field: 'email', header: 'Email', sortable: true },

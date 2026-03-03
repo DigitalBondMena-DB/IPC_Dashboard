@@ -14,7 +14,7 @@ import { USER_TYPE_CONFIG } from '../config/user-type.config';
   template: `
     <app-b-page-header
       [title]="config().title"
-      [createButtonLabel]="'Create ' + config().entityLabel + ' User'"
+      [createButtonLabel]="'Create ' + config().entityLabel"
       (searchChange)="onSearch($event)"
       (createClick)="onCreate()"
     />
