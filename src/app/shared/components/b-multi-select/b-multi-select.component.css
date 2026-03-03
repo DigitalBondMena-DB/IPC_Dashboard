@@ -10,3 +10,7 @@
 .p-multiselect-header .p-checkbox {
   display: none !important;
 }
+.p-multiselect-label {
+  color: red !important;
+  --p-multiselect-color: theme(--color-black);
+}

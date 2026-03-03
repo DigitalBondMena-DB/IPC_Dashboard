@@ -93,28 +93,29 @@
     </div>
   </nav>
 
-  @if (!isCollapsed()) {
-    <div class="px-4 py-2 mb-6 transition-[width] duration-300">
-      <div
-        class="bg-primary-500 bg-[url('/assets/images/sidebar/survay-bg-texture.png')] bg-cover bg-center rounded-2xl p-5 text-white relative overflow-hidden group shadow-lg shadow-primary-200"
-      >
-        <div class="relative z-10 flex flex-col items-center">
-          <div class="bg-gray-706 size-8 rounded-full mb-2 flex items-center justify-center">
-            <lucide-angular [img]="icons['Survey']" size="14" class="text-primary-500" />
-          </div>
-          <p class="text-sm font-medium mb-4 leading-relaxed text-center">
-            Switch to Survey Builder Mode.
-          </p>
-          <button
-            class="bg-white text-primary-500 text-sm font-semibold py-1.5 px-3 rounded-2xl flex items-center gap-1.5 justify-center shadow-md active:scale-95 transition-transform"
-          >
-            <lucide-angular [img]="icons['Plus']" size="24" />
-            Create Survey
-          </button>
+  <div
+    class="px-4 py-2 mb-6 transition-transform duration-300 min-w-[285px]"
+    [class.-translate-x-full]="isCollapsed()"
+  >
+    <div
+      class="bg-primary-500 bg-[url('/assets/images/sidebar/survay-bg-texture.png')] bg-cover bg-center rounded-2xl p-5 text-white relative overflow-hidden group shadow-lg shadow-primary-200"
+    >
+      <div class="relative z-10 flex flex-col items-center">
+        <div class="bg-gray-706 size-8 rounded-full mb-2 flex items-center justify-center">
+          <lucide-angular [img]="icons['Survey']" size="14" class="text-primary-500" />
         </div>
+        <p class="text-sm font-medium mb-4 leading-relaxed text-center">
+          Switch to Survey Builder Mode.
+        </p>
+        <button
+          class="bg-white text-primary-500 text-sm font-semibold py-1.5 px-3 rounded-2xl flex items-center gap-1.5 justify-center shadow-md active:scale-95 transition-transform"
+        >
+          <lucide-angular [img]="icons['Plus']" size="24" />
+          Create Survey
+        </button>
       </div>
     </div>
-  }
+  </div>
 
   <!-- Profile Section -->
   <div class="border-t border-gray-200 p-4">

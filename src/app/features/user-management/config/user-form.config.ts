@@ -28,7 +28,7 @@ export const getUserFormConfig = (
       label: 'Password',
       type: 'password',
       placeholder: '********',
-      validators: [Validators.required, Validators.minLength(8)],
+      validators: [Validators.minLength(8)],
       colSpan: 'col-span-1',
     },
     {
@@ -36,9 +36,9 @@ export const getUserFormConfig = (
       label: 'Confirm Password',
       type: 'password',
       placeholder: '********',
-      validators: [Validators.required],
+      validators: [],
       colSpan: 'col-span-1',
-    }
+    },
   ];
 
   let roleFields: IFormField[] = [];
@@ -265,9 +265,7 @@ export const getUserFormConfig = (
   const fields = [...roleFields, ...commonFields];
 
   if (!isEdit) {
-    fields.push(
-
-    );
+    fields.push();
   }
 
   return fields;

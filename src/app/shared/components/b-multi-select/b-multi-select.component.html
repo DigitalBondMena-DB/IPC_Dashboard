@@ -1,13 +1,27 @@
 <div class="form-group">
-    <app-b-lable [id]="id()" [label]="label()" [subLable]="subLable()"></app-b-lable>
-    <div class="input-container">
-        <p-multiSelect [id]="id()" [appendTo]="'body'" [options]="options()" [placeholder]="placeholder()"
-            [disabled]="disabled()" [filter]="filter()" [selectAll]="false" [loading]="loading()" [showClear]="true"
-            [class]="'w-full custom-multiselect ' + (hasError() ? 'border-red-500' : '')"
-            panelStyleClass="custom-multiselect-panel" optionLabel="label" optionValue="value" [ngModel]="value()"
-            (ngModelChange)="onModelChange($event)" display="chip" />
-        @if (hasError()) {
-        <p class="text-red-500 text-xs mt-1">{{ errorMessage() }}</p>
-        }
-    </div>
+  <app-b-lable [id]="id()" [label]="label()" [subLable]="subLable()"></app-b-lable>
+  <div class="input-container">
+    <p-multiSelect
+      [id]="id()"
+      [appendTo]="'body'"
+      [options]="options()"
+      [placeholder]="placeholder()"
+      [disabled]="disabled()"
+      [filter]="filter()"
+      [selectAll]="false"
+      [loading]="loading()"
+      [showClear]="true"
+      [class]="'w-full custom-multiselect ' + (hasError() ? 'border-red-500' : '')"
+      panelStyleClass="custom-multiselect-panel"
+      optionLabel="label"
+      optionValue="value"
+      [ngModel]="value()"
+      (ngModelChange)="onModelChange($event)"
+      [maxSelectedLabels]="3"
+      display="chip"
+    />
+    @if (hasError()) {
+      <p class="text-red-500 text-xs mt-1">{{ errorMessage() }}</p>
+    }
+  </div>
 </div>

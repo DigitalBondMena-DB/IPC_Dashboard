@@ -60,6 +60,7 @@
   .p-multiselect-label {
     --p-chip-background: theme(--color-gray-706);
     --p-chip-color: theme(--color-black-400);
+    --p-multiselect-color: theme(--color-black);
   }
   .custom-select-panel,
   .custom-multiselect-panel {
@@ -69,7 +70,9 @@
     --p-multiselect-option-color: theme(--color-black-400);
     --p-multiselect-option-focus-background: theme(--color-gray-706);
     --p-multiselect-option-focus-color: theme(--color-black-400);
+    --p-multiselect-option-focus-color-hover: theme(--color-black-400);
     --p-multiselect-option-selected-color: theme(--color-black-400);
+    --p-multiselect-option-selected-focus-color: theme(--color-black-400);
     --p-checkbox-background: theme(--color-gray-706);
     --p-select-option-focus-color: theme(--color-black-400);
     --p-inputtext-background: theme(--color-gray-706);
@@ -98,16 +101,16 @@
 
 @layer utilities {
   .custom-scrollbar::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
+    width: 8px;
+    height: 8px;
   }
 
   .custom-scrollbar::-webkit-scrollbar-track {
-    background: transparent;
+    background: theme(--color-gray-706);
   }
 
   .custom-scrollbar::-webkit-scrollbar-thumb {
-    @apply bg-gray-200 rounded-full hover:bg-gray-300 transition-colors;
+    @apply bg-[#343C6A] rounded-full hover:bg-gray-300 transition-colors;
   }
 
   .animate-slide-down {
