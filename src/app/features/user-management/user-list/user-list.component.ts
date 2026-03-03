@@ -101,9 +101,9 @@ export class UserListComponent {
     this._Service
       .toggleUser(this.config().endpoint, this.config().userType, event.item.id)
       .subscribe({
-        next: () => {
-          this.resource.reload();
-          this._MessageService.add({ summary: 'Success', detail: 'User toggled successfully' });
+        next: (res) => {
+          const isActive = this.resource.reload();
+          this._MessageService.add({ summary: 'Success', detail: res.message });
         },
         error: () => {
           this.resource.reload();

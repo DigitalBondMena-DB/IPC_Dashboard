@@ -58,7 +58,7 @@ export class UserIdComponent {
 
   id = signal<string | null>(this.route.snapshot.paramMap.get('id'));
   isEdit = computed(() => !!this.id());
-  title = computed(() => `${this.isEdit() ? 'Edit' : 'Create'} ${this.config().entityLabel} User`);
+  title = computed(() => `${this.isEdit() ? 'Edit' : 'Create'} ${this.config().entityLabel}`);
   submitLabel = computed(() => `${this.isEdit() ? 'Save Changes' : 'Create'}`);
 
   readonly formValues = signal<Record<string, any>>({});
@@ -87,14 +87,12 @@ export class UserIdComponent {
     console.log(type);
 
     if (type === API_CONFIG.ENDPOINTS.USERS.TYPE.HOSPITAL) {
-      transformed.hospital_id = data.id;
-      transformed.health_division_id = data.parent_id;
-      if (data.parent) {
-        transformed.health_directorate_id = data.parent.parent_id;
-      }
+      transformed.health_directorate_id = data.entity.parent.parent_id;
+      transformed.health_division_id = data.entity.parent_id;
+      transformed.hospital_id = data.entity_id;
     } else if (type === API_CONFIG.ENDPOINTS.USERS.TYPE.AUTHORITY_HOSPITAL) {
-      transformed.hospital_id = data.id;
-      transformed.authority_id = data.parent_id;
+      transformed.hospital_id = data.entity_id;
+      transformed.authority_id = data.entity.parent_id;
     } else if (type === API_CONFIG.ENDPOINTS.USERS.TYPE.HEALTH_DIVISION) {
       transformed.health_division_id = data.entity_id;
       transformed.health_directorate_id = data.entity.parent_id;
