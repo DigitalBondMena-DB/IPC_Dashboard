@@ -104,9 +104,13 @@ export class EntityListComponent {
     this._Service
       .toggleEntity(this.config().endpoint, this.config().entity_type, event.item.id)
       .subscribe({
-        next: () => {
+        next: (res: any) => {
+          const isActive = res.data.is_active;
           this.resource.reload();
-          this._MessageService.add({ summary: 'Success', detail: 'Entity toggled successfully' });
+          this._MessageService.add({
+            summary: 'Success',
+            detail: `Entity ${isActive ? 'Activated' : 'Deactivated'} successfully`,
+          });
         },
         error: () => {
           this.resource.reload();
