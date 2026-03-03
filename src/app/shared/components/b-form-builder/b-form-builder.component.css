@@ -5,7 +5,7 @@
 }
 
 .form-actions {
-  @apply flex justify-center gap-4;
+  @apply flex gap-4;
 }
 
 .btn-submit {

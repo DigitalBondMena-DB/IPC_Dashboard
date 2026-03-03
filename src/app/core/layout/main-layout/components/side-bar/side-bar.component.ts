@@ -83,6 +83,9 @@ export class SideBarComponent {
   }
   toggleSidebar() {
     this.isCollapsed.update((prev) => !prev);
+    this.menuItems.update((items) =>
+      items.map((i) => ({ ...i, expanded: false })),
+    );
   }
   logout() {
     this._AuthService.logout();

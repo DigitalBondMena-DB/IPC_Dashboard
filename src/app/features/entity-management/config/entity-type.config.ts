@@ -2,6 +2,28 @@ import { API_CONFIG } from '@/core/config/api.config';
 import { Validators } from '@angular/forms';
 
 export const ENTITY_TYPE_CONFIG: Record<string, any> = {
+  DIVISION: {
+    title: 'Divisions',
+    entityLabel: 'Division',
+    endpoint: API_CONFIG.ENDPOINTS.CATEGORIES,
+    navPath: '/divisions',
+    columns: [
+      { field: 'name', header: 'Name', sortable: true },
+      { field: 'updated_at', header: 'Last Update', sortable: true, type: 'date' },
+      { field: 'updated_by', header: 'Updated By', sortable: true },
+      { field: 'is_active', header: 'Actions', type: 'toggle' },
+    ],
+    formFields: () => [
+      {
+        key: 'name',
+        label: 'Division Name',
+        type: 'text',
+        placeholder: 'Enter division name...',
+        validators: [Validators.required],
+        colSpan: 'col-span-full',
+      },
+    ],
+  },
   HEALTH_DIRECTORATE: {
     title: 'Health Directorates',
     entityLabel: 'Directorate',
@@ -17,9 +39,9 @@ export const ENTITY_TYPE_CONFIG: Record<string, any> = {
     formFields: () => [
       {
         key: 'name',
-        label: 'Directorate Name',
+        label: 'Health Directorate Name',
         type: 'text',
-        placeholder: 'Enter directorate name',
+        placeholder: 'Enter health directorate...',
         validators: [Validators.required],
         colSpan: 'col-span-1',
       },
@@ -41,9 +63,9 @@ export const ENTITY_TYPE_CONFIG: Record<string, any> = {
     formFields: (deps: any) => [
       {
         key: 'name',
-        label: 'Division Name',
+        label: 'Health Division Name',
         type: 'text',
-        placeholder: 'Enter division name',
+        placeholder: 'Enter health division...',
         validators: [Validators.required],
         colSpan: 'col-span-1',
       },
@@ -51,7 +73,7 @@ export const ENTITY_TYPE_CONFIG: Record<string, any> = {
         key: 'health_directorate_id',
         label: 'Health Directorate',
         type: 'select',
-        placeholder: 'Select health directorate',
+        placeholder: 'Select health directorate...',
         options: deps.directorates || [],
         validators: [Validators.required],
         colSpan: 'col-span-1',
@@ -81,15 +103,15 @@ export const ENTITY_TYPE_CONFIG: Record<string, any> = {
         key: 'name',
         label: 'Hospital Name',
         type: 'text',
-        placeholder: 'Enter hospital name',
+        placeholder: 'Enter hospital name...',
         validators: [Validators.required],
         colSpan: 'col-span-1',
       },
       {
         key: 'health_directorate_id',
-        label: 'Health Directorate',
+        label: 'Health Directorate Name',
         type: 'select',
-        placeholder: 'Select Directorate',
+        placeholder: 'Select health directorate name...',
         options: deps.directorates || [],
         validators: [Validators.required],
         colSpan: 'col-span-1',
@@ -98,9 +120,9 @@ export const ENTITY_TYPE_CONFIG: Record<string, any> = {
       },
       {
         key: 'health_division_id',
-        label: 'Health Division',
+        label: 'Health Division Name',
         type: 'select',
-        placeholder: 'Select Health Division',
+        placeholder: 'Select health division name...',
         options: deps.healthDivisions || [],
         validators: [Validators.required],
         colSpan: 'col-span-1',
@@ -110,9 +132,10 @@ export const ENTITY_TYPE_CONFIG: Record<string, any> = {
       },
       {
         key: 'category_ids',
-        label: 'General Division',
+        label: 'Division Name',
+        subLable: '(All Selected by Default)',
         type: 'multiselect',
-        placeholder: 'Select General Divisions',
+        placeholder: 'Select Division Name...',
         options: deps.generalDivisions || [],
         validators: [Validators.required],
         colSpan: 'col-span-1',
@@ -163,17 +186,17 @@ export const ENTITY_TYPE_CONFIG: Record<string, any> = {
     formFields: (deps: any) => [
       {
         key: 'name',
-        label: 'Hospital Name',
+        label: 'Hospital Authority Name',
         type: 'text',
-        placeholder: 'Enter name',
+        placeholder: 'Enter hospital authority name...',
         validators: [Validators.required],
         colSpan: 'col-span-1',
       },
       {
         key: 'authority_id',
-        label: 'Authority',
+        label: 'Authority Name',
         type: 'select',
-        placeholder: 'Select Authority',
+        placeholder: 'Select authority name...',
         options: deps.authorities || [],
         validators: [Validators.required],
         colSpan: 'col-span-1',
@@ -182,9 +205,10 @@ export const ENTITY_TYPE_CONFIG: Record<string, any> = {
       },
       {
         key: 'category_ids',
-        label: 'General Division',
+        label: 'Divison Name',
         type: 'multiselect',
-        placeholder: 'Select Divisions',
+        subLable: '(All Selected by Default)',
+        placeholder: 'Select Division name...',
         options: deps.generalDivisions || [],
         validators: [Validators.required],
         colSpan: 'col-span-1',
@@ -194,26 +218,5 @@ export const ENTITY_TYPE_CONFIG: Record<string, any> = {
     ],
     dependencies: ['authorities', 'generalDivisions'],
   },
-  DIVISION: {
-    title: 'Divisions',
-    entityLabel: 'Division',
-    endpoint: API_CONFIG.ENDPOINTS.CATEGORIES,
-    navPath: '/divisions',
-    columns: [
-      { field: 'name', header: 'Name', sortable: true },
-      { field: 'updated_at', header: 'Last Update', sortable: true, type: 'date' },
-      { field: 'updated_by', header: 'Updated By', sortable: true },
-      { field: 'is_active', header: 'Actions', type: 'toggle' },
-    ],
-    formFields: () => [
-      {
-        key: 'name',
-        label: 'Division Name',
-        type: 'text',
-        placeholder: 'Enter division name',
-        validators: [Validators.required],
-        colSpan: 'col-span-full',
-      },
-    ],
-  },
+
 };

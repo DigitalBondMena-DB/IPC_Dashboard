@@ -24,7 +24,8 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
       width: 22.76px;
       height: 22.76px;
       border-radius: 50%;
-      background-color: var(--color-primary-500);
+      background-color: var(--color-white);
+      border: 2px solid var(--color-primary-500);
       appearance: none;
       position: relative;
     }
@@ -40,8 +41,9 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
       background-color: var(--color-white);
     }
     .radio-input:checked {
-      background-color: var(--color-white);
-      border: 2px solid var(--color-primary-500);
+      
+      background-color: var(--color-primary-500);
+      
     }
   `,
   providers: [
@@ -60,8 +62,8 @@ export class BCheckboxComponent implements ControlValueAccessor {
   value = signal<boolean>(false);
   disabled = signal<boolean>(false);
 
-  onChange: any = () => {};
-  onTouched: any = () => {};
+  onChange: any = () => { };
+  onTouched: any = () => { };
 
   onToggle() {
     const newValue = !this.value();

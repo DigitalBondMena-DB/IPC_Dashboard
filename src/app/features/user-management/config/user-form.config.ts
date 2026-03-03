@@ -8,18 +8,10 @@ export const getUserFormConfig = (
 ): IFormField[] => {
   const commonFields: IFormField[] = [
     {
-      key: 'name',
-      label: 'User Name',
-      type: 'text',
-      placeholder: 'Enter user name',
-      validators: [Validators.required],
-      colSpan: 'col-span-1',
-    },
-    {
       key: 'email',
       label: 'Email',
       type: 'email',
-      placeholder: 'Enter email address',
+      placeholder: 'Enter email address...',
       validators: [Validators.required, Validators.email],
       colSpan: 'col-span-1',
     },
@@ -27,10 +19,26 @@ export const getUserFormConfig = (
       key: 'phone_number',
       label: 'Phone',
       type: 'text',
-      placeholder: 'Enter phone number',
+      placeholder: 'Enter phone number...',
       validators: [Validators.required],
       colSpan: 'col-span-1',
     },
+    {
+      key: 'password',
+      label: 'Password',
+      type: 'password',
+      placeholder: '********',
+      validators: [Validators.required, Validators.minLength(8)],
+      colSpan: 'col-span-1',
+    },
+    {
+      key: 'password_confirmation',
+      label: 'Confirm Password',
+      type: 'password',
+      placeholder: '********',
+      validators: [Validators.required],
+      colSpan: 'col-span-1',
+    }
   ];
 
   let roleFields: IFormField[] = [];
@@ -39,10 +47,19 @@ export const getUserFormConfig = (
     case 'ministry': // SUPER_ADMIN
       roleFields = [
         {
-          key: 'division_id',
+          key: 'name',
+          label: 'Super Admin Name',
+          type: 'text',
+          placeholder: 'Enter Super Admin name...',
+          validators: [Validators.required],
+          colSpan: 'col-span-1',
+        },
+        {
+          key: 'category_ids',
           label: 'Division',
-          type: 'select',
-          placeholder: 'Select Division',
+          type: 'multiselect',
+          subLable: '(All Selected by Default)',
+          placeholder: 'Select Divisions',
           options: deps.generalDivisions || [],
           validators: [Validators.required],
           colSpan: 'col-span-1',
@@ -54,6 +71,14 @@ export const getUserFormConfig = (
 
     case 'governorate': // HEALTH_DIRECTORATE
       roleFields = [
+        {
+          key: 'name',
+          label: 'User Name',
+          type: 'text',
+          placeholder: 'Enter user name...',
+          validators: [Validators.required],
+          colSpan: 'col-span-1',
+        },
         {
           key: 'health_directorate_id',
           label: 'Health Directorate',
@@ -71,6 +96,26 @@ export const getUserFormConfig = (
     case 'medical_area': // HEALTH_DIVISION
       roleFields = [
         {
+          key: 'name',
+          label: 'User Name',
+          type: 'text',
+          placeholder: 'Enter Super Admin name...',
+          validators: [Validators.required],
+          colSpan: 'col-span-1',
+        },
+        {
+          key: 'category_ids',
+          label: 'Division',
+          type: 'multiselect',
+          subLable: '(All Selected by Default)',
+          placeholder: 'Select Divisions',
+          options: deps.healthDivisions || [],
+          validators: [Validators.required],
+          colSpan: 'col-span-1',
+          filter: true,
+          loading: deps.isHealthDivisionsLoading,
+        },
+        {
           key: 'health_directorate_id',
           label: 'Health Directorate',
           type: 'select',
@@ -81,23 +126,32 @@ export const getUserFormConfig = (
           filter: true,
           loading: deps.isDirectoratesLoading,
         },
-        {
-          key: 'health_division_id',
-          label: 'Division Name',
-          type: 'select',
-          placeholder: 'Select Division',
-          options: deps.healthDivisions || [],
-          validators: [Validators.required],
-          colSpan: 'col-span-1',
-          filter: true,
-          loading: deps.isHealthDivisionsLoading,
-          dependsOn: 'health_directorate_id',
-        },
+
+        // {
+        //   key: 'health_division_id',
+        //   label: 'Division Name',
+        //   type: 'select',
+        //   placeholder: 'Select Division',
+        //   options: deps.healthDivisions || [],
+        //   validators: [Validators.required],
+        //   colSpan: 'col-span-1',
+        //   filter: true,
+        //   loading: deps.isHealthDivisionsLoading,
+        //   dependsOn: 'health_directorate_id',
+        // },
       ];
       break;
 
     case 'hospital': // HOSPITAL
       roleFields = [
+        {
+          key: 'name',
+          label: 'User Name',
+          type: 'text',
+          placeholder: 'Enter Super Admin name...',
+          validators: [Validators.required],
+          colSpan: 'col-span-1',
+        },
         {
           key: 'health_directorate_id',
           label: 'Health Directorate',
@@ -135,7 +189,7 @@ export const getUserFormConfig = (
         },
         {
           key: 'category_ids',
-          label: 'General Division',
+          label: 'Division',
           type: 'multiselect',
           placeholder: 'Select General Divisions',
           options: deps.generalDivisions || [],
@@ -148,11 +202,28 @@ export const getUserFormConfig = (
       break;
 
     case 'authority': // AUTHORITY
-      roleFields = [];
+      roleFields = [
+        {
+          key: 'name',
+          label: 'User Name',
+          type: 'text',
+          placeholder: 'Enter Super Admin name...',
+          validators: [Validators.required],
+          colSpan: 'col-span-1',
+        },
+      ];
       break;
 
     case 'authority_hospital':
       roleFields = [
+        {
+          key: 'name',
+          label: 'User Name',
+          type: 'text',
+          placeholder: 'Enter Super Admin name...',
+          validators: [Validators.required],
+          colSpan: 'col-span-1',
+        },
         {
           key: 'authority_id',
           label: 'Authority',
@@ -178,9 +249,9 @@ export const getUserFormConfig = (
         },
         {
           key: 'category_ids',
-          label: 'General Division',
+          label: 'Division',
           type: 'multiselect',
-          placeholder: 'Select General Divisions',
+          placeholder: 'Select Divisions...',
           options: deps.generalDivisions || [],
           validators: [Validators.required],
           colSpan: 'col-span-1',
@@ -191,26 +262,11 @@ export const getUserFormConfig = (
       break;
   }
 
-  const fields = [...commonFields, ...roleFields];
+  const fields = [...roleFields, ...commonFields];
 
   if (!isEdit) {
     fields.push(
-      {
-        key: 'password',
-        label: 'Password',
-        type: 'password',
-        placeholder: 'Enter password',
-        validators: [Validators.required, Validators.minLength(8)],
-        colSpan: 'col-span-1',
-      },
-      {
-        key: 'password_confirmation',
-        label: 'Confirm Password',
-        type: 'password',
-        placeholder: 'Confirm password',
-        validators: [Validators.required],
-        colSpan: 'col-span-1',
-      },
+
     );
   }
 

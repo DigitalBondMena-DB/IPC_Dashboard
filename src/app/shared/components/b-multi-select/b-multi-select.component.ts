@@ -16,41 +16,13 @@ import {
 import { CommonModule } from '@angular/common';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { Subject, debounceTime, distinctUntilChanged } from 'rxjs';
+import { BLableComponent } from "../b-lable/b-lable.component";
 
 @Component({
   selector: 'app-b-multi-select',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule, MultiSelectModule],
-  template: `
-    <div class="form-group">
-      @if (label()) {
-        <label [for]="id()">{{ label() }}</label>
-      }
-      <div class="input-container">
-        <p-multiSelect
-          [id]="id()"
-          [appendTo]="'body'"
-          [options]="options()"
-          [placeholder]="placeholder()"
-          [disabled]="disabled()"
-          [filter]="filter()"
-          [selectAll]="false"
-          [loading]="loading()"
-          [showClear]="true"
-          [class]="'w-full custom-multiselect ' + (hasError() ? 'border-red-500' : '')"
-          panelStyleClass="custom-multiselect-panel"
-          optionLabel="label"
-          optionValue="value"
-          [ngModel]="value()"
-          (ngModelChange)="onModelChange($event)"
-          display="chip"
-        />
-        @if (hasError()) {
-          <p class="text-red-500 text-xs mt-1">{{ errorMessage() }}</p>
-        }
-      </div>
-    </div>
-  `,
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, MultiSelectModule, BLableComponent],
+  templateUrl: './b-multi-select.component.html',
   styleUrl: './b-multi-select.component.css',
   providers: [
     {
@@ -64,6 +36,7 @@ import { Subject, debounceTime, distinctUntilChanged } from 'rxjs';
 export class BMultiSelectComponent implements ControlValueAccessor, OnDestroy {
   id = input<string>('');
   label = input<string>('');
+  subLable = input<string>('');
   placeholder = input<string>('');
   options = input<any[]>([]);
   filter = input<boolean>(false);
@@ -82,8 +55,8 @@ export class BMultiSelectComponent implements ControlValueAccessor, OnDestroy {
     .pipe(debounceTime(300), distinctUntilChanged())
     .subscribe((text) => this.onSearch.emit(text));
 
-  onChange: any = () => {};
-  onTouched: any = () => {};
+  onChange: any = () => { };
+  onTouched: any = () => { };
 
   onModelChange(val: any) {
     this.value.set(val || []);

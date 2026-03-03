@@ -1,6 +1,7 @@
 export interface IFormField {
   key: string;
   label: string;
+  subLable?: string;
   type: 'text' | 'password' | 'email' | 'checkbox' | 'select' | 'multiselect';
   placeholder?: string;
   options?: { label: string; value: any }[];

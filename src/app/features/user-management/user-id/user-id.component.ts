@@ -24,7 +24,7 @@ import { API_CONFIG } from '@/core/config/api.config';
   template: `
     <app-b-page-header [title]="title()" [showCreateButton]="false" />
 
-    <div class="card p-8 bg-white rounded-2xl shadow-sm">
+    <div class="card p-8 bg-white rounded-2xl shadow-sm overflow-x-auto min-w-[600px]">
       @if (isLoading()) {
         <div class="flex justify-center py-20">
           <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-[#197bfd]"></div>
@@ -59,7 +59,7 @@ export class UserIdComponent {
   id = signal<string | null>(this.route.snapshot.paramMap.get('id'));
   isEdit = computed(() => !!this.id());
   title = computed(() => `${this.isEdit() ? 'Edit' : 'Create'} ${this.config().entityLabel} User`);
-  submitLabel = computed(() => `${this.isEdit() ? 'Update' : 'Create'} User`);
+  submitLabel = computed(() => `${this.isEdit() ? 'Save Changes' : 'Create'}`);
 
   readonly formValues = signal<Record<string, any>>({});
   readonly groupValidators = [passwordMatchValidator()];
@@ -83,15 +83,8 @@ export class UserIdComponent {
   private transformUserData(data: any): any {
     if (!data) return {};
     const transformed = { ...data };
-
-    // Handle nested entity hierarchy (Hospital -> Medical Area -> Directorate)
-    // The API might return an 'entity' or 'hospital' or 'medical_area' object based on the user type
-    // In the user's example, the top-level is the hospital itself or contains the entity info
-
-    // We'll trace using the known structure: id, parent_id, and parent object
-    // For Hospital: hospital_id = data.id, health_division_id = data.parent_id, health_directorate_id = data.parent?.parent_id
-
     const type = this.config().userType;
+    console.log(type);
 
     if (
       type === API_CONFIG.ENDPOINTS.USERS.TYPE.HOSPITAL ||
@@ -103,20 +96,20 @@ export class UserIdComponent {
         transformed.health_directorate_id = data.parent.parent_id;
       }
     } else if (type === API_CONFIG.ENDPOINTS.USERS.TYPE.HEALTH_DIVISION) {
+      console.log(data.entity_id);
+
       transformed.health_division_id = data.id;
-      transformed.health_directorate_id = data.parent_id;
+      transformed.health_directorate_id = data.entity_id;
     } else if (type === API_CONFIG.ENDPOINTS.USERS.TYPE.HEALTH_DIRECTORATE) {
       transformed.health_directorate_id = data.id;
     } else if (type === API_CONFIG.ENDPOINTS.USERS.TYPE.AUTHORITY) {
       transformed.authority_id = data.id;
     } else if (type === API_CONFIG.ENDPOINTS.USERS.TYPE.SUPER_ADMIN) {
-      // Handle divisions for Super Admin if they come back as an array
       if (data.categories && Array.isArray(data.categories) && data.categories.length > 0) {
         transformed.division_id = data.categories[0].id;
       }
     }
 
-    // Handle categories -> category_ids array for all
     if (data.categories && Array.isArray(data.categories)) {
       transformed.category_ids = data.categories.map((c: any) => c.id);
     }
@@ -156,10 +149,10 @@ export class UserIdComponent {
         const fieldsConfig = getUserFormConfig(userType, {}, this.isEdit());
         const fieldDef = fieldsConfig.find((f: any) => f.key === depConfig.key);
 
-        let parentId = null;
+        let entityId = null;
         if (fieldDef?.dependsOn) {
-          parentId = values[fieldDef.dependsOn];
-          if (!parentId) return null;
+          entityId = values[fieldDef.dependsOn];
+          if (!entityId) return null;
         }
 
         return {
@@ -167,7 +160,7 @@ export class UserIdComponent {
           per_page: 50,
           search: searchTerm(),
           ...(depConfig.type ? { type: depConfig.type } : {}),
-          ...(parentId ? { parent_id: parentId } : {}),
+          ...(entityId ? { parent_id: entityId } : {}),
         };
       });
 

@@ -19,29 +19,7 @@ import { API_CONFIG } from '@/core/config/api.config';
   selector: 'app-entity-id',
   standalone: true,
   imports: [CommonModule, BPageHeaderComponent, BFormBuilderComponent],
-  template: `
-    <app-b-page-header [title]="title()" [showCreateButton]="false" />
-
-    <div class="card p-8 bg-white rounded-2xl shadow-sm">
-      @if (isLoading()) {
-        <div class="flex justify-center py-20">
-          <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-[#197bfd]"></div>
-        </div>
-      } @else {
-        <app-b-form-builder
-          [fields]="fields()"
-          [initialData]="entityData()"
-          [submitLabel]="submitLabel()"
-          [loading]="isSubmitting()"
-          (formSubmit)="onSubmit($event)"
-          (formCancel)="onCancel()"
-          (onSearch)="onDropdownSearch($event)"
-          (onScrollPagination)="onDropdownScroll($event)"
-          (onValueChange)="onValueChange($event)"
-        />
-      }
-    </div>
-  `,
+  templateUrl: './entity-id.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EntityIdComponent {
@@ -59,7 +37,7 @@ export class EntityIdComponent {
     () => `${this.isEdit() ? 'Edit ' : 'Create '} ${this.config().entityLabel}`,
   );
   readonly submitLabel = computed(
-    () => `${this.isEdit() ? 'Update ' : 'Create '} ${this.config().entityLabel}`,
+    () => `${this.isEdit() ? 'Save Changes ' : 'Create '}`,
   );
 
   readonly formValues = signal<Record<string, any>>({});
@@ -73,34 +51,30 @@ export class EntityIdComponent {
     return this.transformEntityData(data);
   });
   isLoading = computed(() => (this.entityResource ? this.entityResource.isLoading() : false));
-
-  private transformEntityData(data: any): any {
-    if (!data) return {};
-    const transformed = { ...data };
-
-    // Handle nested parents (e.g. Hospital -> Division -> Directorate)
-    // Trace parent object and their parent_ids
+  private setParentIds(transformed: any, data: any): any {
     const type = (data.type || this.config().entity_type)?.toUpperCase();
-
-    if (type === 'HOSPITAL') {
-      // Trace: Hospital.parent_id (Division) -> Hospital.parent.parent_id (Directorate)
+    const parentType = (data.parent?.type || this.config().entity_type)?.toUpperCase();
+    if (type === 'HOSPITAL' && parentType === 'AUTHORITY') {
+      transformed.authority_id = data.parent_id;
+    } else if (type === 'HOSPITAL') {
       transformed.health_division_id = data.parent_id;
       if (data.parent) {
         transformed.health_directorate_id = data.parent.parent_id;
       }
     } else if (type === 'MEDICAL_AREA' || type === 'HEALTH_DIVISION') {
-      // Trace: Area.parent_id (Directorate)
       transformed.health_directorate_id = data.parent_id;
-    } else if (type === 'AUTHORITY_HOSPITAL') {
-      transformed.authority_id = data.parent_id;
     }
+  }
+  private transformEntityData(data: any): any {
+    if (!data) return {};
+    const transformed = { ...data };
 
-    // Handle categories -> category_ids array
+    this.setParentIds(transformed, data);
+
     if (data.categories && Array.isArray(data.categories)) {
       transformed.category_ids = data.categories.map((c: any) => c.id);
     }
 
-    // Update formValues with initial data to trigger dependencies
     setTimeout(() => {
       this.formValues.set({ ...transformed });
     });
@@ -310,11 +284,11 @@ export class EntityIdComponent {
     const payload = this.preparePayload(formData);
     const obs = this.isEdit()
       ? this._Service.updateEntity(
-          this.config().endpoint,
-          this.config().entity_type,
-          this.id()!,
-          payload,
-        )
+        this.config().endpoint,
+        this.config().entity_type,
+        this.id()!,
+        payload,
+      )
       : this._Service.createEntity(this.config().endpoint, this.config().entity_type, payload);
 
     obs.subscribe({

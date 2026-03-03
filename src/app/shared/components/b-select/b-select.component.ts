@@ -11,55 +11,13 @@ import { ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR, ReactiveFormsModu
 import { CommonModule } from '@angular/common';
 import { SelectModule } from 'primeng/select';
 import { Subject, debounceTime, distinctUntilChanged } from 'rxjs';
+import { BLableComponent } from "../b-lable/b-lable.component";
 
 @Component({
   selector: 'app-b-select',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule, SelectModule],
-  template: `
-    <div class="form-group">
-      @if (label()) {
-        <label [for]="id()">{{ label() }}</label>
-      }
-      <div class="input-container">
-        <p-select
-          [id]="id()"
-          [options]="options()"
-          [placeholder]="placeholder()"
-          [disabled]="disabled()"
-          [filter]="filter()"
-          [virtualScroll]="virtualScroll()"
-          [virtualScrollItemSize]="38"
-          [virtualScrollOptions]="{ lazy: true }"
-          [loading]="loading()"
-          (onChange)="onSelectChange($event)"
-          (onFilter)="onFilterChange($event)"
-          (onLazyLoad)="onScrollPagination.emit($event)"
-          [showClear]="true"
-          [class]="'w-full custom-select' + (hasError() ? 'border-red-500' : '')"
-          panelStyleClass="custom-select-panel"
-          optionLabel="label"
-          optionValue="value"
-          [ngModel]="value()"
-          (ngModelChange)="onModelChange($event)"
-        >
-          <ng-template #item let-item>
-            @if (item && item.label) {
-              {{ item.label }}
-            } @else {
-              <div class="flex items-center gap-2 py-1">
-                <div class="animate-pulse bg-gray-100 h-4 w-24 rounded"></div>
-                <span class="text-xs text-gray-400">Loading...</span>
-              </div>
-            }
-          </ng-template>
-        </p-select>
-        @if (hasError()) {
-          <p class="text-red-500 text-xs mt-1">{{ errorMessage() }}</p>
-        }
-      </div>
-    </div>
-  `,
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, SelectModule, BLableComponent],
+  templateUrl: "./b-select.component.html",
   styleUrl: "./b-select.component.css",
   providers: [
     {
@@ -73,8 +31,9 @@ import { Subject, debounceTime, distinctUntilChanged } from 'rxjs';
 export class BSelectComponent implements ControlValueAccessor, OnDestroy {
   id = input<string>('');
   label = input<string>('');
+  subLable = input<string>('');
   placeholder = input<string>('');
-  options = input<any[]>([]); // Changed to any[] to allow for padded nulls/placeholders
+  options = input<any[]>([]);
   filter = input<boolean>(false);
   virtualScroll = input<boolean>(false);
   loading = input<boolean>(false);
