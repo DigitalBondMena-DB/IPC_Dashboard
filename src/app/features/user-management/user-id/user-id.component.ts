@@ -355,8 +355,6 @@ export class UserIdComponent {
   private preparePayload(formData: any): any {
     const payload = { ...formData };
 
-    // 1. Extract entity_id based on priority (deepest first)
-    // Priority: hospital_id > health_division_id > health_directorate_id > authority_id
     if (formData.hospital_id) {
       payload.entity_id = formData.hospital_id;
     } else if (formData.health_division_id) {
@@ -366,19 +364,14 @@ export class UserIdComponent {
     } else if (formData.authority_id) {
       payload.entity_id = formData.authority_id;
     }
-
-    // 2. Handle category_ids (Division)
-    // If division_id is present (Ministry/Super Admin), send it as category_ids array
     if (formData.division_id) {
       payload.category_ids = [formData.division_id];
     }
-    // If category_ids is already an array (multiselect for Hospital/Authority), keep it as is.
-    // Ensure if it's a single value it becomes an array.
+
     if (payload.category_ids && !Array.isArray(payload.category_ids)) {
       payload.category_ids = [payload.category_ids];
     }
 
-    // 3. Cleanup: Remove intermediate entity keys used for cascading UI
     const entityKeys = [
       'hospital_id',
       'health_division_id',
@@ -388,11 +381,15 @@ export class UserIdComponent {
     ];
 
     entityKeys.forEach((key) => {
-      // Only delete if it's not the same as entity_id OR if we explicitly want to clean up
-      // We explicitly want to clean up because the API expects entity_id or category_ids
       delete payload[key];
     });
+    Object.keys(payload).forEach((key) => {
+      const value = payload[key];
 
+      if (value === null || value === undefined || value === '') {
+        delete payload[key];
+      }
+    });
     return payload;
   }
 

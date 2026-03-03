@@ -137,7 +137,7 @@ export const ENTITY_TYPE_CONFIG: Record<string, any> = {
         type: 'multiselect',
         placeholder: 'Select Division Name...',
         options: deps.generalDivisions || [],
-        validators: [Validators.required],
+        validators: [],
         colSpan: 'col-span-1',
         filter: true,
         loading: deps.isGeneralDivisionsLoading,
@@ -210,7 +210,7 @@ export const ENTITY_TYPE_CONFIG: Record<string, any> = {
         subLable: '(All Selected by Default)',
         placeholder: 'Select Division name...',
         options: deps.generalDivisions || [],
-        validators: [Validators.required],
+        validators: [],
         colSpan: 'col-span-1',
         filter: true,
         loading: deps.isGeneralDivisionsLoading,
@@ -218,5 +218,4 @@ export const ENTITY_TYPE_CONFIG: Record<string, any> = {
     ],
     dependencies: ['authorities', 'generalDivisions'],
   },
-
 };
