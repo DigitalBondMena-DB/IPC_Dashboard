@@ -36,9 +36,7 @@ export class EntityIdComponent {
   readonly title = computed(
     () => `${this.isEdit() ? 'Edit ' : 'Create '} ${this.config().entityLabel}`,
   );
-  readonly submitLabel = computed(
-    () => `${this.isEdit() ? 'Save Changes ' : 'Create '}`,
-  );
+  readonly submitLabel = computed(() => `${this.isEdit() ? 'Save Changes ' : 'Create '}`);
 
   readonly formValues = signal<Record<string, any>>({});
 
@@ -284,11 +282,11 @@ export class EntityIdComponent {
     const payload = this.preparePayload(formData);
     const obs = this.isEdit()
       ? this._Service.updateEntity(
-        this.config().endpoint,
-        this.config().entity_type,
-        this.id()!,
-        payload,
-      )
+          this.config().endpoint,
+          this.config().entity_type,
+          this.id()!,
+          payload,
+        )
       : this._Service.createEntity(this.config().endpoint, this.config().entity_type, payload);
 
     obs.subscribe({
@@ -310,13 +308,13 @@ export class EntityIdComponent {
   private preparePayload(formData: any): any {
     const payload = { ...formData };
 
-    // Extract entity_id based on priority (deepest first)
+    // Extract parent_id based on priority (deepest first)
     if (formData.health_division_id) {
-      payload.entity_id = formData.health_division_id;
+      payload.parent_id = formData.health_division_id;
     } else if (formData.health_directorate_id) {
-      payload.entity_id = formData.health_directorate_id;
+      payload.parent_id = formData.health_directorate_id;
     } else if (formData.authority_id) {
-      payload.entity_id = formData.authority_id;
+      payload.parent_id = formData.authority_id;
     }
 
     // Handle category_ids (General Division)
