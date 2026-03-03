@@ -177,7 +177,8 @@ export class EntityIdComponent {
 
     Object.keys(s).forEach((key) => {
       const state = s[key];
-      const options = state.accumulated().map((i: any) => ({ label: i.name, value: i.id }));
+      const filterdOptions = state.accumulated().filter((e: any) => e.is_active);
+      const options = filterdOptions.map((i: any) => ({ label: i.name, value: i.id }));
       const res = state.resource.value();
       if (res && state.page() < res.last_page) {
         options.push({ label: null, value: null });

@@ -46,15 +46,7 @@ export class UserListComponent {
   readonly type = signal<string>(this.route.snapshot.data['type']);
   readonly config = computed(() => USER_TYPE_CONFIG[this.type()]);
 
-  readonly columns = computed<ITableColumn[]>(() => [
-    { field: 'username', header: 'Username', sortable: true },
-    { field: 'email', header: 'Email', sortable: true },
-    { field: 'phone', header: 'Phone', sortable: true },
-    { field: 'entity_name', header: this.config().entityLabel, sortable: true },
-    { field: 'updated_at', header: 'Last Update', sortable: true, type: 'date' },
-    { field: 'updated_by', header: 'Updated By', sortable: true },
-    { field: 'is_active', header: 'Actions', type: 'toggle' },
-  ]);
+  readonly columns = computed<ITableColumn[]>(() => this.config().columns);
 
   tableState = signal({
     page: 1,
@@ -106,20 +98,22 @@ export class UserListComponent {
   }
 
   onToggle(event: { item: any }): void {
-    this._Service.toggleUser(this.config().endpoint, this.config().userType, event.item.id).subscribe({
-      next: () => {
-        this.resource.reload();
-        this._MessageService.add({ summary: 'Success', detail: 'User toggled successfully' });
-      },
-      error: () => {
-        this.resource.reload();
-        this._MessageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Failed to toggle user',
-        });
-      },
-    });
+    this._Service
+      .toggleUser(this.config().endpoint, this.config().userType, event.item.id)
+      .subscribe({
+        next: () => {
+          this.resource.reload();
+          this._MessageService.add({ summary: 'Success', detail: 'User toggled successfully' });
+        },
+        error: () => {
+          this.resource.reload();
+          this._MessageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Failed to toggle user',
+          });
+        },
+      });
   }
 
   onEdit(item: any): void {

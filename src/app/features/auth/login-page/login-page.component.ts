@@ -54,7 +54,7 @@ export class LoginPageComponent {
   getErrorMessage(controlName: string): string | null {
     const control = this.loginForm.get(controlName);
     if (!control || !control.touched || !control.errors) return null;
-
+    console.log(control.errors);
     if (control.errors['required']) return 'This field is required';
     if (control.errors['identity']) return 'Invalid email format';
     if (control.errors['minlength'])

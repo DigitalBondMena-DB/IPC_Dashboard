@@ -85,15 +85,15 @@ export class UserIdComponent {
     const transformed = { ...data };
     const type = this.config().userType;
 
-    if (
-      type === API_CONFIG.ENDPOINTS.USERS.TYPE.HOSPITAL ||
-      type === API_CONFIG.ENDPOINTS.USERS.TYPE.AUTHORITY_HOSPITAL
-    ) {
+    if (type === API_CONFIG.ENDPOINTS.USERS.TYPE.HOSPITAL) {
       transformed.hospital_id = data.id;
       transformed.health_division_id = data.parent_id;
       if (data.parent) {
         transformed.health_directorate_id = data.parent.parent_id;
       }
+    } else if (type === API_CONFIG.ENDPOINTS.USERS.TYPE.AUTHORITY_HOSPITAL) {
+      transformed.hospital_id = data.id;
+      transformed.authority_id = data.parent_id;
     } else if (type === API_CONFIG.ENDPOINTS.USERS.TYPE.HEALTH_DIVISION) {
       transformed.health_division_id = data.id;
       transformed.health_directorate_id = data.entity_id;

@@ -11,10 +11,11 @@ import {
   Pencil,
   RotateCcw,
 } from 'lucide-angular';
+import { Tooltip } from 'primeng/tooltip';
 
 @Component({
   selector: 'app-b-data-table',
-  imports: [DatePipe, LucideAngularModule],
+  imports: [DatePipe, LucideAngularModule, Tooltip],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './b-data-table.component.html',
   styleUrl: './b-data-table.component.css',

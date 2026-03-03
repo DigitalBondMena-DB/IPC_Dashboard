@@ -40,7 +40,7 @@
         <tr>
           @for (col of columns(); track col.field) {
             <th [class.sortable]="col.sortable" (click)="onSort(col)">
-              <div class="th-content">
+              <div class="th-content capitalize">
                 {{ col.header }}
                 @if (getSortIcon(col); as icon) {
                   <lucide-angular [img]="icon" [size]="16" class="sort-icon" />
@@ -57,7 +57,9 @@
               <td>
                 @switch (col.type) {
                   @case ('date') {
-                    {{ row[col.field] | date: 'MMM dd, yyyy' }}
+                    <span [pTooltip]="row[col.field] ?? 'N/A'" tooltipPosition="top">
+                      {{ row[col.field] | date: 'MMM dd, yyyy' }}
+                    </span>
                   }
                   @case ('toggle') {
                     <div class="actions-cell">
@@ -81,7 +83,9 @@
                   }
                   @default {
                     <p class="line-clamp-1">
-                      {{ row[col.field] ?? 'N/A' }}
+                      <span [pTooltip]="row[col.field] ?? 'N/A'" tooltipPosition="top">
+                        {{ row[col.field] ?? 'N/A' }}
+                      </span>
                     </p>
                   }
                 }

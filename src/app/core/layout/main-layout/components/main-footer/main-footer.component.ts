@@ -7,12 +7,14 @@ import { Component } from '@angular/core';
       class="mt-12 py-6  flex items-center justify-center gap-2 text-[10px] text-gray-400 font-medium"
     >
       <span>Powered by</span>
-      <img
-        src="assets/images/shared/digital-bond-logo.png"
-        width="22"
-        height="18"
-        alt="Digital Bond"
-      />
+      <a href="https://www.digitalbondmena.com/" rel="noopener noreferrer" target="_blank">
+        <img
+          src="assets/images/shared/digital-bond-logo.png"
+          width="22"
+          height="18"
+          alt="Digital Bond"
+        />
+      </a>
       <span>Digital Bond</span>
     </footer>
   `,

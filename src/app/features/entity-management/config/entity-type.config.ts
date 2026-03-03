@@ -20,7 +20,7 @@ export const ENTITY_TYPE_CONFIG: Record<string, any> = {
         type: 'text',
         placeholder: 'Enter division name...',
         validators: [Validators.required],
-        colSpan: 'col-span-full',
+        colSpan: 'col-span-1',
       },
     ],
   },

@@ -8,14 +8,16 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
     <div class="flex items-center gap-1 mt-3.5">
       <input
         type="checkbox"
-        [id]="id()"
+        [id]="id() + '_input'"
         class="radio-input"
         [checked]="value()"
         (change)="onToggle()"
         [disabled]="disabled()"
       />
       @if (label()) {
-        <label [for]="id()" class="text-sm font-normal m-0 cursor-pointer">{{ label() }}</label>
+        <label [for]="id() + '_input'" class="text-sm font-normal m-0 cursor-pointer">{{
+          label()
+        }}</label>
       }
     </div>
   `,
@@ -41,9 +43,7 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
       background-color: var(--color-white);
     }
     .radio-input:checked {
-      
       background-color: var(--color-primary-500);
-      
     }
   `,
   providers: [
@@ -62,8 +62,8 @@ export class BCheckboxComponent implements ControlValueAccessor {
   value = signal<boolean>(false);
   disabled = signal<boolean>(false);
 
-  onChange: any = () => { };
-  onTouched: any = () => { };
+  onChange: any = () => {};
+  onTouched: any = () => {};
 
   onToggle() {
     const newValue = !this.value();
