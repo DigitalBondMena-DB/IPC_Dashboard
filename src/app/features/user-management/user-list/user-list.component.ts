@@ -16,6 +16,7 @@ import { USER_TYPE_CONFIG } from '../config/user-type.config';
       [title]="config().title"
       [createButtonLabel]="'Create ' + config().entityLabel"
       (searchChange)="onSearch($event)"
+      [showSearch]="true"
       (createClick)="onCreate()"
     />
 

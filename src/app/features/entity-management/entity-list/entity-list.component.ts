@@ -1,4 +1,11 @@
-import { Component, ChangeDetectionStrategy, computed, inject, signal } from '@angular/core';
+import {
+  Component,
+  ChangeDetectionStrategy,
+  computed,
+  inject,
+  signal,
+  effect,
+} from '@angular/core';
 import { BDataTableComponent } from '@shared/components/b-data-table/b-data-table.component';
 import { BPageHeaderComponent } from '@shared/components/b-page-header/b-page-header.component';
 import { EntityManagementService } from '../services/entity-management.service';
@@ -53,7 +60,11 @@ export class EntityListComponent {
     sortBy: '',
     sortDir: '' as 'asc' | 'desc' | '',
   });
-
+  constructor() {
+    effect(() => {
+      console.log(this.hasError());
+    });
+  }
   params = computed(() => {
     const s = this.tableState();
     const p: Record<string, string | number> = {
@@ -78,7 +89,7 @@ export class EntityListComponent {
   tableData = computed(() => this.resource.value()?.data ?? []);
   totalRecords = computed(() => this.resource.value()?.total ?? 0);
   isLoading = computed(() => this.resource.isLoading());
-  hasError = computed(() => this.resource.error() !== undefined);
+  hasError = computed(() => !!this.resource.error());
 
   onSearch(value: string): void {
     this.tableState.update((s) => ({ ...s, search: value, page: 1 }));
