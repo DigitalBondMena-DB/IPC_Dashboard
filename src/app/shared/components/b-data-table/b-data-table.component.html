@@ -1,14 +1,4 @@
-@if (error()) {
-  <div class="error-container">
-    <lucide-angular [img]="retryIcon" [size]="48" class="error-icon" />
-    <p class="error-title">Failed to load data</p>
-    <p class="error-subtitle">Something went wrong. Please try again.</p>
-    <button class="retry-btn" (click)="retryLoad.emit()">
-      <lucide-angular [img]="retryIcon" [size]="16" />
-      Retry
-    </button>
-  </div>
-} @else if (loading()) {
+@if (loading()) {
   <div class="table-container">
     <table class="data-table">
       <thead>
@@ -32,6 +22,16 @@
         }
       </tbody>
     </table>
+  </div>
+} @else if (hasError()) {
+  <div class="error-container">
+    <lucide-angular [img]="retryIcon" [size]="48" class="error-icon" />
+    <p class="error-title">Failed to load data</p>
+    <p class="error-subtitle">Something went wrong. Please try again.</p>
+    <button class="retry-btn" (click)="retryLoad.emit()">
+      <lucide-angular [img]="retryIcon" [size]="16" />
+      Retry
+    </button>
   </div>
 } @else {
   <div class="table-container custom-scrollbar">

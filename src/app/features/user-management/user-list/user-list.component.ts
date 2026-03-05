@@ -27,7 +27,7 @@ import { USER_TYPE_CONFIG } from '../config/user-type.config';
       [rows]="tableState().perPage"
       [page]="tableState().page"
       [loading]="isLoading()"
-      [error]="hasError()"
+      [hasError]="hasError()"
       (pageChange)="onPageChange($event)"
       (sortChange)="onSortChange($event)"
       (rowsChange)="onRowsChange($event)"
@@ -73,8 +73,14 @@ export class UserListComponent {
 
   resource = this._Service.getUsers(this.config().endpoint, this.config().userType, this.params);
 
-  tableData = computed(() => this.resource.value()?.data ?? []);
-  totalRecords = computed(() => this.resource.value()?.total ?? 0);
+  tableData = computed(() => {
+    if (this.resource.error()) return [];
+    return this.resource.value()?.data ?? [];
+  });
+  totalRecords = computed(() => {
+    if (this.resource.error()) return 0;
+    return this.resource.value()?.total ?? 0;
+  });
   isLoading = computed(() => this.resource.isLoading());
   hasError = computed(() => this.resource.error() !== undefined);
 

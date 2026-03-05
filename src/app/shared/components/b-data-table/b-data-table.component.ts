@@ -1,4 +1,12 @@
-import { Component, ChangeDetectionStrategy, input, output, signal, computed } from '@angular/core';
+import {
+  Component,
+  ChangeDetectionStrategy,
+  input,
+  output,
+  signal,
+  computed,
+  effect,
+} from '@angular/core';
 import { ITableColumn } from '@shared/models/table.model';
 import { DatePipe } from '@angular/common';
 import {
@@ -16,9 +24,9 @@ import { Tooltip } from 'primeng/tooltip';
 @Component({
   selector: 'app-b-data-table',
   imports: [DatePipe, LucideAngularModule, Tooltip],
-  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './b-data-table.component.html',
   styleUrl: './b-data-table.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BDataTableComponent {
   // Inputs
@@ -27,9 +35,13 @@ export class BDataTableComponent {
   totalRecords = input(0);
   rows = input(10);
   loading = input(false);
-  error = input(false);
+  hasError = input<boolean>(false);
   page = input(1);
-
+  constructor() {
+    effect(() => {
+      console.log('Table hasError:', this.hasError());
+    });
+  }
   // Outputs
   pageChange = output<number>();
   sortChange = output<{ field: string; direction: 'asc' | 'desc' }>();

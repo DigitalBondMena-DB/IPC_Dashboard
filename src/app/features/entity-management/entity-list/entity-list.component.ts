@@ -1,11 +1,4 @@
-import {
-  Component,
-  ChangeDetectionStrategy,
-  computed,
-  inject,
-  signal,
-  effect,
-} from '@angular/core';
+import { Component, ChangeDetectionStrategy, computed, inject, signal } from '@angular/core';
 import { BDataTableComponent } from '@shared/components/b-data-table/b-data-table.component';
 import { BPageHeaderComponent } from '@shared/components/b-page-header/b-page-header.component';
 import { EntityManagementService } from '../services/entity-management.service';
@@ -33,7 +26,7 @@ import { ENTITY_TYPE_CONFIG } from '../config/entity-type.config';
       [rows]="tableState().perPage"
       [page]="tableState().page"
       [loading]="isLoading()"
-      [error]="hasError()"
+      [hasError]="hasError()"
       (pageChange)="onPageChange($event)"
       (sortChange)="onSortChange($event)"
       (rowsChange)="onRowsChange($event)"
@@ -60,11 +53,7 @@ export class EntityListComponent {
     sortBy: '',
     sortDir: '' as 'asc' | 'desc' | '',
   });
-  constructor() {
-    effect(() => {
-      console.log(this.hasError());
-    });
-  }
+
   params = computed(() => {
     const s = this.tableState();
     const p: Record<string, string | number> = {
@@ -86,8 +75,14 @@ export class EntityListComponent {
     this.config().parent_type,
   );
 
-  tableData = computed(() => this.resource.value()?.data ?? []);
-  totalRecords = computed(() => this.resource.value()?.total ?? 0);
+  tableData = computed(() => {
+    if (this.resource.error()) return [];
+    return this.resource.value()?.data ?? [];
+  });
+  totalRecords = computed(() => {
+    if (this.resource.error()) return 0;
+    return this.resource.value()?.total ?? 0;
+  });
   isLoading = computed(() => this.resource.isLoading());
   hasError = computed(() => !!this.resource.error());
 
