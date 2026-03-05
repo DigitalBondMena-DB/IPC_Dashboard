@@ -1,4 +1,12 @@
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  inject,
+  input,
+  signal,
+} from '@angular/core';
 import {
   LucideAngularModule,
   House,
@@ -19,6 +27,7 @@ import { AvatarModule } from 'primeng/avatar';
 import { TooltipModule } from 'primeng/tooltip';
 import { NavItem } from '@/shared/models/nav-item.model';
 import { AuthService } from '@/core/services/auth.service';
+import { SidebarFooterConfig } from '@/shared/models/navigation.constants';
 
 @Component({
   selector: 'app-side-bar',
@@ -44,48 +53,31 @@ export class SideBarComponent {
     ArrowRightToLine: ArrowRightToLine,
   };
 
-  menuItems = signal<NavItem[]>([
-    { label: 'Dashboard', icon: 'Dashboard', routerLink: '/' },
-    { label: 'Divisions', icon: 'Divisions', routerLink: '/divisions' },
-    {
-      label: 'Entities',
-      icon: 'Entities',
-      expanded: false,
-      children: [
-        { label: 'Health Directorate', routerLink: '/health-directorate' },
-        { label: 'Health Division', routerLink: '/health-division' },
-        { label: 'Hospitals', routerLink: '/hospitals' },
-        { label: 'Authorities', routerLink: '/authorities' },
-        { label: "Authority's Hospitals", routerLink: '/authorities-hospitals' },
-      ],
-    },
-    {
-      label: 'User Management',
-      icon: 'Users',
-      expanded: false,
-      children: [
-        { label: 'Super Admin', routerLink: '/super-admin-users' },
-        { label: 'Health Directorate', routerLink: '/health-directorate-users' },
-        { label: 'Health Division', routerLink: '/health-division-users' },
-        { label: 'Hospitals', routerLink: '/hospitals-users' },
-        { label: 'Authorities', routerLink: '/authorities-users' },
-        { label: "Authority's Hospitals", routerLink: '/authorities-hospitals-users' },
-      ],
-    },
-  ]);
+  menuItems = input.required<NavItem[]>();
+  footerConfig = input<SidebarFooterConfig>();
+  internalMenuItems = signal<NavItem[]>([]);
+
+  constructor() {
+    effect(
+      () => {
+        const items = this.menuItems();
+        this.internalMenuItems.set(items);
+      },
+      { allowSignalWrites: true },
+    );
+  }
+
   toggleSubMenu(item: NavItem) {
     if (this.isCollapsed()) {
       this.toggleSidebar();
     }
-    this.menuItems.update((items) =>
+    this.internalMenuItems.update((items) =>
       items.map((i) => (i === item ? { ...i, expanded: !i.expanded } : i)),
     );
   }
   toggleSidebar() {
     this.isCollapsed.update((prev) => !prev);
-    this.menuItems.update((items) =>
-      items.map((i) => ({ ...i, expanded: false })),
-    );
+    this.internalMenuItems.update((items) => items.map((i) => ({ ...i, expanded: false })));
   }
   logout() {
     this._AuthService.logout();

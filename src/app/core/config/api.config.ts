@@ -24,5 +24,8 @@ export const API_CONFIG = {
         AUTHORITY_HOSPITAL: 'authority_hospital',
       },
     },
+    SURVEYS: {
+      BASE: 'surveys',
+    },
   },
 };

@@ -18,6 +18,7 @@ import {
   ChevronRight,
   Pencil,
   RotateCcw,
+  Copy,
 } from 'lucide-angular';
 import { Tooltip } from 'primeng/tooltip';
 
@@ -49,6 +50,7 @@ export class BDataTableComponent {
   retryLoad = output<void>();
   toggleChange = output<{ item: any; field: string; value: boolean }>();
   editClick = output<any>();
+  duplicateClick = output<any>();
 
   // Local state
   currentSortField = signal('');
@@ -62,6 +64,7 @@ export class BDataTableComponent {
   readonly chevronRightIcon = ChevronRight;
   readonly pencilIcon = Pencil;
   readonly retryIcon = RotateCcw;
+  readonly copyIcon = Copy;
 
   // Row sizes
   dynamicRowOptions = computed(() => {
@@ -162,6 +165,10 @@ export class BDataTableComponent {
   onEdit(item: any): void {
     if (item.can_be_edited === false) return;
     this.editClick.emit(item);
+  }
+
+  onDuplicate(item: any): void {
+    this.duplicateClick.emit(item);
   }
 
   getSortIcon(column: ITableColumn) {

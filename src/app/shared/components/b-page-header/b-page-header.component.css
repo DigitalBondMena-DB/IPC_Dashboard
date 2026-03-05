@@ -1,4 +1,10 @@
-.page-header {
+.filters-container {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.header {
   display: flex;
   align-items: center;
   justify-content: space-between;

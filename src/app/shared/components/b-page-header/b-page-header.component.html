@@ -1,18 +1,51 @@
 <div class="page-header">
   <div class="header-left">
     <span class="page-title">{{ title() }}</span>
-    @if(showSearch()) {
-    <div class="search-container">
-      <lucide-angular [img]="searchIcon" [size]="18" class="search-icon" />
-      <input type="text" class="search-input" [placeholder]="placeholder()" (input)="onSearchChange($event)" />
-    </div>
+    @if (showSearch()) {
+      <div class="search-container">
+        <lucide-angular [img]="searchIcon" [size]="18" class="search-icon" />
+        <input
+          type="text"
+          class="search-input"
+          [placeholder]="placeholder()"
+          (input)="onSearchChange($event)"
+        />
+      </div>
+    }
+    @if (showDateFilter()) {
+      <div class="filters-container">
+        <div class="date-filter">
+          <p-iftalabel>
+            <p-datepicker
+              [ngModel]="dateFrom()"
+              (ngModelChange)="dateFrom.set($event)"
+              inputId="dateFrom"
+              showIcon
+              iconDisplay="input"
+            />
+            <label for="dateFrom">Date From</label>
+          </p-iftalabel>
+        </div>
+        <div class="date-filter">
+          <p-iftalabel>
+            <p-datepicker
+              [ngModel]="dateTo()"
+              (ngModelChange)="dateTo.set($event)"
+              inputId="dateTo"
+              showIcon
+              iconDisplay="input"
+            />
+            <label for="dateTo">Date To</label>
+          </p-iftalabel>
+        </div>
+      </div>
     }
   </div>
 
   @if (showCreateButton()) {
-  <button class="create-btn" (click)="onCreateClick()">
-    <lucide-angular [img]="plusIcon" [size]="18" />
-    {{ createButtonLabel() }}
-  </button>
+    <button class="create-btn" (click)="onCreateClick()">
+      <lucide-angular [img]="plusIcon" [size]="18" />
+      {{ createButtonLabel() }}
+    </button>
   }
 </div>

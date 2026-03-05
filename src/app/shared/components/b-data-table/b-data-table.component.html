@@ -79,6 +79,9 @@
                       >
                         <lucide-angular [img]="pencilIcon" [size]="16" />
                       </button>
+                      <button class="edit-btn" (click)="onDuplicate(row)">
+                        <lucide-angular [img]="copyIcon" [size]="16" />
+                      </button>
                     </div>
                   }
                   @default {

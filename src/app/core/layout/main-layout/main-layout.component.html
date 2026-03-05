@@ -1,6 +1,6 @@
 <div class="flex h-screen bg-[#FDFDFD] overflow-hidden">
   <!-- Sidebar -->
-  <app-side-bar />
+  <app-side-bar [menuItems]="menuItems()" [footerConfig]="footerConfig()" />
 
   <!-- Main Area -->
   <div class="flex-1 flex flex-col min-w-0">
