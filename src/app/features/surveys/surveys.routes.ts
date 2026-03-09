@@ -8,4 +8,66 @@ export default [
         (m) => m.SurveysListComponent,
       ),
   },
+  {
+    path: 'create',
+    loadComponent: () =>
+      import('@features/surveys/survey-create/survey-create.component').then(
+        (m) => m.SurveyCreateComponent,
+      ),
+    children: [
+      { path: '', redirectTo: 'setup', pathMatch: 'full' },
+      {
+        path: 'setup',
+        loadComponent: () =>
+          import('@features/surveys/survey-create/components/survey-setup/survey-setup.component').then(
+            (m) => m.SurveySetupComponent,
+          ),
+      },
+      {
+        path: 'preliminary-questions',
+        loadComponent: () =>
+          import('@features/surveys/survey-create/components/preliminary-questions/preliminary-questions.component').then(
+            (m) => m.PreliminaryQuestionsComponent,
+          ),
+      },
+      {
+        path: 'structure',
+        loadComponent: () =>
+          import('@features/surveys/survey-create/components/survey-structure/survey-structure.component').then(
+            (m) => m.SurveyStructureComponent,
+          ),
+      },
+    ],
+  },
+  {
+    path: 'edit/:id',
+    loadComponent: () =>
+      import('@features/surveys/survey-create/survey-create.component').then(
+        (m) => m.SurveyCreateComponent,
+      ),
+    children: [
+      { path: '', redirectTo: 'setup', pathMatch: 'full' },
+      {
+        path: 'setup',
+        loadComponent: () =>
+          import('./survey-create/components/survey-setup/survey-setup.component').then(
+            (m) => m.SurveySetupComponent,
+          ),
+      },
+      {
+        path: 'preliminary-questions',
+        loadComponent: () =>
+          import('@features/surveys/survey-create/components/preliminary-questions/preliminary-questions.component').then(
+            (m) => m.PreliminaryQuestionsComponent,
+          ),
+      },
+      {
+        path: 'structure',
+        loadComponent: () =>
+          import('@features/surveys/survey-create/components/survey-structure/survey-structure.component').then(
+            (m) => m.SurveyStructureComponent,
+          ),
+      },
+    ],
+  },
 ] as Routes;

@@ -1,18 +1,31 @@
-import { Component, ChangeDetectionStrategy, input, output, signal, effect } from '@angular/core';
+import {
+  Component,
+  ChangeDetectionStrategy,
+  input,
+  output,
+  signal,
+  effect,
+  ViewEncapsulation,
+} from '@angular/core';
 import { LucideAngularModule, Search, Plus, Calendar } from 'lucide-angular';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { debounceTime, distinctUntilChanged } from 'rxjs';
 import { FormsModule } from '@angular/forms';
-import { DatePickerModule } from 'primeng/datepicker';
-import { IftaLabelModule } from 'primeng/iftalabel';
+import { NgxDaterangepickerMd, LocaleService, LOCALE_CONFIG } from 'ngx-daterangepicker-material';
+import moment from 'moment';
 
 @Component({
   selector: 'app-b-page-header',
   standalone: true,
-  imports: [LucideAngularModule, FormsModule, DatePickerModule, IftaLabelModule],
+  imports: [LucideAngularModule, FormsModule, NgxDaterangepickerMd],
   templateUrl: './b-page-header.component.html',
   styleUrl: './b-page-header.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  encapsulation: ViewEncapsulation.None,
+  providers: [
+    { provide: LOCALE_CONFIG, useValue: {} },
+    { provide: LocaleService, useClass: LocaleService, deps: [LOCALE_CONFIG] },
+  ],
 })
 export class BPageHeaderComponent {
   // Inputs
@@ -24,7 +37,7 @@ export class BPageHeaderComponent {
   // Outputs
   searchChange = output<string>();
   createClick = output<void>();
-  dateChange = output<{ from: string; to: string }>();
+  dateChange = output<{ from: string; to: string; range?: string }>();
 
   // Inputs for showing filters
   showDateFilter = input<boolean>(false);
@@ -36,8 +49,25 @@ export class BPageHeaderComponent {
 
   // Internal search state
   searchText = signal<string>('');
-  dateFrom = signal<Date | null>(null);
-  dateTo = signal<Date | null>(null);
+  selectedRange = signal<any>(null);
+  isDateDropdownOpen = signal<boolean>(false);
+  ranges: any = {
+    Today: [moment(), moment()],
+    Yesterday: [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+    'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+    'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+    'Last 6 Months': [moment().subtract(6, 'month'), moment()],
+    Lifetime: [moment('2020-01-01'), moment()],
+  };
+
+  rangeToNameMap: Record<string, string> = {
+    Today: 'today',
+    Yesterday: 'yesterday',
+    'Last 7 Days': 'last_7_days',
+    'Last 30 Days': 'last_30_days',
+    'Last 6 Months': 'last_6_months',
+    Lifetime: 'lifetime',
+  };
 
   // Debounced search using Signals and RxJS Interop
   private searchText$ = toObservable(this.searchText);
@@ -53,24 +83,6 @@ export class BPageHeaderComponent {
       // Only emit if it's not the initial empty value of the signal (or handle as needed)
       this.searchChange.emit(val);
     });
-
-    effect(() => {
-      const from = this.dateFrom();
-      const to = this.dateTo();
-
-      const formatLocal = (date: Date | null) => {
-        if (!date) return '';
-        const year = date.getFullYear();
-        const month = String(date.getMonth() + 1).padStart(2, '0');
-        const day = String(date.getDate()).padStart(2, '0');
-        return `${year}-${month}-${day}`;
-      };
-
-      this.dateChange.emit({
-        from: formatLocal(from),
-        to: formatLocal(to),
-      });
-    });
   }
 
   onSearchChange(event: Event): void {
@@ -80,5 +92,25 @@ export class BPageHeaderComponent {
 
   onCreateClick(): void {
     this.createClick.emit();
+  }
+
+  onDatesUpdated(event: any) {
+    console.log(event);
+
+    this.selectedRange.set(event);
+  }
+  toggleDateDropdown() {
+    this.isDateDropdownOpen.update((value) => !value);
+  }
+  applyFilter() {
+    const range = this.selectedRange();
+    if (range && range.startDate && range.endDate) {
+      this.dateChange.emit({
+        from: range.startDate.format('YYYY-MM-DD'),
+        to: range.endDate.format('YYYY-MM-DD'),
+        range: this.rangeToNameMap[range.label] || '',
+      });
+    }
+    this.isDateDropdownOpen.update((value) => !value);
   }
 }

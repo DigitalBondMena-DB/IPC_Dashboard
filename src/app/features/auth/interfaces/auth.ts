@@ -10,6 +10,5 @@ export interface ILoginResponse {
 export interface IUser {
   id: string;
   name: string;
-  entity_id: string;
-  job_title: string;
+  email: string;
 }

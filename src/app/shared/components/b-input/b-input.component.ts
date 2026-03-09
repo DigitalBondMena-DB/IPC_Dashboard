@@ -2,7 +2,7 @@ import { Component, input, signal, forwardRef, ChangeDetectionStrategy } from '@
 import { ControlValueAccessor, NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/forms';
 import { LucideAngularModule, Eye, EyeOff } from 'lucide-angular';
 import { CommonModule } from '@angular/common';
-import { BLableComponent } from "../b-lable/b-lable.component";
+import { BLableComponent } from '../b-lable/b-lable.component';
 
 @Component({
   selector: 'app-b-input',
@@ -23,7 +23,7 @@ export class BInputComponent implements ControlValueAccessor {
   class = input<string>('');
   label = input<string>('');
   placeholder = input<string>('');
-  type = input<'text' | 'password' | 'email'>('text');
+  type = input<'text' | 'password' | 'email' | 'number'>('text');
   icon = input<any>();
   eyeIcon = input<any>(Eye);
   eyeOffIcon = input<any>(EyeOff);
@@ -35,8 +35,8 @@ export class BInputComponent implements ControlValueAccessor {
 
   hasError = input<boolean>(false);
 
-  onChange: any = () => { };
-  onTouched: any = () => { };
+  onChange: any = () => {};
+  onTouched: any = () => {};
 
   inputType() {
     if (this.type() === 'password') {

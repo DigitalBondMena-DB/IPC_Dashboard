@@ -1,9 +1,12 @@
 import { ChangeDetectionStrategy, Component, inject, signal, computed } from '@angular/core';
+import { Router } from '@angular/router';
 import { BDataTableComponent } from '@/shared/components/b-data-table/b-data-table.component';
 import { BPageHeaderComponent } from '@/shared/components/b-page-header/b-page-header.component';
 import { SurveyService } from '../services/survey.service';
 import { ITableColumn } from '@/shared/models/table.model';
 import { CommonModule } from '@angular/common';
+import { LocaleService, LOCALE_CONFIG } from 'ngx-daterangepicker-material';
+import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-surveys-list',
@@ -12,10 +15,14 @@ import { CommonModule } from '@angular/common';
   templateUrl: './surveys-list.component.html',
   styleUrl: './surveys-list.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [
+    { provide: LOCALE_CONFIG, useValue: {} },
+    { provide: LocaleService, useClass: LocaleService, deps: [LOCALE_CONFIG] },
+  ],
 })
 export class SurveysListComponent {
   private readonly _SurveyService = inject(SurveyService);
-
+  private readonly _MessageService = inject(MessageService);
   // Table Config
   columns: ITableColumn[] = [
     { field: 'name', header: 'Name', sortable: true },
@@ -23,7 +30,7 @@ export class SurveysListComponent {
     { field: 'created', header: 'Created', type: 'date', sortable: true },
     { field: 'last_update', header: 'Last Update', type: 'date', sortable: true },
     { field: 'updated_by', header: 'Updated By', sortable: true },
-    { field: 'is_active', header: 'Actions', type: 'toggle' },
+    { field: 'is_active', header: 'Actions', type: 'toggle', duplicate: true },
   ];
 
   // State
@@ -47,11 +54,14 @@ export class SurveysListComponent {
     this.params.update((p) => ({ ...p, search: query, page: 1 }));
   }
 
-  onDateChange(event: { from: string; to: string }) {
+  onDateChange(event: { from: string; to: string; range?: string }) {
+    console.log(event);
+
     this.params.update((p) => ({
       ...p,
       date_from: event.from,
       date_to: event.to,
+      date_range: event.range || '',
       page: 1,
     }));
   }
@@ -74,7 +84,22 @@ export class SurveysListComponent {
 
   onToggle(event: { item: any; field: string; value: boolean }) {
     this._SurveyService.toggleSurvey(event.item.id).subscribe({
-      next: () => this.surveysResource.reload(),
+      next: (res) => {
+        const isActive = res.is_active;
+        this.surveysResource.reload();
+        this._MessageService.add({
+          summary: 'Success',
+          detail: `Entity ${isActive ? 'Activated' : 'Deactivated'} successfully`,
+        });
+      },
+      error: () => {
+        this.surveysResource.reload();
+        this._MessageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Failed to toggle entity',
+        });
+      },
     });
   }
 
@@ -84,13 +109,13 @@ export class SurveysListComponent {
     });
   }
 
+  private readonly router = inject(Router);
+
   onCreate() {
-    console.log('Create new survey clicked');
-    // Implement navigation to create page if needed
+    this.router.navigate(['/survey/create/setup']);
   }
 
   onEdit(item: any) {
-    console.log('Edit survey clicked', item);
-    // Implement navigation to edit page
+    this.router.navigate(['/survey/edit', item.id]);
   }
 }

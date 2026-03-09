@@ -34,7 +34,7 @@
 
 .search-icon {
   position: absolute;
-  left: 14px;
+  left: 5px;
   top: 50%;
   transform: translateY(-50%);
   color: #b0b0b0;
@@ -43,7 +43,7 @@
 
 .search-input {
   width: 100%;
-  padding: 10px 16px 10px 42px;
+  padding: 10px 16px 10px 32px;
   border: 1px solid #e5e7eb;
   border-radius: 10px;
   font-size: 14px;
@@ -89,4 +89,48 @@
 
 .create-btn:active {
   transform: scale(0.98);
+}
+
+.calendar-icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #b0b0b0;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.daterange-input {
+  width: 100%;
+  padding: 10px 16px 10px 42px;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  font-size: 14px;
+  color: #333;
+  background: #fff;
+  outline: none;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.daterange-input:focus {
+  border-color: var(--color-primary-500, #197bfd);
+  box-shadow: 0 0 0 3px rgba(25, 123, 253, 0.1);
+}
+
+.md-drppicker {
+  display: flex !important;
+  .ranges button {
+    color: var(--color-black-400);
+    &:hover {
+      background-color: var(--color-primary-500, #197bfd) !important;
+      color: var(--color-white);
+    }
+  }
+}
+.drp-animate .available,
+.table-condensed tbody {
+  color: var(--color-black-400);
 }

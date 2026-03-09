@@ -63,7 +63,16 @@
                   }
                   @case ('toggle') {
                     <div class="actions-cell">
-                      <label class="toggle-switch" [class.disabled]="row.can_be_edited === false">
+                      <label
+                        class="toggle-switch"
+                        [class.disabled]="!row.can_be_edited"
+                        [pTooltip]="
+                          row.can_be_edited
+                            ? 'Click to toggle this record'
+                            : 'Now you can not toggle this record'
+                        "
+                        tooltipPosition="top"
+                      >
                         <input
                           type="checkbox"
                           [checked]="row[col.field]"
@@ -74,14 +83,27 @@
                       </label>
                       <button
                         class="edit-btn"
-                        [disabled]="row.can_be_edited === false"
+                        [disabled]="!row.can_be_edited"
+                        [pTooltip]="
+                          row.can_be_edited
+                            ? 'Click to edit this record'
+                            : 'Now you can not edit this record'
+                        "
+                        tooltipPosition="top"
                         (click)="onEdit(row)"
                       >
                         <lucide-angular [img]="pencilIcon" [size]="16" />
                       </button>
-                      <button class="edit-btn" (click)="onDuplicate(row)">
-                        <lucide-angular [img]="copyIcon" [size]="16" />
-                      </button>
+                      @if (col.duplicate) {
+                        <button
+                          class="edit-btn"
+                          (click)="onDuplicate(row)"
+                          pTooltip="Click to duplicate this record"
+                          tooltipPosition="top"
+                        >
+                          <lucide-angular [img]="copyIcon" [size]="16" />
+                        </button>
+                      }
                     </div>
                   }
                   @default {

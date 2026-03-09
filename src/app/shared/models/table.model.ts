@@ -4,6 +4,7 @@ export interface ITableColumn {
   sortable?: boolean;
   is_active_actions?: boolean;
   type?: 'text' | 'date' | 'toggle';
+  duplicate?: boolean;
 }
 
 export interface ITableParams {

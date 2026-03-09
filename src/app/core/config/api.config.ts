@@ -26,6 +26,7 @@ export const API_CONFIG = {
     },
     SURVEYS: {
       BASE: 'surveys',
+      DOMAINS: 'domains',
     },
   },
 };
