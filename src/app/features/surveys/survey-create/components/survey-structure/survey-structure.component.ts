@@ -111,7 +111,6 @@ export class SurveyStructureComponent implements OnInit {
     text: ['', Validators.required],
     description: ['', Validators.required],
     options: this.fb.array([]),
-    weights: this.fb.group({}),
   });
 
   // Resource for loading existing survey data
@@ -251,8 +250,9 @@ export class SurveyStructureComponent implements OnInit {
           description: q.get('description')?.value || '',
           is_scored: q.get('is_scored')?.value ?? true,
           order: qi + 1,
+          max_score: q.get('max_score')?.value || 0,
           meta_data: q.get('meta_data')?.value || null,
-          type: 'radio',
+          type: q.get('type')?.value || 'radio',
         })),
         sub_domains: this.collectDomains(this.getSubdomains(node)),
       };
@@ -289,11 +289,26 @@ export class SurveyStructureComponent implements OnInit {
     const metaData = val.meta_data || {};
     const options = metaData.options || [];
     const weights = metaData.weights || {};
+    const allowNa = metaData.allow_na || false;
 
-    options.forEach((opt: string, i: number) => {
-      this.optionsArray.push(this.fb.control(opt, Validators.required));
-      if (weights[opt] !== undefined) {
-        this.weightsGroup.addControl(`opt_${i}`, this.fb.control(weights[opt]));
+    options.forEach((optText: string) => {
+      if (allowNa && optText === 'N/A') {
+        this.optionsArray.push(
+          this.fb.group({
+            text: ['N/A', Validators.required],
+            weight: [0],
+            isNa: [true],
+          }),
+        );
+      } else {
+        const weightValue = weights[optText] !== undefined ? weights[optText] : 0;
+        this.optionsArray.push(
+          this.fb.group({
+            text: [optText, Validators.required],
+            weight: [weightValue, Validators.required],
+            isNa: [false],
+          }),
+        );
       }
     });
 
@@ -316,32 +331,38 @@ export class SurveyStructureComponent implements OnInit {
     return this.questionForm.get('options') as FormArray;
   }
 
-  get weightsGroup() {
-    return this.questionForm.get('weights') as FormGroup;
+  get hasNaOption(): boolean {
+    return this.optionsArray.controls.some((ctrl) => ctrl.get('isNa')?.value === true);
   }
 
   addOption() {
-    const control = this.fb.control('', Validators.required);
-    this.optionsArray.push(control);
-    const optionName = `opt_${this.optionsArray.length - 1}`;
-    this.weightsGroup.addControl(optionName, this.fb.control(0));
+    this.optionsArray.push(
+      this.fb.group({
+        text: ['', Validators.required],
+        weight: [0, Validators.required],
+        isNa: [false],
+      }),
+    );
   }
 
   addNaOption() {
-    const control = this.fb.control('N/A', Validators.required);
-    this.optionsArray.push(control);
+    if (this.hasNaOption) return;
+    this.optionsArray.push(
+      this.fb.group({
+        text: ['N/A', Validators.required],
+        weight: [0],
+        isNa: [true],
+      }),
+    );
   }
 
   removeOption(index: number) {
     if (this.optionsArray.length < 2) return;
     this.optionsArray.removeAt(index);
-    this.weightsGroup.removeControl(`opt_${index}`);
   }
 
   resetOptionsAndWeights() {
     this.optionsArray.clear();
-    const weightsKeys = Object.keys(this.weightsGroup.controls);
-    weightsKeys.forEach((key) => this.weightsGroup.removeControl(key));
   }
 
   onSaveQuestion() {
@@ -351,21 +372,35 @@ export class SurveyStructureComponent implements OnInit {
     }
 
     const val = this.questionForm.value;
-    const meta_data: any = { options: val.options };
-    if (this.weightingType() === 'manual') {
-      const weights: any = {};
-      val.options.forEach((opt: string, i: number) => {
-        if (val.weights[`opt_${i}`] !== undefined && val.weights[`opt_${i}`] !== null) {
-          weights[opt] = val.weights[`opt_${i}`];
+    const optionsMapped: string[] = [];
+    const weightsMapped: any = {};
+    let maxScore = 0;
+    let allowNa = false;
+
+    val.options.forEach((opt: any) => {
+      optionsMapped.push(opt.text);
+      if (opt.isNa) {
+        allowNa = true;
+      } else {
+        const w = opt.weight !== null && opt.weight !== undefined ? Number(opt.weight) : 0;
+        weightsMapped[opt.text] = w;
+        if (w > maxScore) {
+          maxScore = w;
         }
-      });
-      meta_data.weights = weights;
-    }
+      }
+    });
+
+    const meta_data: any = { options: optionsMapped };
+
+    // Always attach weights and allow_na if manual weighting is active or simply required
+    meta_data.weights = weightsMapped;
+    meta_data.allow_na = allowNa;
 
     const questionData = {
       text: val.text,
       description: val.description,
       is_scored: true,
+      max_score: maxScore,
       meta_data,
       type: 'radio',
     };
