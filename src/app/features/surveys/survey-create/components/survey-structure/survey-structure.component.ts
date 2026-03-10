@@ -109,7 +109,7 @@ export class SurveyStructureComponent implements OnInit {
 
   questionForm: FormGroup = this.fb.group({
     text: ['', Validators.required],
-    description: [''],
+    description: ['', Validators.required],
     options: this.fb.array([]),
     weights: this.fb.group({}),
   });
@@ -388,7 +388,6 @@ export class SurveyStructureComponent implements OnInit {
   }
 
   onSaveStructure() {
-    // Everything is already saved via real-time sync, just navigate
     this.router.navigate(['/survey', 'edit', this.id(), 'conditional-logic']);
   }
 
