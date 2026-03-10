@@ -13,9 +13,8 @@ import {
   LucideAngularModule,
   Plus,
   Trash2,
-  ChevronDown,
   ChevronUp,
-  FileText,
+  MessageCircleQuestionMark,
   FastForward,
   ArrowRight,
   LayoutGrid,
@@ -52,6 +51,19 @@ import { SurveyService } from '@features/surveys/services/survey.service';
         border-left: 2px solid #16a34a;
         background-color: #f0fdf4;
       }
+      .question-icon {
+        position: relative;
+        &::before {
+          content: '';
+          position: absolute;
+          top: 50%;
+          left: -8px;
+          transform: translateY(-50%);
+          width: 1px;
+          height: 16px;
+          background-color: var(--color-gray-700);
+        }
+      }
     `,
   ],
 })
@@ -64,9 +76,8 @@ export class SurveyStructureComponent implements OnInit {
 
   readonly plusIcon = Plus;
   readonly trashIcon = Trash2;
-  readonly chevronDownIcon = ChevronDown;
   readonly chevronUpIcon = ChevronUp;
-  readonly fileTextIcon = FileText;
+  readonly messageCircleQuestionMark = MessageCircleQuestionMark;
   readonly skipIcon = FastForward;
   readonly arrowRightIcon = ArrowRight;
   readonly domainIcon = LayoutGrid;
@@ -281,8 +292,9 @@ export class SurveyStructureComponent implements OnInit {
 
     options.forEach((opt: string, i: number) => {
       this.optionsArray.push(this.fb.control(opt, Validators.required));
-      const weightValue = weights[opt] !== undefined ? weights[opt] : 0;
-      this.weightsGroup.addControl(`opt_${i}`, this.fb.control(weightValue));
+      if (weights[opt] !== undefined) {
+        this.weightsGroup.addControl(`opt_${i}`, this.fb.control(weights[opt]));
+      }
     });
 
     // Add at least one option if none exists to avoid empty states
@@ -315,6 +327,11 @@ export class SurveyStructureComponent implements OnInit {
     this.weightsGroup.addControl(optionName, this.fb.control(0));
   }
 
+  addNaOption() {
+    const control = this.fb.control('N/A', Validators.required);
+    this.optionsArray.push(control);
+  }
+
   removeOption(index: number) {
     this.optionsArray.removeAt(index);
     this.weightsGroup.removeControl(`opt_${index}`);
@@ -337,7 +354,9 @@ export class SurveyStructureComponent implements OnInit {
     if (this.weightingType() === 'manual') {
       const weights: any = {};
       val.options.forEach((opt: string, i: number) => {
-        weights[opt] = val.weights[`opt_${i}`];
+        if (val.weights[`opt_${i}`] !== undefined && val.weights[`opt_${i}`] !== null) {
+          weights[opt] = val.weights[`opt_${i}`];
+        }
       });
       meta_data.weights = weights;
     }
