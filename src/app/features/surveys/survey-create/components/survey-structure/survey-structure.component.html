@@ -17,13 +17,15 @@
         </p>
       </div>
     </div>
-    <button
-      (click)="addDomain()"
-      class="flex items-center gap-2 bg-primary-500 text-white px-3 py-2.5 rounded-2xl hover:bg-blue-600 transition-all font-medium text-xs"
-    >
-      <lucide-angular [img]="plusIcon" [size]="20" />
-      Add New Domain
-    </button>
+    @if (domains.length > 0) {
+      <button
+        (click)="addDomain()"
+        class="flex items-center gap-2 bg-primary-500 text-white px-3 py-2.5 rounded-2xl hover:bg-blue-600 transition-all font-medium text-xs"
+      >
+        <lucide-angular [img]="plusIcon" [size]="20" />
+        Add New Domain
+      </button>
+    }
   </div>
 
   @if (currentView() === 'tree') {
@@ -179,6 +181,13 @@
             placeholder="Enter question description..."
             class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 min-h-[100px] text-black-400"
           ></textarea>
+          @if (
+            questionForm.get('description')?.invalid && questionForm.get('description')?.touched
+          ) {
+            <small class="text-red-500 text-xs mt-1 block px-1"
+              >Question description is required</small
+            >
+          }
         </div>
         <div class="bg-[#F8FAFC] border border-gray-100 rounded-xl p-6 space-y-6">
           <div class="flex items-center justify-between">

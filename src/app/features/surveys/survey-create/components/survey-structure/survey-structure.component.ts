@@ -333,6 +333,7 @@ export class SurveyStructureComponent implements OnInit {
   }
 
   removeOption(index: number) {
+    if (this.optionsArray.length < 2) return;
     this.optionsArray.removeAt(index);
     this.weightsGroup.removeControl(`opt_${index}`);
   }

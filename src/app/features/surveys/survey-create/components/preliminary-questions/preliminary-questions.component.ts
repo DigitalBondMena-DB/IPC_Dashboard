@@ -243,6 +243,7 @@ export class PreliminaryQuestionsComponent implements OnInit {
   }
 
   onSubmit() {
+    this.addQuestionToList();
     if (!this.id()) {
       this.messageService.add({
         severity: 'error',

@@ -105,7 +105,20 @@ export class SurveysListComponent {
 
   onDuplicate(item: any) {
     this._SurveyService.duplicateSurvey(item.id).subscribe({
-      next: () => this.surveysResource.reload(),
+      next: () => {
+        this._MessageService.add({
+          summary: 'Success',
+          detail: `Entity Duplicated successfully`,
+        });
+        this.router.navigate(['/survey/edit', item.id]);
+      },
+      error: () => {
+        this._MessageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Failed to duplicate entity',
+        });
+      },
     });
   }
 
