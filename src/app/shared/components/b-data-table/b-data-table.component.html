@@ -81,6 +81,16 @@
                         />
                         <span class="toggle-slider"></span>
                       </label>
+                      @if (col.duplicate) {
+                        <button
+                          class="edit-btn text-[#16A34A]! bg-[#EDFCF2]!"
+                          (click)="onDuplicate(row)"
+                          pTooltip="Click to duplicate this record"
+                          tooltipPosition="top"
+                        >
+                          <lucide-angular [img]="copyIcon" [size]="16" />
+                        </button>
+                      }
                       <button
                         class="edit-btn"
                         [disabled]="!row.can_be_edited"
@@ -94,16 +104,6 @@
                       >
                         <lucide-angular [img]="pencilIcon" [size]="16" />
                       </button>
-                      @if (col.duplicate) {
-                        <button
-                          class="edit-btn"
-                          (click)="onDuplicate(row)"
-                          pTooltip="Click to duplicate this record"
-                          tooltipPosition="top"
-                        >
-                          <lucide-angular [img]="copyIcon" [size]="16" />
-                        </button>
-                      }
                     </div>
                   }
                   @default {

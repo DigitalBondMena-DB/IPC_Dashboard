@@ -122,7 +122,7 @@
                 class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"
               ></span>
             }
-            next
+            Next Step
           </button>
         </div>
       </div>
@@ -223,8 +223,7 @@
                   placeholder="Enter option here..."
                   class="flex-1 text-sm border-none focus:ring-0 focus:outline-0 text-black-400 font-medium"
                 />
-
-                @if (weightingType() === 'manual' && weightsGroup.contains('opt_' + $index)) {
+                @if (weightsGroup.contains('opt_' + $index)) {
                   <div class="flex items-center gap-2" [formGroup]="weightsGroup">
                     <span class="text-xs text-gray-500">Score:</span>
                     <input
@@ -266,7 +265,6 @@
   }
 </div>
 
-<!-- Recursive Template for Domain Tree -->
 <ng-template #domainList let-domainsArr let-level="level" let-parents="parents">
   <div class="space-y-4">
     @for (domainNode of domainsArr.controls; track $index) {

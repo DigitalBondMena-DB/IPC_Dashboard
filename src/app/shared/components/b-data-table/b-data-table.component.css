@@ -38,6 +38,7 @@
 .th-content {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 6px;
 }
 
@@ -76,6 +77,7 @@
 /* Actions Cell */
 .actions-cell {
   display: flex;
+  justify-content: flex-end;
   align-items: center;
   gap: 12px;
 }
