@@ -19,6 +19,7 @@ import {
   FastForward,
   ArrowRight,
   LayoutGrid,
+  Pencil,
 } from 'lucide-angular';
 import { MessageService } from 'primeng/api';
 import { EditorModule } from 'primeng/editor';
@@ -69,6 +70,7 @@ export class SurveyStructureComponent implements OnInit {
   readonly skipIcon = FastForward;
   readonly arrowRightIcon = ArrowRight;
   readonly domainIcon = LayoutGrid;
+  readonly pencilIcon = Pencil;
 
   id = signal<string | null>(
     this.route.snapshot.paramMap.get('id') ||
@@ -84,7 +86,11 @@ export class SurveyStructureComponent implements OnInit {
   currentView = signal<'tree' | 'add_question'>('tree');
 
   // Track context for adding question
-  activeNodeContext = signal<{ domain: FormGroup; breadcrumbs: string[] } | null>(null);
+  activeNodeContext = signal<{
+    domain: FormGroup;
+    breadcrumbs: string[];
+    editIndex?: number;
+  } | null>(null);
 
   structureForm: FormGroup = this.fb.group({
     domains: this.fb.array([]),
@@ -93,13 +99,14 @@ export class SurveyStructureComponent implements OnInit {
   questionForm: FormGroup = this.fb.group({
     text: ['', Validators.required],
     description: [''],
-    hint: [''],
     options: this.fb.array([]),
     weights: this.fb.group({}),
   });
 
   // Resource for loading existing survey data
   surveyResource = this.id() ? this.surveyService.getSurveyById(this.id()!) : null;
+
+  private lastSyncedSnapshot: any[] = [];
 
   constructor() {
     effect(() => {
@@ -111,6 +118,7 @@ export class SurveyStructureComponent implements OnInit {
         this.surveyName.set(data.title);
         if (data.domains && data.domains.length > 0) {
           this.patchDomains(data.domains);
+          this.lastSyncedSnapshot = structuredClone(this.domains.getRawValue());
         }
         this.isLoaded.set(true);
       }
@@ -136,11 +144,13 @@ export class SurveyStructureComponent implements OnInit {
   }
 
   createDomainFormGroup(data: any = {}): FormGroup {
+    const titleValue = data.title || '';
     return this.fb.group({
       id: [data.id || null],
-      title: [data.title || '', Validators.required],
+      title: [titleValue, Validators.required],
       weight: [data.weight || 0],
-      isExpanded: [true],
+      isExpanded: [data.isExpanded !== undefined ? data.isExpanded : true],
+      lastTitle: [data.lastTitle !== undefined ? data.lastTitle : titleValue],
       questions: this.fb.array((data.questions || []).map((q: any) => this.fb.group(q))),
       sub_domains: this.fb.array(
         (data.sub_domains || []).map((sd: any) => this.createDomainFormGroup(sd)),
@@ -149,7 +159,8 @@ export class SurveyStructureComponent implements OnInit {
   }
 
   addDomain() {
-    this.domains.push(this.createDomainFormGroup());
+    const defaultTitle = `Domain ${this.domains.length + 1}`;
+    this.domains.push(this.createDomainFormGroup({ title: defaultTitle }));
     this.syncDomains();
   }
 
@@ -173,7 +184,8 @@ export class SurveyStructureComponent implements OnInit {
 
   addSubdomain(node: FormGroup) {
     const subdomains = this.getSubdomains(node);
-    subdomains.push(this.createDomainFormGroup());
+    const defaultTitle = `Subdomain ${subdomains.length + 1}`;
+    subdomains.push(this.createDomainFormGroup({ title: defaultTitle }));
     node.get('isExpanded')?.setValue(true);
     this.syncDomains();
   }
@@ -185,6 +197,14 @@ export class SurveyStructureComponent implements OnInit {
 
   // Called on blur of title/weight inputs to sync with backend
   onNodeBlur(node: FormGroup) {
+    const currentTitle = node.get('title')?.value?.trim();
+    if (!currentTitle) {
+      node.get('title')?.setValue(node.get('lastTitle')?.value || '');
+      return;
+    }
+    if (node.get('lastTitle')?.value !== currentTitle) {
+      node.get('lastTitle')?.setValue(currentTitle);
+    }
     this.syncDomains();
   }
 
@@ -193,11 +213,15 @@ export class SurveyStructureComponent implements OnInit {
     if (!this.id()) return;
     const domainsPayload = this.collectDomains(this.domains);
     this.surveyService.updateSurvey(this.id()!, { domains: domainsPayload }).subscribe({
+      next: (res) => {
+        this.lastSyncedSnapshot = structuredClone(this.domains.getRawValue());
+      },
       error: () => {
+        this.patchDomains(this.lastSyncedSnapshot);
         this.messageService.add({
           severity: 'error',
           summary: 'Error',
-          detail: 'Failed to sync domains',
+          detail: 'Failed to sync survey structure. Changes reverted.',
         });
       },
     });
@@ -214,10 +238,10 @@ export class SurveyStructureComponent implements OnInit {
         questions: this.getQuestions(node).controls.map((q: any, qi: number) => ({
           text: q.get('text')?.value,
           description: q.get('description')?.value || '',
-          hint: q.get('hint')?.value || '',
           is_scored: q.get('is_scored')?.value ?? true,
           order: qi + 1,
           meta_data: q.get('meta_data')?.value || null,
+          type: 'radio',
         })),
         sub_domains: this.collectDomains(this.getSubdomains(node)),
       };
@@ -238,11 +262,39 @@ export class SurveyStructureComponent implements OnInit {
     this.resetQuestionForm();
   }
 
-  resetQuestionForm() {
+  prepareEditQuestion(node: FormGroup, breadcrumbs: string[], editIndex: number) {
+    this.activeNodeContext.set({ domain: node, breadcrumbs, editIndex });
+    this.currentView.set('add_question');
+
+    const qGroup = this.getQuestions(node).at(editIndex) as FormGroup;
+    const val = qGroup.value;
+
+    this.resetOptionsAndWeights();
     this.questionForm.patchValue({
+      text: val.text,
+      description: val.description,
+    });
+
+    const metaData = val.meta_data || {};
+    const options = metaData.options || [];
+    const weights = metaData.weights || {};
+
+    options.forEach((opt: string, i: number) => {
+      this.optionsArray.push(this.fb.control(opt, Validators.required));
+      const weightValue = weights[opt] !== undefined ? weights[opt] : 0;
+      this.weightsGroup.addControl(`opt_${i}`, this.fb.control(weightValue));
+    });
+
+    // Add at least one option if none exists to avoid empty states
+    if (options.length === 0) {
+      this.addOption();
+    }
+  }
+
+  resetQuestionForm() {
+    this.questionForm.reset({
       text: '',
       description: '',
-      hint: '',
     });
     this.resetOptionsAndWeights();
     this.addOption();
@@ -293,14 +345,23 @@ export class SurveyStructureComponent implements OnInit {
     const questionData = {
       text: val.text,
       description: val.description,
-      hint: val.hint,
       is_scored: true,
       meta_data,
+      type: 'radio',
     };
 
     const targetNode = this.activeNodeContext()?.domain;
+    const editIndex = this.activeNodeContext()?.editIndex;
+
     if (targetNode) {
-      this.getQuestions(targetNode).push(this.fb.group(questionData));
+      if (editIndex !== undefined) {
+        // Update existing question
+        const qGroup = this.getQuestions(targetNode).at(editIndex) as FormGroup;
+        qGroup.patchValue(questionData);
+      } else {
+        // Add new question
+        this.getQuestions(targetNode).push(this.fb.group(questionData));
+      }
       this.syncDomains();
     }
 
