@@ -47,7 +47,12 @@
             [errorMessage]="getErrorMessage('password')"
           />
 
-          <app-b-checkbox id="remember_me" label="Remember me" formControlName="remember_me" />
+          <app-b-checkbox
+            id="remember_me"
+            label="Remember me"
+            shape="circle"
+            formControlName="remember_me"
+          />
           @if (error()) {
             <p class="text-red-500 text-sm text-center mt-2">{{ error() }}</p>
           }

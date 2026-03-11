@@ -28,5 +28,7 @@ export const API_CONFIG = {
       BASE: 'surveys',
       DOMAINS: 'domains',
     },
+    QUESTIONS: 'questions',
+    LOGIC_RULES: 'logic-rules',
   },
 };

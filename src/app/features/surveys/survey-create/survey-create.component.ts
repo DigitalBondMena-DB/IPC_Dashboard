@@ -67,6 +67,8 @@ export class SurveyCreateComponent {
       this.currentStep.set(1);
     } else if (url.includes('structure')) {
       this.currentStep.set(2);
+    } else if (url.includes('conditional-logic')) {
+      this.currentStep.set(3);
     }
   }
   goBack() {

@@ -37,6 +37,7 @@ export const MAIN_MENU_ITEMS: NavItem[] = [
 
 export const SURVEY_MENU_ITEMS: NavItem[] = [
   { label: 'Surveys', icon: 'Survey', routerLink: '/survey' },
+  { label: 'Conditional logic', icon: 'GitFork', routerLink: '/survey/conditional-logic' },
 ];
 
 export const MAIN_FOOTER_CONFIG: SidebarFooterConfig = {

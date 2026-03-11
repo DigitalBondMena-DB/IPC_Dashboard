@@ -37,6 +37,13 @@ export default [
             (m) => m.SurveyStructureComponent,
           ),
       },
+      {
+        path: 'conditional-logic',
+        loadComponent: () =>
+          import('@features/surveys/survey-create/components/conditional-logic/conditional-logic.component').then(
+            (m) => m.ConditionalLogicComponent,
+          ),
+      },
     ],
   },
   {
@@ -68,6 +75,20 @@ export default [
             (m) => m.SurveyStructureComponent,
           ),
       },
+      {
+        path: 'conditional-logic',
+        loadComponent: () =>
+          import('@features/surveys/survey-create/components/conditional-logic/conditional-logic.component').then(
+            (m) => m.ConditionalLogicComponent,
+          ),
+      },
     ],
+  },
+  {
+    path: 'conditional-logic',
+    loadComponent: () =>
+      import('@features/surveys/survey-create/components/conditional-logic/conditional-logic.component').then(
+        (m) => m.ConditionalLogicComponent,
+      ),
   },
 ] as Routes;

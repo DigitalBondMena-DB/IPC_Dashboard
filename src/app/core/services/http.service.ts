@@ -12,6 +12,9 @@ export class HttpService {
   post<T>(endpoint: string, data: any): Observable<T> {
     return this.http.post<T>(API_CONFIG.BASE_URL + endpoint, data);
   }
+  delete<T>(endpoint: string): Observable<T> {
+    return this.http.delete<T>(API_CONFIG.BASE_URL + endpoint);
+  }
   get<T>(endpoint: string, params?: Signal<any>): HttpResourceRef<T | undefined> {
     return httpResource<T>(() => {
       const p = params?.();

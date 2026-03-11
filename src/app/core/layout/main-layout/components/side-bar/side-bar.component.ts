@@ -20,6 +20,7 @@ import {
   LucideIconData,
   ArrowLeftToLine,
   ArrowRightToLine,
+  GitFork,
 } from 'lucide-angular';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 
@@ -46,6 +47,7 @@ export class SideBarComponent {
     Entities: Combine,
     Users: Users,
     Survey: ClipboardList,
+    GitFork: GitFork,
     Plus: Plus,
     LogOut: LogOut,
     ChevronDown: ChevronDown,
