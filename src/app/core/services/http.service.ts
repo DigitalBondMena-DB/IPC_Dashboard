@@ -15,15 +15,15 @@ export class HttpService {
   delete<T>(endpoint: string): Observable<T> {
     return this.http.delete<T>(API_CONFIG.BASE_URL + endpoint);
   }
-  get<T>(endpoint: string, params?: Signal<any>): HttpResourceRef<T | undefined> {
+  get<T>(endpoint: string | (() => string), params?: Signal<any>): HttpResourceRef<T | undefined> {
     return httpResource<T>(() => {
-      // نتحقق من وجود الـ endpoint والـ params بشكل منعزل لضمان الاستقرار
       const currentParams = params ? params() : {};
+      const actualEndpoint = typeof endpoint === 'function' ? endpoint() : endpoint;
       
-      if (!endpoint) return undefined;
+      if (!actualEndpoint) return undefined;
 
       return {
-        url: API_CONFIG.BASE_URL + endpoint,
+        url: API_CONFIG.BASE_URL + actualEndpoint,
         method: 'GET',
         params: currentParams,
       };

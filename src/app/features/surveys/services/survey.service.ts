@@ -31,8 +31,11 @@ export class SurveyService extends HttpService {
     );
   }
 
-  getSurveyById(id: string | number): HttpResourceRef<any | undefined> {
-    return this.get<any>(`${API_CONFIG.ENDPOINTS.SURVEYS.BASE}/${id}`);
+  getSurveyById(id: string | number | Signal<string | null>): HttpResourceRef<any | undefined> {
+    return this.get<any>(() => {
+      const actualId = typeof id === 'function' ? id() : id;
+      return actualId ? `${API_CONFIG.ENDPOINTS.SURVEYS.BASE}/${actualId}` : '';
+    });
   }
 
   getSurveyOverview(id: string | number): HttpResourceRef<SurveyOverviewResponse | undefined> {

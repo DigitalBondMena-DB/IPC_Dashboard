@@ -34,6 +34,7 @@ export class BPageHeaderComponent {
   createButtonLabel = input<string>('Create');
   showCreateButton = input<boolean>(true);
   showSearch = input<boolean>(false);
+  createButtonIcon = input<any>(Plus);
   // Outputs
   searchChange = output<string>();
   createClick = output<void>();

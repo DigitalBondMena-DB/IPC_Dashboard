@@ -3,6 +3,7 @@
     <div class="size-2 bg-primary-500 rounded-full"></div>
     <h3 class="text-lg font-bold text-black-400">Structure Preview</h3>
   </div>
+
   @if (domains().length !== 0) {
     <p-accordion [value]="[domains()[0].id]" class="w-full flex flex-col gap-4 structure-accordion">
       @for (domain of domains(); track domain.id) {
@@ -19,16 +20,18 @@
               <div class="text-sm text-gray-600">{{ domain.questions_count }} questions</div>
             </div>
           </p-accordion-header>
+
           <p-accordion-content class="p-0!">
             <div class="flex flex-col">
               <!-- عرض الأسئلة إذا وجدت في الطبقة الأولى -->
               @if (domain.questions.length > 0) {
-                <div class="p-4 flex flex-col gap-2 bg-white">
+                <div class="p-4 flex flex-col gap-3 text-gray-703 bg-white">
                   @for (q of domain.questions; track $index) {
                     <p>Q{{ $index + 1 }}: {{ q }}</p>
                   }
                 </div>
               }
+
               <!-- الطبقة الثانية: Sub-Domain -->
               @if (domain.children.length > 0) {
                 <p-accordion class="w-full">
@@ -37,55 +40,49 @@
                       <p-accordion-header
                         class="bg-white! py-3! flex-row-reverse! justify-end! gap-3!"
                       >
-                        <div class="flex items-center gap-2 w-full justify-between">
+                        <div class="flex items-center gap-2 w-full justify-between px-4">
                           <span class="text-gray-703">{{ sub.title }}</span>
                           <span class="text-sm text-[#343C6A]">Weight: {{ sub.weight }}%</span>
                         </div>
                       </p-accordion-header>
-                      <p-accordion-content class="bg-gray-50/30! pt-0!">
+
+                      <p-accordion-content class="bg-gray-50/10! pt-0!">
                         <!-- عرض الأسئلة في الطبقة الثانية -->
                         @if (sub.questions.length > 0) {
-                          <div class="flex flex-col gap-2 py-3">
+                          <div class="flex flex-col gap-3 py-3 text-gray-703 px-4">
                             @for (q of sub.questions; track $index) {
-                              <div
-                                class="flex gap-3 p-3 bg-white rounded-lg border border-gray-100 shadow-sm mx-2"
-                              >
-                                <span class="text-primary-400 font-bold text-xs"
-                                  >Q{{ $index + 1 }}</span
-                                >
-                                <p class="text-xs text-gray-600">{{ q }}</p>
-                              </div>
+                              <p>Q{{ $index + 1 }}: {{ q }}</p>
                             }
                           </div>
                         }
+
                         <!-- الطبقة الثالثة: Sub-Sub-Domain -->
                         @if (sub.children.length > 0) {
-                          <div class="flex flex-col gap-3 p-2">
+                          <p-accordion class="w-full">
                             @for (grand of sub.children; track grand.id) {
-                              <div
-                                class="bg-white rounded-lg border border-gray-200 overflow-hidden"
-                              >
-                                <div
-                                  class="bg-gray-50 px-4 py-2 border-b border-gray-100 flex items-center justify-between"
+                              <p-accordion-panel [value]="grand.id" class="border-t border-gray-100">
+                                <p-accordion-header
+                                  class="bg-white! py-3! flex-row-reverse! justify-end! gap-3!"
                                 >
-                                  <span class="text-xs font-bold text-primary-700">{{
-                                    grand.title
-                                  }}</span>
-                                  <span class="text-[10px] text-gray-400"
-                                    >{{ grand.questions.length }} Questions</span
-                                  >
-                                </div>
-                                <div class="p-3 flex flex-col gap-2">
-                                  @for (q of grand.questions; track $index) {
-                                    <div class="flex gap-2 items-start text-[11px] text-gray-600">
-                                      <span class="text-primary-300 font-medium">•</span>
-                                      <p>{{ q }}</p>
+                                  <div class="flex items-center gap-2 w-full justify-between px-6">
+                                    <span class="text-gray-703">{{ grand.title }}</span>
+                                    <span class="text-sm text-[#343C6A]">Weight: {{ grand.weight }}%</span>
+                                  </div>
+                                </p-accordion-header>
+
+                                <p-accordion-content class="bg-gray-50/20! pt-0!">
+                                  <!-- عرض الأسئلة في الطبقة الثالثة -->
+                                  @if (grand.questions.length > 0) {
+                                    <div class="flex flex-col gap-3 py-3 text-gray-703 px-8">
+                                      @for (q of grand.questions; track $index) {
+                                        <p>Q{{ $index + 1 }}: {{ q }}</p>
+                                      }
                                     </div>
                                   }
-                                </div>
-                              </div>
+                                </p-accordion-content>
+                              </p-accordion-panel>
                             }
-                          </div>
+                          </p-accordion>
                         }
                       </p-accordion-content>
                     </p-accordion-panel>

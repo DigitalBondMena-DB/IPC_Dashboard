@@ -58,7 +58,7 @@
 
   @if (showCreateButton()) {
     <button class="create-btn" (click)="onCreateClick()">
-      <lucide-angular [img]="plusIcon" [size]="18" />
+      <lucide-angular [img]="createButtonIcon()" [size]="18" />
       {{ createButtonLabel() }}
     </button>
   }

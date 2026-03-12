@@ -2,8 +2,9 @@ import { Component, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet, Router, ActivatedRoute } from '@angular/router';
 import { SurveyStepsComponent } from './components/survey-steps/survey-steps.component';
-import { LucideAngularModule, ChevronLeft } from 'lucide-angular';
+import { LucideAngularModule, ChevronLeft, Check } from 'lucide-angular';
 import { BPageHeaderComponent } from '@/shared/components/b-page-header/b-page-header.component';
+import { SurveyService } from '../services/survey.service';
 
 @Component({
   selector: 'app-survey-create',
@@ -21,6 +22,8 @@ import { BPageHeaderComponent } from '@/shared/components/b-page-header/b-page-h
         <app-b-page-header
           [title]="pageTitle()"
           createButtonLabel="Publish"
+          [createButtonIcon]="checkIcon"
+          (createClick)="publishSurvey()"
           [showCreateButton]="currentStep() === 4"
         />
       </div>
@@ -28,7 +31,7 @@ import { BPageHeaderComponent } from '@/shared/components/b-page-header/b-page-h
       <div class="bg-[#F5F7FA] mt-9 flex-1 flex flex-col overflow-hidden border border-gray-100">
         <app-survey-steps [currentStep]="currentStep()" />
 
-        <div class="flex-1 overflow-y-auto px-8 pb-8 custom-scrollbar">
+        <div class="flex-1 overflow-y-auto px-4 pb-8 custom-scrollbar">
           <router-outlet />
         </div>
       </div>
@@ -46,11 +49,14 @@ import { BPageHeaderComponent } from '@/shared/components/b-page-header/b-page-h
 export class SurveyCreateComponent {
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
+  private readonly surveyService = inject(SurveyService);
 
   readonly chevronLeftIcon = ChevronLeft;
+  readonly checkIcon = Check;
 
   id = signal<string | null>(this.route.snapshot.paramMap.get('id'));
-
+  surveyResource = this.surveyService.getSurveyById(this.id);
+  surveyData = computed<any>(() => this.surveyResource.value());
   pageTitle = computed(() => (this.id() ? 'Edit Survey' : 'Create Survey'));
 
   currentStep = signal(0);
@@ -78,5 +84,21 @@ export class SurveyCreateComponent {
   }
   goBack() {
     this.router.navigate(['/survey']);
+  }
+  publishSurvey() {
+    const data = this.surveyData();
+
+    if (!data.is_active) {
+      this.surveyService.toggleSurvey(this.id()!).subscribe({
+        next: () => {
+          this.router.navigate(['/survey']);
+        },
+        error: (error) => {
+          console.error(error);
+        },
+      });
+    } else {
+      this.router.navigate(['/survey']);
+    }
   }
 }
