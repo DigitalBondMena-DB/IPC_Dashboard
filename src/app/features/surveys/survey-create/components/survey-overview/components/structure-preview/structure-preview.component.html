@@ -1,56 +1,105 @@
 <div class="bg-white rounded-lg p-6 border border-gray-100 shadow-sm mb-6">
-    <h3 class="text-base font-bold text-slate-800 mb-4">Structure Preview</h3>
-
-    @if (domains()?.length) {
-    <p-accordion [value]="[domains()[0].id]" class="w-full flex flex-col gap-3">
-        @for (domain of domains(); track domain.id; let first = $first) {
-        <p-accordion-panel [value]="domain.id" class="mb-3 block">
-
-            <p-accordion-header class="flex-row-reverse! gap-4! bg-gray-200! border! border-[#E5E7EB]!">
-
-                <div class="flex items-center justify-between w-full">
-                    <div class="flex items-center gap-4">
-                        <span class="font-semibold text-black-400">{{ domain.title }}</span>
-                        <span class="text-sm text-[#343C6A]">
-                            Weight: {{ domain.weight }}%
-                        </span>
-                    </div>
-                    <div class="text-sm text-gray-600">
-                        {{ domain.questions_count }} questions
-                    </div>
-
+  <div class="flex items-center gap-2 mb-6">
+    <div class="size-2 bg-primary-500 rounded-full"></div>
+    <h3 class="text-lg font-bold text-black-400">Structure Preview</h3>
+  </div>
+  @if (domains().length !== 0) {
+    <p-accordion [value]="[domains()[0].id]" class="w-full flex flex-col gap-4 structure-accordion">
+      @for (domain of domains(); track domain.id) {
+        <!-- الطبقة الأولى: Domain -->
+        <p-accordion-panel [value]="domain.id" class="mb-4 overflow-hidden">
+          <p-accordion-header class="bg-gray-200! border! flex-row-reverse! border-[#E5E7EB]!">
+            <div class="flex items-center justify-between w-full px-2">
+              <div class="flex items-center gap-3">
+                <div class="flex items-center gap-4">
+                  <span class="font-semibold text-black-400">{{ domain.title }}</span>
+                  <span class="text-sm text-[#343C6A]">Weight: {{ domain.weight }}%</span>
                 </div>
-            </p-accordion-header>
-
-            <p-accordion-content class="border! border-[#E5E7EB]!">
-                <!-- Content: Subdomains List -->
-                <div class="divide-y divide-gray-100">
-                    @for (sub of domain.children; track sub.id) {
-                    <div class="p-4 flex items-center justify-between hover:bg-slate-50 transition-colors">
-                        <div class="flex items-center gap-2">
-                            <lucide-angular [img]="chevronRightIcon" class="text-slate-400" size="16"></lucide-angular>
-                            <span class="text-gray-703">{{ sub.title }}</span>
-                            <span class="text-sm text-gray-600 ms-3">({{ sub.questions_count }} questions)</span>
-                        </div>
-                        <div class="text-sm text-[#343C6A]">
-                            Weight: {{ sub.weight }}%
-                        </div>
-                    </div>
-                    }
-                    @if (!domain.children?.length) {
-                    <div class="p-4 text-sm text-slate-500 text-center italic">
-                        No subdomains available.
-                    </div>
-                    }
+              </div>
+              <div class="text-sm text-gray-600">{{ domain.questions_count }} questions</div>
+            </div>
+          </p-accordion-header>
+          <p-accordion-content class="p-0!">
+            <div class="flex flex-col">
+              <!-- عرض الأسئلة إذا وجدت في الطبقة الأولى -->
+              @if (domain.questions.length > 0) {
+                <div class="p-4 flex flex-col gap-2 bg-white">
+                  @for (q of domain.questions; track $index) {
+                    <p>Q{{ $index + 1 }}: {{ q }}</p>
+                  }
                 </div>
-            </p-accordion-content>
-
+              }
+              <!-- الطبقة الثانية: Sub-Domain -->
+              @if (domain.children.length > 0) {
+                <p-accordion class="w-full">
+                  @for (sub of domain.children; track sub.id) {
+                    <p-accordion-panel [value]="sub.id" class="border-t border-gray-100">
+                      <p-accordion-header
+                        class="bg-white! py-3! flex-row-reverse! justify-end! gap-3!"
+                      >
+                        <div class="flex items-center gap-2 w-full justify-between">
+                          <span class="text-gray-703">{{ sub.title }}</span>
+                          <span class="text-sm text-[#343C6A]">Weight: {{ sub.weight }}%</span>
+                        </div>
+                      </p-accordion-header>
+                      <p-accordion-content class="bg-gray-50/30! pt-0!">
+                        <!-- عرض الأسئلة في الطبقة الثانية -->
+                        @if (sub.questions.length > 0) {
+                          <div class="flex flex-col gap-2 py-3">
+                            @for (q of sub.questions; track $index) {
+                              <div
+                                class="flex gap-3 p-3 bg-white rounded-lg border border-gray-100 shadow-sm mx-2"
+                              >
+                                <span class="text-primary-400 font-bold text-xs"
+                                  >Q{{ $index + 1 }}</span
+                                >
+                                <p class="text-xs text-gray-600">{{ q }}</p>
+                              </div>
+                            }
+                          </div>
+                        }
+                        <!-- الطبقة الثالثة: Sub-Sub-Domain -->
+                        @if (sub.children.length > 0) {
+                          <div class="flex flex-col gap-3 p-2">
+                            @for (grand of sub.children; track grand.id) {
+                              <div
+                                class="bg-white rounded-lg border border-gray-200 overflow-hidden"
+                              >
+                                <div
+                                  class="bg-gray-50 px-4 py-2 border-b border-gray-100 flex items-center justify-between"
+                                >
+                                  <span class="text-xs font-bold text-primary-700">{{
+                                    grand.title
+                                  }}</span>
+                                  <span class="text-[10px] text-gray-400"
+                                    >{{ grand.questions.length }} Questions</span
+                                  >
+                                </div>
+                                <div class="p-3 flex flex-col gap-2">
+                                  @for (q of grand.questions; track $index) {
+                                    <div class="flex gap-2 items-start text-[11px] text-gray-600">
+                                      <span class="text-primary-300 font-medium">•</span>
+                                      <p>{{ q }}</p>
+                                    </div>
+                                  }
+                                </div>
+                              </div>
+                            }
+                          </div>
+                        }
+                      </p-accordion-content>
+                    </p-accordion-panel>
+                  }
+                </p-accordion>
+              }
+            </div>
+          </p-accordion-content>
         </p-accordion-panel>
-        }
+      }
     </p-accordion>
-    } @else {
-    <div class="text-center p-8 bg-slate-50 rounded-lg border border-dashed border-slate-200">
-        <p class="text-slate-500 text-sm">No domains available.</p>
+  } @else {
+    <div class="text-center p-12 bg-gray-50 rounded-2xl border-2 border-dashed border-gray-200">
+      <p class="text-gray-400 font-medium">No structure data available to preview.</p>
     </div>
-    }
+  }
 </div>

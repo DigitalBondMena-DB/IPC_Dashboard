@@ -13,13 +13,13 @@ import { LucideAngularModule, Settings } from 'lucide-angular';
   standalone: true,
   imports: [CommonModule, BFormBuilderComponent, LucideAngularModule],
   template: `
-    <div class="mt-6">
+    <div class="mt-6 bg-white py-6 px-4 border border-[#E1E7EF] rounded-xl">
       <div class="flex items-center gap-3 mb-6">
         <div class="p-2 bg-blue-50 rounded-lg">
           <lucide-angular [img]="settingsIcon" [size]="20" class="text-blue-500" />
         </div>
         <div>
-          <h2 class="text-lg font-semibold text-[#0e0e0e]">Survey Setup</h2>
+          <h2 class="text-lg font-bold text-black-400">Survey Setup</h2>
           <p class="text-sm text-gray-500">Set up basic survey parameters</p>
         </div>
       </div>

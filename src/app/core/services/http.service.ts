@@ -17,12 +17,15 @@ export class HttpService {
   }
   get<T>(endpoint: string, params?: Signal<any>): HttpResourceRef<T | undefined> {
     return httpResource<T>(() => {
-      const p = params?.();
-      if (p === null) return undefined;
+      // نتحقق من وجود الـ endpoint والـ params بشكل منعزل لضمان الاستقرار
+      const currentParams = params ? params() : {};
+      
+      if (!endpoint) return undefined;
+
       return {
         url: API_CONFIG.BASE_URL + endpoint,
         method: 'GET',
-        params: p,
+        params: currentParams,
       };
     });
   }

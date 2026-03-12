@@ -1,9 +1,11 @@
 import { Component, ChangeDetectionStrategy, computed, inject, signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { BDataTableComponent } from '@shared/components/b-data-table/b-data-table.component';
 import { BPageHeaderComponent } from '@shared/components/b-page-header/b-page-header.component';
 import { UserManagementService } from '../services/user-management.service';
 import { ITableColumn } from '@shared/models/table.model';
 import { Router, ActivatedRoute } from '@angular/router';
+import { map } from 'rxjs';
 import { MessageService } from 'primeng/api';
 import { USER_TYPE_CONFIG } from '../config/user-type.config';
 
@@ -44,7 +46,7 @@ export class UserListComponent {
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
 
-  readonly type = signal<string>(this.route.snapshot.data['type']);
+  readonly type = toSignal(this.route.data.pipe(map((d) => d['type'] as string)), { initialValue: '' });
   readonly config = computed(() => USER_TYPE_CONFIG[this.type()]);
 
   readonly columns = computed<ITableColumn[]>(() => this.config().columns);

@@ -77,11 +77,13 @@ export class BPageHeaderComponent {
   );
 
   constructor() {
-    // Effect to emit search change when debounced signal updates
+    let isInitial = true;
     effect(() => {
       const val = this.debouncedSearchText();
-      // Only emit if it's not the initial empty value of the signal (or handle as needed)
-      this.searchChange.emit(val);
+      if (!isInitial) {
+        this.searchChange.emit(val);
+      }
+      isInitial = false;
     });
   }
 

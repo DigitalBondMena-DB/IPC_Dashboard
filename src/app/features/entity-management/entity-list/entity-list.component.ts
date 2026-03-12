@@ -1,8 +1,10 @@
 import { Component, ChangeDetectionStrategy, computed, inject, signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { BDataTableComponent } from '@shared/components/b-data-table/b-data-table.component';
 import { BPageHeaderComponent } from '@shared/components/b-page-header/b-page-header.component';
 import { EntityManagementService } from '../services/entity-management.service';
 import { Router, ActivatedRoute } from '@angular/router';
+import { map } from 'rxjs';
 import { MessageService } from 'primeng/api';
 import { ENTITY_TYPE_CONFIG } from '../config/entity-type.config';
 
@@ -43,7 +45,9 @@ export class EntityListComponent {
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
 
-  readonly type = signal<string>(this.route.snapshot.data['type']);
+  readonly type = toSignal(this.route.data.pipe(map((d) => d['type'] as string)), {
+    initialValue: '',
+  });
   readonly config = computed(() => ENTITY_TYPE_CONFIG[this.type()]);
 
   tableState = signal({

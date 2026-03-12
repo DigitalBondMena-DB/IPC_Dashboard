@@ -17,7 +17,7 @@ import { SURVEY_MENU_ITEMS, SURVEY_FOOTER_CONFIG } from '@/shared/models/navigat
       <div class="flex-1 flex flex-col min-w-0">
         <!-- Content -->
         <main class="flex-1 overflow-y-auto px-2 pt-4 custom-scrollbar text-[#F5F7FA]">
-          <div class="max-w-[1600px] mx-auto flex flex-col justify-between min-h-full">
+          <div class="max-w-[1600px] mx-auto flex flex-col justify-between min-h-full bg-[#F5F7FA]">
             <div class="flex-1">
               <router-outlet />
             </div>

@@ -17,11 +17,13 @@ import { BPageHeaderComponent } from '@/shared/components/b-page-header/b-page-h
   ],
   template: `
     <div class="h-full flex flex-col">
-      <app-b-page-header
-        [title]="pageTitle()"
-        createButtonLabel="Publish"
-        [showCreateButton]="currentStep() === 4"
-      />
+      <div class="bg-white pb-6">
+        <app-b-page-header
+          [title]="pageTitle()"
+          createButtonLabel="Publish"
+          [showCreateButton]="currentStep() === 4"
+        />
+      </div>
 
       <div class="bg-[#F5F7FA] mt-9 flex-1 flex flex-col overflow-hidden border border-gray-100">
         <app-survey-steps [currentStep]="currentStep()" />

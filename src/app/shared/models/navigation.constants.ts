@@ -51,7 +51,7 @@ export const MAIN_FOOTER_CONFIG: SidebarFooterConfig = {
 export const SURVEY_FOOTER_CONFIG: SidebarFooterConfig = {
   title: 'Switch between Reports and Survey Builder.',
   buttons: [
-    { label: 'Dasgboard', routerLink: '/dashboard' },
+    { label: 'Dashboard', routerLink: '/dashboard' },
     { label: 'Reports', routerLink: '/dashboard' },
   ],
 };

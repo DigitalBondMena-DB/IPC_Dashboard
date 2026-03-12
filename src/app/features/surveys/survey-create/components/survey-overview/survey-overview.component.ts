@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal, computed, effect } from '@angular/core';
+import { Component, inject, OnInit, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SurveyService } from '../../../services/survey.service';
@@ -7,7 +7,6 @@ import { StructurePreviewComponent } from './components/structure-preview/struct
 import { HighRiskSummaryComponent } from './components/high-risk-summary/high-risk-summary.component';
 import { LogicSummaryComponent } from './components/logic-summary/logic-summary.component';
 import { LucideAngularModule, Loader2, AlertCircle, Check } from 'lucide-angular';
-import { BPageHeaderComponent } from '@/shared/components/b-page-header/b-page-header.component';
 
 @Component({
   selector: 'app-survey-overview',
@@ -19,11 +18,10 @@ import { BPageHeaderComponent } from '@/shared/components/b-page-header/b-page-h
     HighRiskSummaryComponent,
     LogicSummaryComponent,
     LucideAngularModule,
-    BPageHeaderComponent,
   ],
   templateUrl: './survey-overview.component.html',
 })
-export class SurveyOverviewComponent implements OnInit {
+export class SurveyOverviewComponent {
   private readonly surveyService = inject(SurveyService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
@@ -52,10 +50,6 @@ export class SurveyOverviewComponent implements OnInit {
   readonly loaderIcon = Loader2;
   readonly alertIcon = AlertCircle;
 
-  ngOnInit(): void {
-    // Initialization handled by signals/properties.
-  }
-
   retryFetch(): void {
     if (this.overviewResource) {
       this.overviewResource.reload();
@@ -63,8 +57,6 @@ export class SurveyOverviewComponent implements OnInit {
   }
 
   publishSurvey(): void {
-    // Implementation for publishing the survey...
-    // this.surveyService.publishSurvey(this.surveyId()!).subscribe(...)
     this.router.navigate(['/survey']);
   }
 }
