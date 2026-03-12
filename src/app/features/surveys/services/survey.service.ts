@@ -3,6 +3,7 @@ import { Injectable, Signal } from '@angular/core';
 import { Observable } from 'rxjs';
 import { API_CONFIG } from '@/core/config/api.config';
 import { HttpResourceRef } from '@angular/common/http';
+import { SurveyOverviewResponse } from '../models/survey-overview.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -32,6 +33,10 @@ export class SurveyService extends HttpService {
 
   getSurveyById(id: string | number): HttpResourceRef<any | undefined> {
     return this.get<any>(`${API_CONFIG.ENDPOINTS.SURVEYS.BASE}/${id}`);
+  }
+
+  getSurveyOverview(id: string | number): HttpResourceRef<SurveyOverviewResponse | undefined> {
+    return this.get<SurveyOverviewResponse>(`${API_CONFIG.ENDPOINTS.SURVEYS.BASE}/${id}/overview`);
   }
 
   getCategories(): Observable<any> {

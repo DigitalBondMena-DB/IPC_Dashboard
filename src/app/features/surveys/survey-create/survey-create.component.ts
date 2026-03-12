@@ -17,9 +17,9 @@ import { BPageHeaderComponent } from '@/shared/components/b-page-header/b-page-h
   ],
   template: `
     <div class="h-full flex flex-col">
-      <app-b-page-header [title]="pageTitle()" />
+      <app-b-page-header [title]="pageTitle()" [showCreateButton]="false" />
       <div
-        class="bg-gray-[#F9FAFB] mt-9 flex-1 flex flex-col overflow-hidden border border-gray-100"
+        class="bg-[#F5F7FA] mt-9 flex-1 flex flex-col overflow-hidden border border-gray-100"
       >
         <app-survey-steps [currentStep]="currentStep()" />
 
@@ -50,7 +50,7 @@ export class SurveyCreateComponent {
 
   currentStep = signal(0);
 
-  constructor() {}
+  constructor() { }
   ngOnInit(): void {
     this.checkRoute();
     this.router.events.subscribe(() => {
@@ -69,6 +69,8 @@ export class SurveyCreateComponent {
       this.currentStep.set(2);
     } else if (url.includes('conditional-logic')) {
       this.currentStep.set(3);
+    } else if (url.includes('overview')) {
+      this.currentStep.set(4);
     }
   }
   goBack() {

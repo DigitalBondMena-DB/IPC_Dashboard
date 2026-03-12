@@ -1,0 +1,56 @@
+<div class="bg-white rounded-lg p-6 border border-gray-100 shadow-sm mb-6">
+    <h3 class="text-base font-bold text-slate-800 mb-4">Structure Preview</h3>
+
+    @if (domains()?.length) {
+    <p-accordion [value]="[domains()[0].id]" class="w-full flex flex-col gap-3">
+        @for (domain of domains(); track domain.id; let first = $first) {
+        <p-accordion-panel [value]="domain.id" class="mb-3 block">
+
+            <p-accordion-header class="flex-row-reverse! gap-4! bg-gray-200! border! border-[#E5E7EB]!">
+
+                <div class="flex items-center justify-between w-full">
+                    <div class="flex items-center gap-4">
+                        <span class="font-semibold text-black-400">{{ domain.title }}</span>
+                        <span class="text-sm text-[#343C6A]">
+                            Weight: {{ domain.weight }}%
+                        </span>
+                    </div>
+                    <div class="text-sm text-gray-600">
+                        {{ domain.questions_count }} questions
+                    </div>
+
+                </div>
+            </p-accordion-header>
+
+            <p-accordion-content class="border! border-[#E5E7EB]!">
+                <!-- Content: Subdomains List -->
+                <div class="divide-y divide-gray-100">
+                    @for (sub of domain.children; track sub.id) {
+                    <div class="p-4 flex items-center justify-between hover:bg-slate-50 transition-colors">
+                        <div class="flex items-center gap-2">
+                            <lucide-angular [img]="chevronRightIcon" class="text-slate-400" size="16"></lucide-angular>
+                            <span class="text-gray-703">{{ sub.title }}</span>
+                            <span class="text-sm text-gray-600 ms-3">({{ sub.questions_count }} questions)</span>
+                        </div>
+                        <div class="text-sm text-[#343C6A]">
+                            Weight: {{ sub.weight }}%
+                        </div>
+                    </div>
+                    }
+                    @if (!domain.children?.length) {
+                    <div class="p-4 text-sm text-slate-500 text-center italic">
+                        No subdomains available.
+                    </div>
+                    }
+                </div>
+            </p-accordion-content>
+
+        </p-accordion-panel>
+        }
+    </p-accordion>
+    } @else {
+    <div class="text-center p-8 bg-slate-50 rounded-lg border border-dashed border-slate-200">
+        <p class="text-slate-500 text-sm">No domains available.</p>
+    </div>
+    }
+</div>

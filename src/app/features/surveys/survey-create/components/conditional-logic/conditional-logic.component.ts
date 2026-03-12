@@ -69,8 +69,8 @@ export class ConditionalLogicComponent implements OnInit {
 
   id = signal<string | null>(
     this.route.snapshot.paramMap.get('id') ||
-      this.route.parent?.snapshot.paramMap.get('id') ||
-      null,
+    this.route.parent?.snapshot.paramMap.get('id') ||
+    null,
   );
 
   standaloneMode = signal<boolean>(!this.id());
@@ -267,7 +267,7 @@ export class ConditionalLogicComponent implements OnInit {
       ui_action_type: [uiActionType, Validators.required],
       target_question_ids: [
         ruleData?.target_question_ids ||
-          (ruleData?.target_question_id ? [ruleData.target_question_id] : []),
+        (ruleData?.target_question_id ? [ruleData.target_question_id] : []),
       ],
       target_answer_options: [ruleData?.target_answer_options || []],
       alert_type: [alertType],
@@ -483,6 +483,6 @@ export class ConditionalLogicComponent implements OnInit {
   }
 
   onNext() {
-    this.router.navigate(['/survey', 'edit', this.id(), 'review']);
+    this.router.navigate(['/survey', 'edit', this.id(), 'overview']);
   }
 }

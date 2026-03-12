@@ -44,6 +44,13 @@ export default [
             (m) => m.ConditionalLogicComponent,
           ),
       },
+      {
+        path: 'overview',
+        loadComponent: () =>
+          import('@features/surveys/survey-create/components/survey-overview/survey-overview.component').then(
+            (m) => m.SurveyOverviewComponent,
+          ),
+      },
     ],
   },
   {
@@ -80,6 +87,13 @@ export default [
         loadComponent: () =>
           import('@features/surveys/survey-create/components/conditional-logic/conditional-logic.component').then(
             (m) => m.ConditionalLogicComponent,
+          ),
+      },
+      {
+        path: 'overview',
+        loadComponent: () =>
+          import('@features/surveys/survey-create/components/survey-overview/survey-overview.component').then(
+            (m) => m.SurveyOverviewComponent,
           ),
       },
     ],
