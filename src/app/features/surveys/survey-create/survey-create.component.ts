@@ -17,10 +17,13 @@ import { BPageHeaderComponent } from '@/shared/components/b-page-header/b-page-h
   ],
   template: `
     <div class="h-full flex flex-col">
-      <app-b-page-header [title]="pageTitle()" [showCreateButton]="false" />
-      <div
-        class="bg-[#F5F7FA] mt-9 flex-1 flex flex-col overflow-hidden border border-gray-100"
-      >
+      <app-b-page-header
+        [title]="pageTitle()"
+        createButtonLabel="Publish"
+        [showCreateButton]="currentStep() === 4"
+      />
+
+      <div class="bg-[#F5F7FA] mt-9 flex-1 flex flex-col overflow-hidden border border-gray-100">
         <app-survey-steps [currentStep]="currentStep()" />
 
         <div class="flex-1 overflow-y-auto px-8 pb-8 custom-scrollbar">
@@ -50,7 +53,7 @@ export class SurveyCreateComponent {
 
   currentStep = signal(0);
 
-  constructor() { }
+  constructor() {}
   ngOnInit(): void {
     this.checkRoute();
     this.router.events.subscribe(() => {
@@ -59,8 +62,6 @@ export class SurveyCreateComponent {
   }
   checkRoute(): void {
     const url = this.router.url;
-    console.log(url);
-
     if (url.includes('setup')) {
       this.currentStep.set(0);
     } else if (url.includes('preliminary-questions')) {

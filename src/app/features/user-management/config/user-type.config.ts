@@ -16,7 +16,7 @@ export const USER_TYPE_CONFIG: Record<string, any> = {
       { field: 'is_active', header: 'Actions', type: 'toggle' },
     ],
     entityEndpoint: API_CONFIG.ENDPOINTS.CATEGORIES,
-    navPath: '/super-admin-users',
+    navPath: '/dashboard/super-admin-users',
     dependencies: ['generalDivisions'],
   },
   HEALTH_DIRECTORATE: {
@@ -35,7 +35,7 @@ export const USER_TYPE_CONFIG: Record<string, any> = {
     ],
     entityEndpoint: API_CONFIG.ENDPOINTS.ENTITIES.BASE,
     entityType: API_CONFIG.ENDPOINTS.ENTITIES.TYPE.HEALTH_DIRECTORATE,
-    navPath: '/health-directorate-users',
+    navPath: '/dashboard/health-directorate-users',
     dependencies: ['directorates', 'generalDivisions'],
   },
   HEALTH_DIVISION: {
@@ -55,7 +55,7 @@ export const USER_TYPE_CONFIG: Record<string, any> = {
     ],
     entityEndpoint: API_CONFIG.ENDPOINTS.ENTITIES.BASE,
     entityType: API_CONFIG.ENDPOINTS.ENTITIES.TYPE.HEALTH_DIVISION,
-    navPath: '/health-division-users',
+    navPath: '/dashboard/health-division-users',
     dependencies: ['directorates', 'healthDivisions', 'generalDivisions'],
   },
   HOSPITAL: {
@@ -76,7 +76,7 @@ export const USER_TYPE_CONFIG: Record<string, any> = {
     ],
     entityEndpoint: API_CONFIG.ENDPOINTS.ENTITIES.BASE,
     entityType: API_CONFIG.ENDPOINTS.ENTITIES.TYPE.HOSPITAL,
-    navPath: '/hospitals-users',
+    navPath: '/dashboard/hospitals-users',
     dependencies: ['directorates', 'healthDivisions', 'hospitals', 'generalDivisions'],
   },
   AUTHORITY: {
@@ -95,7 +95,7 @@ export const USER_TYPE_CONFIG: Record<string, any> = {
     ],
     entityEndpoint: API_CONFIG.ENDPOINTS.ENTITIES.BASE,
     entityType: API_CONFIG.ENDPOINTS.ENTITIES.TYPE.AUTHORITY,
-    navPath: '/authorities-users',
+    navPath: '/dashboard/authorities-users',
     dependencies: ['authorities', 'generalDivisions'],
   },
   AUTHORITY_HOSPITAL: {
@@ -114,7 +114,7 @@ export const USER_TYPE_CONFIG: Record<string, any> = {
     ],
     entityEndpoint: API_CONFIG.ENDPOINTS.ENTITIES.BASE,
     entityType: API_CONFIG.ENDPOINTS.ENTITIES.TYPE.HOSPITAL,
-    navPath: '/authorities-hospitals-users',
+    navPath: '/dashboard/authorities-hospitals-users',
     dependencies: ['authorities', 'hospitals', 'generalDivisions'],
   },
 };

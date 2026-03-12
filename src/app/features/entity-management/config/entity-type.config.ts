@@ -6,7 +6,7 @@ export const ENTITY_TYPE_CONFIG: Record<string, any> = {
     title: 'Divisions',
     entityLabel: 'Division',
     endpoint: API_CONFIG.ENDPOINTS.CATEGORIES,
-    navPath: '/divisions',
+    navPath: '/dashboard/divisions',
     columns: [
       { field: 'name', header: 'Name', sortable: true },
       { field: 'updated_at', header: 'Last Update', sortable: true, type: 'date' },
@@ -29,7 +29,7 @@ export const ENTITY_TYPE_CONFIG: Record<string, any> = {
     entityLabel: 'Directorate',
     endpoint: API_CONFIG.ENDPOINTS.ENTITIES.BASE,
     entity_type: API_CONFIG.ENDPOINTS.ENTITIES.TYPE.HEALTH_DIRECTORATE,
-    navPath: '/health-directorate',
+    navPath: '/dashboard/health-directorate',
     columns: [
       { field: 'name', header: 'Name', sortable: true },
       { field: 'updated_at', header: 'Last Update', sortable: true, type: 'date' },
@@ -52,7 +52,7 @@ export const ENTITY_TYPE_CONFIG: Record<string, any> = {
     entityLabel: 'Division',
     endpoint: API_CONFIG.ENDPOINTS.ENTITIES.BASE,
     entity_type: API_CONFIG.ENDPOINTS.ENTITIES.TYPE.HEALTH_DIVISION,
-    navPath: '/health-division',
+    navPath: '/dashboard/health-division',
     columns: [
       { field: 'name', header: 'Name', sortable: true },
       { field: 'directorate', header: 'Directorate', sortable: true, type: 'text' },
@@ -89,7 +89,7 @@ export const ENTITY_TYPE_CONFIG: Record<string, any> = {
     endpoint: API_CONFIG.ENDPOINTS.ENTITIES.BASE,
     entity_type: API_CONFIG.ENDPOINTS.ENTITIES.TYPE.HOSPITAL,
     parent_type: API_CONFIG.ENDPOINTS.ENTITIES.TYPE.HEALTH_DIVISION,
-    navPath: '/hospitals',
+    navPath: '/dashboard/hospitals',
     columns: [
       { field: 'name', header: 'Name', sortable: true },
       { field: 'division', header: 'Division', sortable: true, type: 'text' },
@@ -150,7 +150,7 @@ export const ENTITY_TYPE_CONFIG: Record<string, any> = {
     entityLabel: 'Authority',
     endpoint: API_CONFIG.ENDPOINTS.ENTITIES.BASE,
     entity_type: API_CONFIG.ENDPOINTS.ENTITIES.TYPE.AUTHORITY,
-    navPath: '/authorities',
+    navPath: '/dashboard/authorities',
     columns: [
       { field: 'name', header: 'Name', sortable: true },
       { field: 'updated_at', header: 'Last Update', sortable: true, type: 'date' },
@@ -174,7 +174,7 @@ export const ENTITY_TYPE_CONFIG: Record<string, any> = {
     endpoint: API_CONFIG.ENDPOINTS.ENTITIES.BASE,
     entity_type: API_CONFIG.ENDPOINTS.ENTITIES.TYPE.HOSPITAL,
     parent_type: API_CONFIG.ENDPOINTS.ENTITIES.TYPE.AUTHORITY,
-    navPath: '/authorities-hospitals',
+    navPath: '/dashboard/authorities-hospitals',
     columns: [
       { field: 'name', header: 'Name', sortable: true },
       { field: 'authority', header: 'Authority', sortable: true, type: 'text' },

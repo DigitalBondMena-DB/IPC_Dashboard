@@ -7,61 +7,64 @@ import { StructurePreviewComponent } from './components/structure-preview/struct
 import { HighRiskSummaryComponent } from './components/high-risk-summary/high-risk-summary.component';
 import { LogicSummaryComponent } from './components/logic-summary/logic-summary.component';
 import { LucideAngularModule, Loader2, AlertCircle, Check } from 'lucide-angular';
+import { BPageHeaderComponent } from '@/shared/components/b-page-header/b-page-header.component';
 
 @Component({
-    selector: 'app-survey-overview',
-    standalone: true,
-    imports: [
-        CommonModule,
-        OverviewHeaderComponent,
-        StructurePreviewComponent,
-        HighRiskSummaryComponent,
-        LogicSummaryComponent,
-        LucideAngularModule
-    ],
-    templateUrl: './survey-overview.component.html',
+  selector: 'app-survey-overview',
+  standalone: true,
+  imports: [
+    CommonModule,
+    OverviewHeaderComponent,
+    StructurePreviewComponent,
+    HighRiskSummaryComponent,
+    LogicSummaryComponent,
+    LucideAngularModule,
+    BPageHeaderComponent,
+  ],
+  templateUrl: './survey-overview.component.html',
 })
 export class SurveyOverviewComponent implements OnInit {
-    private readonly surveyService = inject(SurveyService);
-    private readonly route = inject(ActivatedRoute);
-    private readonly router = inject(Router);
-    checkIcon = Check
-    surveyId = computed(() => {
-        const parentId = this.route.parent?.snapshot.paramMap.get('id');
-        const id = this.route.snapshot.paramMap.get('id');
-        return parentId || id;
-    });
+  private readonly surveyService = inject(SurveyService);
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  checkIcon = Check;
+  surveyId = computed(() => {
+    const parentId = this.route.parent?.snapshot.paramMap.get('id');
+    const id = this.route.snapshot.paramMap.get('id');
+    return parentId || id;
+  });
 
-    // The resource holding our survey data, fetching automatically based on surveyorId
-    overviewResource = this.surveyService.getSurveyOverview(this.surveyId() as string);
+  // The resource holding our survey data, fetching automatically based on surveyorId
+  overviewResource = this.surveyService.getSurveyOverview(this.surveyId() as string);
 
-    // Derived signals based on the resource state
-    overviewData = computed(() => this.overviewResource?.value()?.data);
-    isLoading = computed(() => this.overviewResource?.isLoading() ?? false);
-    error = computed(() => {
-        const errorState = this.overviewResource?.error();
-        if (errorState) return 'Failed to load survey overview. Please try again.';
-        if (!this.isLoading() && !this.overviewData() && this.surveyId()) return 'No overview data found.';
-        if (!this.surveyId()) return 'No survey ID provided.';
-        return null;
-    });
+  // Derived signals based on the resource state
+  overviewData = computed(() => this.overviewResource?.value()?.data);
+  isLoading = computed(() => this.overviewResource?.isLoading() ?? false);
+  error = computed(() => {
+    const errorState = this.overviewResource?.error();
+    if (errorState) return 'Failed to load survey overview. Please try again.';
+    if (!this.isLoading() && !this.overviewData() && this.surveyId())
+      return 'No overview data found.';
+    if (!this.surveyId()) return 'No survey ID provided.';
+    return null;
+  });
 
-    readonly loaderIcon = Loader2;
-    readonly alertIcon = AlertCircle;
+  readonly loaderIcon = Loader2;
+  readonly alertIcon = AlertCircle;
 
-    ngOnInit(): void {
-        // Initialization handled by signals/properties.
+  ngOnInit(): void {
+    // Initialization handled by signals/properties.
+  }
+
+  retryFetch(): void {
+    if (this.overviewResource) {
+      this.overviewResource.reload();
     }
+  }
 
-    retryFetch(): void {
-        if (this.overviewResource) {
-            this.overviewResource.reload();
-        }
-    }
-
-    publishSurvey(): void {
-        // Implementation for publishing the survey...
-        // this.surveyService.publishSurvey(this.surveyId()!).subscribe(...)
-        this.router.navigate(['/survey']);
-    }
+  publishSurvey(): void {
+    // Implementation for publishing the survey...
+    // this.surveyService.publishSurvey(this.surveyId()!).subscribe(...)
+    this.router.navigate(['/survey']);
+  }
 }

@@ -4,7 +4,7 @@ import { Component } from '@angular/core';
   selector: 'app-main-footer',
   template: `
     <footer
-      class="mt-12 py-6  flex items-center justify-center gap-2 text-[10px] text-gray-400 font-medium"
+      class="py-6 bg-[#F5F7FA] flex items-center justify-center gap-2 text-[10px] text-gray-400 font-medium"
     >
       <span>Powered by</span>
       <a href="https://www.digitalbondmena.com/" rel="noopener noreferrer" target="_blank">
