@@ -79,6 +79,35 @@
                                       }
                                     </div>
                                   }
+
+                                  <!-- الطبقة الرابعة: Sub-Sub-Sub-Domain -->
+                                  @if (grand.children.length > 0) {
+                                    <p-accordion class="w-full">
+                                      @for (greatGrand of grand.children; track greatGrand.id) {
+                                        <p-accordion-panel [value]="greatGrand.id" class="border-t border-gray-100">
+                                          <p-accordion-header
+                                            class="bg-white! py-3! flex-row-reverse! justify-end! gap-3!"
+                                          >
+                                            <div class="flex items-center gap-2 w-full justify-between px-8">
+                                              <span class="text-gray-703">{{ greatGrand.title }}</span>
+                                              <span class="text-sm text-[#343C6A]">Weight: {{ greatGrand.weight }}%</span>
+                                            </div>
+                                          </p-accordion-header>
+
+                                          <p-accordion-content class="bg-gray-50/30! pt-0!">
+                                            <!-- عرض الأسئلة في الطبقة الرابعة -->
+                                            @if (greatGrand.questions.length > 0) {
+                                              <div class="flex flex-col gap-3 py-3 text-gray-703 px-10">
+                                                @for (q of greatGrand.questions; track $index) {
+                                                  <p>Q{{ $index + 1 }}: {{ q }}</p>
+                                                }
+                                              </div>
+                                            }
+                                          </p-accordion-content>
+                                        </p-accordion-panel>
+                                      }
+                                    </p-accordion>
+                                  }
                                 </p-accordion-content>
                               </p-accordion-panel>
                             }

@@ -119,7 +119,7 @@ export class EntityIdComponent {
 
         return {
           page: page(),
-          per_page: 50,
+          per_page: 15,
           search: searchTerm(),
           ...(depConfig.type ? { type: depConfig.type } : {}),
           ...(parentId ? { parent_id: parentId } : {}),
@@ -132,6 +132,7 @@ export class EntityIdComponent {
       // Sync accumulated data
       effect(
         () => {
+          if (resource.isLoading()) return;
           const res = resource.value();
           if (res?.data) {
             if (page() === 1) accumulated.set(res.data);

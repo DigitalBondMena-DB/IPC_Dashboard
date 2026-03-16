@@ -20,7 +20,7 @@ import { SurveyService } from '../services/survey.service';
     <div class="h-full flex flex-col">
       <div class="bg-white pb-6">
         <app-b-page-header
-          [title]="pageTitle()"
+          [title]="'Manage Survey'"
           createButtonLabel="Publish"
           [createButtonIcon]="checkIcon"
           (createClick)="publishSurvey()"
@@ -57,7 +57,6 @@ export class SurveyCreateComponent {
   id = signal<string | null>(this.route.snapshot.paramMap.get('id'));
   surveyResource = this.surveyService.getSurveyById(this.id);
   surveyData = computed<any>(() => this.surveyResource.value());
-  pageTitle = computed(() => (this.id() ? 'Edit Survey' : 'Create Survey'));
 
   currentStep = signal(0);
 

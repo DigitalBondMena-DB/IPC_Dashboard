@@ -43,9 +43,11 @@ export class BMultiSelectComponent implements ControlValueAccessor, OnDestroy {
   loading = input<boolean>(false);
   hasError = input<boolean>(false);
   errorMessage = input<string | null>(null);
+  virtualScroll = input<boolean>(false);
 
   // Outputs
   onSearch = output<string>();
+  onScrollPagination = output<any>();
 
   value = signal<any[]>([]);
   disabled = signal<boolean>(false);

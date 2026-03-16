@@ -158,14 +158,11 @@ export class SurveyStructureComponent implements OnInit {
       const subdomains = this.getSubdomains(node);
       const questions = this.getQuestions(node);
 
-      // If it has subdomains, it's not a leaf, so we recurse
       if (subdomains.length > 0) {
         if (!this.validateDomainNodes(subdomains)) {
           return false;
         }
       } else {
-        // It's a leaf node (no subdomains)
-        // It MUST have at least one question
         if (questions.length === 0) {
           return false;
         }

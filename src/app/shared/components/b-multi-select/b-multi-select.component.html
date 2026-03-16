@@ -19,7 +19,22 @@
       (ngModelChange)="onModelChange($event)"
       [maxSelectedLabels]="3"
       display="chip"
-    />
+      [virtualScroll]="virtualScroll()"
+      [virtualScrollItemSize]="38"
+      [virtualScrollOptions]="{ lazy: true }"
+      (onLazyLoad)="onScrollPagination.emit($event)"
+    >
+      <ng-template #item let-item>
+        @if (item && item.label) {
+          {{ item.label }}
+        } @else {
+          <div class="flex items-center gap-2 py-1">
+            <div class="animate-pulse bg-gray-100 h-4 w-24 rounded"></div>
+            <span class="text-xs text-gray-400">Loading...</span>
+          </div>
+        }
+      </ng-template>
+    </p-multiSelect>
     @if (hasError()) {
       <p class="text-red-500 text-xs mt-1">{{ errorMessage() }}</p>
     }

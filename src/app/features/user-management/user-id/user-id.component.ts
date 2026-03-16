@@ -102,7 +102,7 @@ export class UserIdComponent {
       transformed.authority_id = data.entity_id;
     } else if (type === API_CONFIG.ENDPOINTS.USERS.TYPE.SUPER_ADMIN) {
       if (data.categories && Array.isArray(data.categories) && data.categories.length > 0) {
-        transformed.division_id = data.categories[0].id;
+        transformed.category_ids = data.categories.map((c: any) => c.id);
       }
     }
 
@@ -154,7 +154,7 @@ export class UserIdComponent {
 
         return {
           page: page(),
-          per_page: 50,
+          per_page: 15,
           search: searchTerm(),
           ...(depConfig.type ? { type: depConfig.type } : {}),
           ...(entityId ? { parent_id: entityId } : {}),
@@ -166,6 +166,7 @@ export class UserIdComponent {
 
       effect(
         () => {
+          if (resource.isLoading()) return;
           const res = resource.value();
           if (res?.data) {
             if (page() === 1) accumulated.set(res.data);
@@ -206,7 +207,7 @@ export class UserIdComponent {
         type: API_CONFIG.ENDPOINTS.ENTITIES.TYPE.AUTHORITY,
       },
       generalDivisions: {
-        key: 'division_id',
+        key: 'category_ids',
         endpoint: API_CONFIG.ENDPOINTS.CATEGORIES,
       },
     };
@@ -257,7 +258,7 @@ export class UserIdComponent {
       health_division_id: 'healthDivisions',
       hospital_id: 'hospitals',
       authority_id: 'authorities',
-      division_id: 'generalDivisions',
+      category_ids: 'generalDivisions',
     };
     return mapping[prop] || prop;
   }
@@ -365,8 +366,10 @@ export class UserIdComponent {
     } else if (formData.authority_id) {
       payload.entity_id = formData.authority_id;
     }
-    if (formData.division_id) {
-      payload.category_ids = [formData.division_id];
+    if (formData.category_ids) {
+      payload.category_ids = Array.isArray(formData.category_ids)
+        ? formData.category_ids
+        : [formData.category_ids];
     }
 
     if (payload.category_ids && !Array.isArray(payload.category_ids)) {
@@ -378,7 +381,7 @@ export class UserIdComponent {
       'health_division_id',
       'health_directorate_id',
       'authority_id',
-      'division_id',
+      'category_ids',
     ];
 
     entityKeys.forEach((key) => {

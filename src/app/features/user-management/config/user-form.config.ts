@@ -66,6 +66,7 @@ export const getUserFormConfig = (
           validators: [],
           colSpan: 'col-span-1',
           filter: true,
+          virtualScroll: true,
           loading: deps.isGeneralDivisionsLoading,
         },
       ];
@@ -82,6 +83,7 @@ export const getUserFormConfig = (
           validators: [Validators.required],
           colSpan: 'col-span-1',
           filter: true,
+          virtualScroll: true,
           loading: deps.isDirectoratesLoading,
         },
         {
@@ -94,6 +96,7 @@ export const getUserFormConfig = (
           validators: [],
           colSpan: 'col-span-1',
           filter: true,
+          virtualScroll: true,
           loading: deps.isGeneralDivisionsLoading,
         },
       ];
@@ -111,6 +114,7 @@ export const getUserFormConfig = (
           validators: [],
           colSpan: 'col-span-1',
           filter: true,
+          virtualScroll: true,
           loading: deps.isGeneralDivisionsLoading,
         },
         {
@@ -122,6 +126,7 @@ export const getUserFormConfig = (
           validators: [Validators.required],
           colSpan: 'col-span-1',
           filter: true,
+          virtualScroll: true,
           loading: deps.isDirectoratesLoading,
         },
 
@@ -134,6 +139,7 @@ export const getUserFormConfig = (
           validators: [Validators.required],
           colSpan: 'col-span-1',
           filter: true,
+          virtualScroll: true,
           loading: deps.isHealthDivisionsLoading,
           dependsOn: 'health_directorate_id',
         },
@@ -151,6 +157,7 @@ export const getUserFormConfig = (
           validators: [Validators.required],
           colSpan: 'col-span-1',
           filter: true,
+          virtualScroll: true,
           loading: deps.isDirectoratesLoading,
         },
         {
@@ -162,6 +169,7 @@ export const getUserFormConfig = (
           validators: [Validators.required],
           colSpan: 'col-span-1',
           filter: true,
+          virtualScroll: true,
           loading: deps.isHealthDivisionsLoading,
           dependsOn: 'health_directorate_id',
         },
@@ -174,6 +182,7 @@ export const getUserFormConfig = (
           validators: [Validators.required],
           colSpan: 'col-span-1',
           filter: true,
+          virtualScroll: true,
           loading: deps.isHospitalsLoading,
           dependsOn: 'health_division_id',
         },
@@ -186,6 +195,7 @@ export const getUserFormConfig = (
           validators: [],
           colSpan: 'col-span-1',
           filter: true,
+          virtualScroll: true,
           loading: deps.isGeneralDivisionsLoading,
         },
       ];
@@ -202,6 +212,7 @@ export const getUserFormConfig = (
           validators: [Validators.required],
           colSpan: 'col-span-1',
           filter: true,
+          virtualScroll: true,
           loading: deps.isAuthoritiesLoading,
         },
         {
@@ -214,6 +225,7 @@ export const getUserFormConfig = (
           validators: [],
           colSpan: 'col-span-1',
           filter: true,
+          virtualScroll: true,
           loading: deps.isGeneralDivisionsLoading,
         },
       ];
@@ -230,6 +242,7 @@ export const getUserFormConfig = (
           validators: [Validators.required],
           colSpan: 'col-span-1',
           filter: true,
+          virtualScroll: true,
           loading: deps.isAuthoritiesLoading,
         },
         {
@@ -241,6 +254,7 @@ export const getUserFormConfig = (
           validators: [Validators.required],
           colSpan: 'col-span-1',
           filter: true,
+          virtualScroll: true,
           loading: deps.isHospitalsLoading,
           dependsOn: 'authority_id',
         },
@@ -253,6 +267,7 @@ export const getUserFormConfig = (
           validators: [],
           colSpan: 'col-span-1',
           filter: true,
+          virtualScroll: true,
           loading: deps.isGeneralDivisionsLoading,
         },
       ];
