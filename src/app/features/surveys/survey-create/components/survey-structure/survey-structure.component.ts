@@ -242,10 +242,16 @@ export class SurveyStructureComponent implements OnInit {
     const currentTitle = node.get('title')?.value?.trim();
     if (!currentTitle) {
       node.get('title')?.setValue(node.get('lastTitle')?.value || '');
-      return;
-    }
-    if (node.get('lastTitle')?.value !== currentTitle) {
+      // Even if title fails, we should still check the weight if manual
+    } else if (node.get('lastTitle')?.value !== currentTitle) {
       node.get('lastTitle')?.setValue(currentTitle);
+    }
+
+    if (this.weightingType() === 'manual') {
+      const weightCtrl = node.get('weight');
+      if (weightCtrl && weightCtrl.value < 1) {
+        weightCtrl.setValue(1);
+      }
     }
     this.syncDomains();
   }
@@ -337,7 +343,7 @@ export class SurveyStructureComponent implements OnInit {
         this.optionsArray.push(
           this.fb.group({
             text: [optText, Validators.required],
-            weight: [weightValue, Validators.required],
+            weight: [weightValue, [Validators.required, Validators.min(0)]],
             isNa: [false],
           }),
         );
@@ -371,7 +377,7 @@ export class SurveyStructureComponent implements OnInit {
     this.optionsArray.push(
       this.fb.group({
         text: ['', Validators.required],
-        weight: [0, Validators.required],
+        weight: [0, [Validators.required, Validators.min(0)]],
         isNa: [false],
       }),
     );

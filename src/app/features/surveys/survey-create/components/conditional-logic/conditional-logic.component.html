@@ -25,6 +25,10 @@
             class="w-full"
             appendTo="body"
             placeholder="Select Domain / Subdomain"
+            [filter]="true"
+            filterBy="label,searchTitle"
+            filterPlaceholder="Search domain, subdomain or question..."
+            filterMode="lenient"
             (onNodeSelect)="onNodeSelect($event)"
           ></p-treeSelect>
         </div>
@@ -61,6 +65,10 @@
             class="w-full"
             appendTo="body"
             placeholder="Select Domain / Subdomain"
+            [filter]="true"
+            filterBy="label,searchTitle"
+            filterPlaceholder="Search domain, subdomain or question..."
+            filterMode="lenient"
             (onNodeSelect)="onNodeSelect($event)"
             [disabled]="!selectedSurveyId()"
           ></p-treeSelect>

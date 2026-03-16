@@ -187,11 +187,13 @@ export class ConditionalLogicComponent implements OnInit {
   }
 
   mapDomainToTreeNode(domain: any, allQuestionsRef: any[]): TreeNode {
-    const node: TreeNode = {
+    const questionsText = (domain.questions || []).map((q: any) => q.text).join(' ');
+    const node: TreeNode & { searchTitle?: string } = {
       key: `domain_${domain.id}`,
       label: domain.title,
       data: domain,
       selectable: false, // by default, only leaves are selectable
+      searchTitle: `${domain.title} ${questionsText}`,
     };
 
     allQuestionsRef.push(...(domain.questions || []));
