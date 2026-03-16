@@ -1,4 +1,5 @@
-import { Component, inject, signal, OnInit, effect } from '@angular/core';
+import { Component, inject, signal, OnInit, effect, computed } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
 import {
@@ -9,6 +10,7 @@ import {
   Validators,
   FormsModule,
 } from '@angular/forms';
+import { TooltipModule } from 'primeng/tooltip';
 import {
   LucideAngularModule,
   Plus,
@@ -35,6 +37,7 @@ import { SurveyService } from '@features/surveys/services/survey.service';
     LucideAngularModule,
     EditorModule,
     BInputComponent,
+    TooltipModule,
   ],
   templateUrl: './survey-structure.component.html',
   styles: [
@@ -137,6 +140,38 @@ export class SurveyStructureComponent implements OnInit {
 
   get domains() {
     return this.structureForm.get('domains') as FormArray;
+  }
+
+  private formValue = toSignal(this.structureForm.valueChanges);
+
+  isStructureValid = computed(() => {
+    // Accessing formValue to trigger reactivity on any form change
+    this.formValue();
+    const domainsArray = this.domains;
+    if (domainsArray.length === 0) return false;
+    return this.validateDomainNodes(domainsArray);
+  });
+
+  private validateDomainNodes(domainsArray: FormArray): boolean {
+    for (const control of domainsArray.controls) {
+      const node = control as FormGroup;
+      const subdomains = this.getSubdomains(node);
+      const questions = this.getQuestions(node);
+
+      // If it has subdomains, it's not a leaf, so we recurse
+      if (subdomains.length > 0) {
+        if (!this.validateDomainNodes(subdomains)) {
+          return false;
+        }
+      } else {
+        // It's a leaf node (no subdomains)
+        // It MUST have at least one question
+        if (questions.length === 0) {
+          return false;
+        }
+      }
+    }
+    return true;
   }
 
   ngOnInit() {

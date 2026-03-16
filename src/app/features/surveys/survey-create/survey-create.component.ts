@@ -29,7 +29,7 @@ import { SurveyService } from '../services/survey.service';
       </div>
 
       <div class="bg-[#F5F7FA] mt-9 flex-1 flex flex-col overflow-hidden border border-gray-100">
-        <app-survey-steps [currentStep]="currentStep()" />
+        <app-survey-steps [currentStep]="currentStep()" (stepClick)="navigateToStep($event)" />
 
         <div class="flex-1 overflow-y-auto px-4 pb-8 custom-scrollbar">
           <router-outlet />
@@ -82,6 +82,20 @@ export class SurveyCreateComponent {
       this.currentStep.set(4);
     }
   }
+  navigateToStep(index: number): void {
+    if (index > this.currentStep()) return;
+
+    const routes = ['setup', 'preliminary-questions', 'structure', 'conditional-logic', 'overview'];
+    const targetRoute = routes[index];
+    const surveyId = this.id();
+
+    if (surveyId) {
+      this.router.navigate(['/survey', 'edit', surveyId, targetRoute]);
+    } else {
+      this.router.navigate(['/survey', 'create', targetRoute]);
+    }
+  }
+
   goBack() {
     this.router.navigate(['/survey']);
   }

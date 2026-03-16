@@ -243,6 +243,10 @@ export class PreliminaryQuestionsComponent implements OnInit {
   }
 
   onSubmit() {
+    this.questionForm.markAllAsTouched();
+    if (this.questionForm.invalid) {
+      return;
+    }
     this.addQuestionToList();
     if (!this.id()) {
       this.messageService.add({

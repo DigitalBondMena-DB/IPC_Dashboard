@@ -89,8 +89,8 @@
           <div>
             <h4 class="text-sm font-bold text-blue-900">Structure Guidelines</h4>
             <p class="text-xs text-blue-700 mt-1 leading-relaxed">
-              Questions can only be assigned to leaf nodes (nodes without sub-domains). Nodes can
-              have either questions or sub-domains, not both. Support up to 3 levels deep.
+              Questions can only be assigned to the last sub-domain level (Level 3). Expand domains
+              to create nested structure up to 3 levels deep.
             </p>
           </div>
         </div>
@@ -106,16 +106,25 @@
         </button>
 
         <div class="flex items-center gap-4">
-          <button
-            (click)="onSkip()"
-            class="flex items-center gap-2 px-14 py-3 text-sm rounded-lg bg-[#F9F9F9] text-gray-703 hover:bg-gray-100 transition-colors font-medium"
-          >
-            Skip
-          </button>
+          @if (isStructureValid()) {
+            <button
+              (click)="onSkip()"
+              class="flex items-center gap-2 px-14 py-3 text-sm rounded-lg bg-[#F9F9F9] text-gray-703 hover:bg-gray-100 transition-colors font-medium"
+            >
+              Skip
+            </button>
+          }
           <button
             (click)="onSaveStructure()"
-            [disabled]="isSubmitting() || domains.length === 0"
-            class="flex items-center gap-2 px-14 py-3 rounded-lg bg-primary-500 text-white hover:bg-blue-600 disabled:opacity-50 text-sm transition-colors font-medium"
+            [disabled]="isSubmitting() || !isStructureValid()"
+            [pTooltip]="
+              !isStructureValid()
+                ? 'All leaf domains and subdomains must have at least one question.'
+                : ''
+            "
+            tooltipPosition="top"
+            showDelay="100"
+            class="flex items-center gap-2 px-14 py-3 rounded-lg bg-primary-500 text-white hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed text-sm transition-colors font-medium"
           >
             @if (isSubmitting()) {
               <span

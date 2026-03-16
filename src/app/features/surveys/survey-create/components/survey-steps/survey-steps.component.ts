@@ -1,4 +1,4 @@
-import { Component, input } from '@angular/core';
+import { Component, input, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { LucideAngularModule, Check } from 'lucide-angular';
 
@@ -11,7 +11,11 @@ import { LucideAngularModule, Check } from 'lucide-angular';
       class="flex items-center justify-between w-full mx-auto px-4 py-8 overflow-x-auto custom-scrollbar"
     >
       @for (step of steps; track step.id; let i = $index) {
-        <div class="flex items-center flex-1 last:flex-none">
+        <div
+          class="flex items-center flex-1 last:flex-none"
+          [class.cursor-pointer]="i <= currentStep()"
+          (click)="onStepClick(i)"
+        >
           <div class="flex items-center gap-1.25">
             <div
               class="flex items-center justify-center text-sm w-6 h-6 rounded-full border transition-colors duration-200"
@@ -61,6 +65,7 @@ import { LucideAngularModule, Check } from 'lucide-angular';
 export class SurveyStepsComponent {
   readonly checkIcon = Check;
   currentStep = input<number>(0);
+  stepClick = output<number>();
 
   steps = [
     { id: 1, label: 'Survey Setup' },
@@ -69,4 +74,10 @@ export class SurveyStepsComponent {
     { id: 4, label: 'Conditional Logic' },
     { id: 5, label: 'Review & Publish' },
   ];
+
+  onStepClick(index: number) {
+    if (index <= this.currentStep()) {
+      this.stepClick.emit(index);
+    }
+  }
 }
