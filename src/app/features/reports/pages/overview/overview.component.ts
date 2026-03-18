@@ -76,6 +76,19 @@ export class OverviewComponent {
 
   // Metrics & Table Data
   readonly metrics = computed(() => this.overviewResource.value()?.data.metrics);
+  readonly cards = computed(() => {
+    const m = this.metrics();
+    return [
+      { label: 'Total Surveys', value: m?.total_surveys, icon: this.icons.TotalSurveys, iconTextClass: 'text-primary-500', iconBgClass: 'bg-gray-50' },
+      { label: 'Completed', value: m?.completed, icon: this.icons.clipboardCheck, iconTextClass: 'text-green-500', iconBgClass: 'bg-green-50' },
+      { label: 'Expired', value: m?.expired, icon: this.icons.clipboardX, iconTextClass: 'text-red-500', iconBgClass: 'bg-red-50' },
+      { label: 'Surveyor', value: m?.surveyors, icon: this.icons.Surveyor, iconTextClass: 'text-amber-500', iconBgClass: 'bg-amber-50' },
+      { label: 'Domains', value: m?.domains, icon: this.icons.folderOpen, iconTextClass: 'text-purple-500', iconBgClass: 'bg-purple-50' },
+      { label: 'Sub-domains', value: m?.sub_domains, icon: this.icons.folderTree, iconTextClass: 'text-pink-500', iconBgClass: 'bg-pink-50' },
+      { label: 'Questions', value: m?.questions, icon: this.icons.listTodo, iconTextClass: 'text-cyan-500', iconBgClass: 'bg-cyan-50' },
+      { label: 'Av. Percentage', value: m?.av_percentage != null ? `${m.av_percentage}%` : undefined, icon: this.icons.Percentage, iconTextClass: 'text-orange-500', iconBgClass: 'bg-orange-50' },
+    ];
+  });
   readonly recentSubmissions = computed(
     () => this.overviewResource.value()?.data.recent_submissions,
   );

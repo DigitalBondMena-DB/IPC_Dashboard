@@ -9,109 +9,19 @@
     <div class="xl:col-span-3 flex flex-col gap-8">
       <!-- Metrics Cards Grid -->
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <!-- Card 1: Total Surveys -->
-        <div
-          class="bg-white p-5 rounded-2xl shadow-sm border border-gray-50 flex flex-col justify-between h-32 relative group transition-all hover:shadow-md"
-        >
-          <div class="flex justify-between items-start">
-            <span class="text-gray-400 font-medium">Total Surveys</span>
-            <div class="p-2 bg-blue-50 text-blue-500 rounded-lg">
-              <lucide-icon [name]="icons.TotalSurveys" size="20" />
+        @for (card of cards(); track card.label) {
+          <div
+            class="bg-white p-5 rounded-2xl shadow-sm border border-gray-50 flex flex-col justify-between h-32 relative group transition-all hover:shadow-md"
+          >
+            <div class="flex justify-between items-start">
+              <span class="text-gray-400 font-medium">{{ card.label }}</span>
+              <div class="p-2.5 rounded-lg" [ngClass]="[card.iconBgClass, card.iconTextClass]">
+                <lucide-icon [name]="card.icon" size="14" />
+              </div>
             </div>
+            <div class="text-3xl font-bold text-gray-800">{{ card.value }}</div>
           </div>
-          <div class="text-3xl font-bold text-gray-800">{{ metrics()?.total_surveys }}</div>
-        </div>
-
-        <!-- Card 2: Completed -->
-        <div
-          class="bg-white p-5 rounded-2xl shadow-sm border border-gray-50 flex flex-col justify-between h-32 relative group transition-all hover:shadow-md"
-        >
-          <div class="flex justify-between items-start">
-            <span class="text-gray-400 font-medium">Completed</span>
-            <div class="p-2 bg-green-50 text-green-500 rounded-lg">
-              <lucide-icon [name]="icons.clipboardCheck" size="20" />
-            </div>
-          </div>
-          <div class="text-3xl font-bold text-gray-800">{{ metrics()?.completed }}</div>
-        </div>
-
-        <!-- Card 3: Expired -->
-        <div
-          class="bg-white p-5 rounded-2xl shadow-sm border border-gray-50 flex flex-col justify-between h-32 relative group transition-all hover:shadow-md"
-        >
-          <div class="flex justify-between items-start">
-            <span class="text-gray-400 font-medium">Expired</span>
-            <div class="p-2 bg-red-50 text-red-500 rounded-lg">
-              <lucide-icon [name]="icons.clipboardX" size="20" />
-            </div>
-          </div>
-          <div class="text-3xl font-bold text-gray-800">{{ metrics()?.expired }}</div>
-        </div>
-
-        <!-- Card 4: Surveyor -->
-        <div
-          class="bg-white p-5 rounded-2xl shadow-sm border border-gray-50 flex flex-col justify-between h-32 relative group transition-all hover:shadow-md"
-        >
-          <div class="flex justify-between items-start">
-            <span class="text-gray-400 font-medium">Surveyor</span>
-            <div class="p-2 bg-amber-50 text-amber-500 rounded-lg">
-              <lucide-icon [name]="icons.Surveyor" size="20" />
-            </div>
-          </div>
-          <div class="text-3xl font-bold text-gray-800">{{ metrics()?.surveyors }}</div>
-        </div>
-
-        <!-- Card 5: Domains -->
-        <div
-          class="bg-white p-5 rounded-2xl shadow-sm border border-gray-50 flex flex-col justify-between h-32 relative group transition-all hover:shadow-md"
-        >
-          <div class="flex justify-between items-start">
-            <span class="text-gray-400 font-medium">Domains</span>
-            <div class="p-2 bg-purple-50 text-purple-500 rounded-lg">
-              <lucide-icon [name]="icons.folderOpen" size="20" />
-            </div>
-          </div>
-          <div class="text-3xl font-bold text-gray-800">{{ metrics()?.domains }}</div>
-        </div>
-
-        <!-- Card 6: Sub-domains -->
-        <div
-          class="bg-white p-5 rounded-2xl shadow-sm border border-gray-50 flex flex-col justify-between h-32 relative group transition-all hover:shadow-md"
-        >
-          <div class="flex justify-between items-start">
-            <span class="text-gray-400 font-medium">Sub-domains</span>
-            <div class="p-2 bg-pink-50 text-pink-500 rounded-lg">
-              <lucide-icon [name]="icons.folderTree" size="20" />
-            </div>
-          </div>
-          <div class="text-3xl font-bold text-gray-800">{{ metrics()?.sub_domains }}</div>
-        </div>
-
-        <!-- Card 7: Questions -->
-        <div
-          class="bg-white p-5 rounded-2xl shadow-sm border border-gray-50 flex flex-col justify-between h-32 relative group transition-all hover:shadow-md"
-        >
-          <div class="flex justify-between items-start">
-            <span class="text-gray-400 font-medium">Questions</span>
-            <div class="p-2 bg-cyan-50 text-cyan-500 rounded-lg">
-              <lucide-icon [name]="icons.listTodo" size="20" />
-            </div>
-          </div>
-          <div class="text-3xl font-bold text-gray-800">{{ metrics()?.questions }}</div>
-        </div>
-
-        <!-- Card 8: Av. Percentage -->
-        <div
-          class="bg-white p-5 rounded-2xl shadow-sm border border-gray-50 flex flex-col justify-between h-32 relative group transition-all hover:shadow-md"
-        >
-          <div class="flex justify-between items-start">
-            <span class="text-gray-400 font-medium">Av. Percentage</span>
-            <div class="p-2 bg-orange-50 text-orange-500 rounded-lg">
-              <lucide-icon [name]="icons.Percentage" size="20" />
-            </div>
-          </div>
-          <div class="text-3xl font-bold text-gray-800">{{ metrics()?.av_percentage }}%</div>
-        </div>
+        }
       </div>
 
       <!-- Latest Surveys Section -->
