@@ -108,11 +108,11 @@
           <p class="text-sm font-medium mb-4 leading-relaxed text-center">
             {{ footer.title }}
           </p>
-          <div class="flex gap-4">
+          <div class="flex gap-2.5">
             @for (btn of footer.buttons; track btn.label) {
               <a
                 [routerLink]="btn.routerLink"
-                class="bg-white text-primary-500 text-sm font-medium py-1.5 px-3 rounded-2xl flex items-center gap-1.5 justify-center shadow-md active:scale-95 transition-transform"
+                class="bg-white text-primary-500 text-sm font-medium py-1.5 px-2 rounded-2xl flex items-center gap-1.5 justify-center shadow-md active:scale-95 transition-transform"
               >
                 {{ btn.label }}
               </a>

@@ -106,6 +106,45 @@
                       </button>
                     </div>
                   }
+                  @case ('actions') {
+                    <div class="actions-cell">
+                      @if (col.viewOnly) {
+                        <button
+                          class="p-2 text-blue-500 hover:bg-blue-50 rounded-lg transition-colors"
+                          (click)="onView(row)"
+                          pTooltip="View details"
+                          tooltipPosition="top"
+                        >
+                          <lucide-angular [img]="eyeIcon" [size]="18" />
+                        </button>
+                      }
+                      @if (col.duplicate) {
+                        <button
+                          class="edit-btn text-[#16A34A]! bg-[#EDFCF2]!"
+                          (click)="onDuplicate(row)"
+                          pTooltip="Click to duplicate this record"
+                          tooltipPosition="top"
+                        >
+                          <lucide-angular [img]="copyIcon" [size]="16" />
+                        </button>
+                      }
+                      @if (!col.viewOnly) {
+                        <button
+                          class="edit-btn"
+                          [disabled]="row.can_be_edited === false"
+                          [pTooltip]="
+                            row.can_be_edited !== false
+                              ? 'Click to edit this record'
+                              : 'Now you can not edit this record'
+                          "
+                          tooltipPosition="left"
+                          (click)="onEdit(row)"
+                        >
+                          <lucide-angular [img]="pencilIcon" [size]="16" />
+                        </button>
+                      }
+                    </div>
+                  }
                   @default {
                     <p class="line-clamp-1">
                       <span [pTooltip]="row[col.field] ?? 'N/A'" tooltipPosition="top">
@@ -127,37 +166,39 @@
   </div>
 
   <!-- Pagination -->
-  <div class="pagination-bar">
-    <div class="pagination-left">
-      <span class="show-label">Show</span>
-      <select class="rows-select" (change)="onRowsChange($event)">
-        @for (opt of dynamicRowOptions(); track opt.value) {
-          <option [value]="opt.value" [selected]="opt.value === rows()">{{ opt.label }}</option>
+  @if (showPagination()) {
+    <div class="pagination-bar">
+      <div class="pagination-left">
+        <span class="show-label">Show</span>
+        <select class="rows-select" (change)="onRowsChange($event)">
+          @for (opt of dynamicRowOptions(); track opt.value) {
+            <option [value]="opt.value" [selected]="opt.value === rows()">{{ opt.label }}</option>
+          }
+        </select>
+        <span class="records-info">
+          Showing data {{ startRecord() }} to {{ endRecord() }} of {{ totalRecords() }} entries
+        </span>
+      </div>
+
+      <div class="pagination-right">
+        <button class="page-btn nav-btn" [disabled]="page() === 1" (click)="onPrev()">
+          <lucide-angular [img]="chevronLeftIcon" [size]="16" />
+        </button>
+
+        @for (p of visiblePages(); track $index) {
+          @if (p === '...') {
+            <span class="page-dots">...</span>
+          } @else {
+            <button class="page-btn" [class.active]="p === page()" (click)="onPageChange(p)">
+              {{ p }}
+            </button>
+          }
         }
-      </select>
-      <span class="records-info">
-        Showing data {{ startRecord() }} to {{ endRecord() }} of {{ totalRecords() }} entries
-      </span>
+
+        <button class="page-btn nav-btn" [disabled]="page() === lastPage()" (click)="onNext()">
+          <lucide-angular [img]="chevronRightIcon" [size]="16" />
+        </button>
+      </div>
     </div>
-
-    <div class="pagination-right">
-      <button class="page-btn nav-btn" [disabled]="page() === 1" (click)="onPrev()">
-        <lucide-angular [img]="chevronLeftIcon" [size]="16" />
-      </button>
-
-      @for (p of visiblePages(); track $index) {
-        @if (p === '...') {
-          <span class="page-dots">...</span>
-        } @else {
-          <button class="page-btn" [class.active]="p === page()" (click)="onPageChange(p)">
-            {{ p }}
-          </button>
-        }
-      }
-
-      <button class="page-btn nav-btn" [disabled]="page() === lastPage()" (click)="onNext()">
-        <lucide-angular [img]="chevronRightIcon" [size]="16" />
-      </button>
-    </div>
-  </div>
+  }
 }

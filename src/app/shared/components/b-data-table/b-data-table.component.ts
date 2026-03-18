@@ -19,6 +19,7 @@ import {
   Pencil,
   RotateCcw,
   Copy,
+  Eye,
 } from 'lucide-angular';
 import { Tooltip } from 'primeng/tooltip';
 
@@ -38,6 +39,7 @@ export class BDataTableComponent {
   loading = input(false);
   hasError = input<boolean>(false);
   page = input(1);
+  showPagination = input(true);
   constructor() {
     effect(() => {
       console.log('Table hasError:', this.hasError());
@@ -51,6 +53,7 @@ export class BDataTableComponent {
   toggleChange = output<{ item: any; field: string; value: boolean }>();
   editClick = output<any>();
   duplicateClick = output<any>();
+  viewClick = output<any>();
 
   // Local state
   currentSortField = signal('');
@@ -65,6 +68,7 @@ export class BDataTableComponent {
   readonly pencilIcon = Pencil;
   readonly retryIcon = RotateCcw;
   readonly copyIcon = Copy;
+  readonly eyeIcon = Eye;
 
   // Row sizes
   dynamicRowOptions = computed(() => {
@@ -169,6 +173,10 @@ export class BDataTableComponent {
 
   onDuplicate(item: any): void {
     this.duplicateClick.emit(item);
+  }
+
+  onView(item: any): void {
+    this.viewClick.emit(item);
   }
 
   getSortIcon(column: ITableColumn) {

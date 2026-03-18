@@ -1,0 +1,218 @@
+<div class="flex flex-col gap-6">
+  <!-- Header -->
+  <div class="flex justify-between items-center">
+    <h1 class="text-2xl font-bold text-[#202224]">Overview</h1>
+  </div>
+
+  <div class="grid grid-cols-1 xl:grid-cols-4 gap-6">
+    <!-- Main Content (Left) -->
+    <div class="xl:col-span-3 flex flex-col gap-8">
+      <!-- Metrics Cards Grid -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <!-- Card 1: Total Surveys -->
+        <div
+          class="bg-white p-5 rounded-2xl shadow-sm border border-gray-50 flex flex-col justify-between h-32 relative group transition-all hover:shadow-md"
+        >
+          <div class="flex justify-between items-start">
+            <span class="text-gray-400 font-medium">Total Surveys</span>
+            <div class="p-2 bg-blue-50 text-blue-500 rounded-lg">
+              <lucide-icon [name]="icons.TotalSurveys" size="20" />
+            </div>
+          </div>
+          <div class="text-3xl font-bold text-gray-800">{{ metrics()?.total_surveys }}</div>
+        </div>
+
+        <!-- Card 2: Completed -->
+        <div
+          class="bg-white p-5 rounded-2xl shadow-sm border border-gray-50 flex flex-col justify-between h-32 relative group transition-all hover:shadow-md"
+        >
+          <div class="flex justify-between items-start">
+            <span class="text-gray-400 font-medium">Completed</span>
+            <div class="p-2 bg-green-50 text-green-500 rounded-lg">
+              <lucide-icon [name]="icons.clipboardCheck" size="20" />
+            </div>
+          </div>
+          <div class="text-3xl font-bold text-gray-800">{{ metrics()?.completed }}</div>
+        </div>
+
+        <!-- Card 3: Expired -->
+        <div
+          class="bg-white p-5 rounded-2xl shadow-sm border border-gray-50 flex flex-col justify-between h-32 relative group transition-all hover:shadow-md"
+        >
+          <div class="flex justify-between items-start">
+            <span class="text-gray-400 font-medium">Expired</span>
+            <div class="p-2 bg-red-50 text-red-500 rounded-lg">
+              <lucide-icon [name]="icons.clipboardX" size="20" />
+            </div>
+          </div>
+          <div class="text-3xl font-bold text-gray-800">{{ metrics()?.expired }}</div>
+        </div>
+
+        <!-- Card 4: Surveyor -->
+        <div
+          class="bg-white p-5 rounded-2xl shadow-sm border border-gray-50 flex flex-col justify-between h-32 relative group transition-all hover:shadow-md"
+        >
+          <div class="flex justify-between items-start">
+            <span class="text-gray-400 font-medium">Surveyor</span>
+            <div class="p-2 bg-amber-50 text-amber-500 rounded-lg">
+              <lucide-icon [name]="icons.Surveyor" size="20" />
+            </div>
+          </div>
+          <div class="text-3xl font-bold text-gray-800">{{ metrics()?.surveyors }}</div>
+        </div>
+
+        <!-- Card 5: Domains -->
+        <div
+          class="bg-white p-5 rounded-2xl shadow-sm border border-gray-50 flex flex-col justify-between h-32 relative group transition-all hover:shadow-md"
+        >
+          <div class="flex justify-between items-start">
+            <span class="text-gray-400 font-medium">Domains</span>
+            <div class="p-2 bg-purple-50 text-purple-500 rounded-lg">
+              <lucide-icon [name]="icons.folderOpen" size="20" />
+            </div>
+          </div>
+          <div class="text-3xl font-bold text-gray-800">{{ metrics()?.domains }}</div>
+        </div>
+
+        <!-- Card 6: Sub-domains -->
+        <div
+          class="bg-white p-5 rounded-2xl shadow-sm border border-gray-50 flex flex-col justify-between h-32 relative group transition-all hover:shadow-md"
+        >
+          <div class="flex justify-between items-start">
+            <span class="text-gray-400 font-medium">Sub-domains</span>
+            <div class="p-2 bg-pink-50 text-pink-500 rounded-lg">
+              <lucide-icon [name]="icons.folderTree" size="20" />
+            </div>
+          </div>
+          <div class="text-3xl font-bold text-gray-800">{{ metrics()?.sub_domains }}</div>
+        </div>
+
+        <!-- Card 7: Questions -->
+        <div
+          class="bg-white p-5 rounded-2xl shadow-sm border border-gray-50 flex flex-col justify-between h-32 relative group transition-all hover:shadow-md"
+        >
+          <div class="flex justify-between items-start">
+            <span class="text-gray-400 font-medium">Questions</span>
+            <div class="p-2 bg-cyan-50 text-cyan-500 rounded-lg">
+              <lucide-icon [name]="icons.listTodo" size="20" />
+            </div>
+          </div>
+          <div class="text-3xl font-bold text-gray-800">{{ metrics()?.questions }}</div>
+        </div>
+
+        <!-- Card 8: Av. Percentage -->
+        <div
+          class="bg-white p-5 rounded-2xl shadow-sm border border-gray-50 flex flex-col justify-between h-32 relative group transition-all hover:shadow-md"
+        >
+          <div class="flex justify-between items-start">
+            <span class="text-gray-400 font-medium">Av. Percentage</span>
+            <div class="p-2 bg-orange-50 text-orange-500 rounded-lg">
+              <lucide-icon [name]="icons.Percentage" size="20" />
+            </div>
+          </div>
+          <div class="text-3xl font-bold text-gray-800">{{ metrics()?.av_percentage }}%</div>
+        </div>
+      </div>
+
+      <!-- Latest Surveys Section -->
+      <div class="flex flex-col gap-4">
+        <h2 class="text-xl font-bold text-[#202224]">Lastest Surveys</h2>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-50 overflow-hidden">
+          <app-b-data-table
+            [columns]="tableColumns"
+            [data]="recentSubmissions() || []"
+            [loading]="isLoading()"
+            [showPagination]="false"
+            (viewClick)="onView($event)"
+          />
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Sidebar (Filters) -->
+    <div class="flex flex-col gap-6">
+      <div
+        class="bg-white p-6 rounded-2xl shadow-sm border border-gray-50 flex flex-col gap-6 h-fit"
+      >
+        <h3 class="text-lg font-bold text-[#202224]">Filter</h3>
+
+        <div class="flex flex-col gap-4">
+          <!-- Governorate -->
+          <div class="flex flex-col gap-1.5">
+            <label class="text-sm font-semibold">Governorate</label>
+            <app-b-select
+              placeholder="Select governorate name..."
+              [options]="governorateOptions()"
+              [ngModel]="selectedGovernorate()"
+              (ngModelChange)="onGovernorateChange($event)"
+            />
+          </div>
+
+          <!-- Directorate -->
+          <div class="flex flex-col gap-1.5">
+            <label class="text-sm font-semibold">Directorate</label>
+            <app-b-select
+              placeholder="Select directorate name..."
+              [options]="directorateOptions()"
+              [ngModel]="selectedDirectorate()"
+              [disabled]="!selectedGovernorate()"
+              (ngModelChange)="onDirectorateChange($event)"
+            />
+          </div>
+
+          <!-- Hospital -->
+          <div class="flex flex-col gap-1.5">
+            <label class="text-sm font-semibold">Hospital</label>
+            <app-b-select
+              placeholder="Select hospital name..."
+              [options]="hospitalOptions()"
+              [ngModel]="selectedHospital()"
+              [disabled]="!selectedDirectorate()"
+              (ngModelChange)="onHospitalChange($event)"
+            />
+          </div>
+
+          <!-- Division -->
+          <div class="flex flex-col gap-1.5">
+            <label class="text-sm font-semibold">Division</label>
+            <app-b-multi-select
+              placeholder="Select division name..."
+              [options]="divisionOptions()"
+              [ngModel]="selectedDivisions()"
+              (ngModelChange)="selectedDivisions.set($event)"
+            />
+          </div>
+
+          <!-- Surveyor -->
+          <div class="flex flex-col gap-1.5">
+            <label class="text-sm font-semibold">Surveyor</label>
+            <input
+              type="text"
+              placeholder="Select surveyor name..."
+              class="w-full px-4 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
+              [ngModel]="surveyorName()"
+              (ngModelChange)="surveyorName.set($event)"
+            />
+          </div>
+
+          <!-- Date -->
+          <div class="flex flex-col gap-1.5">
+            <label class="text-sm font-semibold">Date</label>
+            <input
+              type="date"
+              class="w-full px-4 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
+            />
+          </div>
+        </div>
+
+        <button
+          (click)="applyFilter()"
+          class="w-full bg-blue-500 text-white py-3 rounded-xl font-semibold hover:bg-blue-600 transition-colors shadow-sm active:transform active:scale-[0.98]"
+        >
+          Apply Filter
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

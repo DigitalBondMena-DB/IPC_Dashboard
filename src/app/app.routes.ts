@@ -23,7 +23,13 @@ export const routes: Routes = [
     loadChildren: () => import('@features/surveys/surveys.routes'),
   },
   {
+    canActivate: [authGuard],
+    path: 'reports',
+    loadChildren: () => import('@features/reports/reports.routes'),
+  },
+  {
     canActivate: [unAuthGuard],
+
     path: 'login',
     loadComponent: () =>
       import('@features/auth/login-page/login-page.component').then((m) => m.LoginPageComponent),

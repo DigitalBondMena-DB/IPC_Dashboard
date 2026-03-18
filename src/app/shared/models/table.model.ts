@@ -3,8 +3,9 @@ export interface ITableColumn {
   header: string;
   sortable?: boolean;
   is_active_actions?: boolean;
-  type?: 'text' | 'date' | 'toggle';
+  type?: 'text' | 'date' | 'toggle' | 'actions';
   duplicate?: boolean;
+  viewOnly?: boolean;
 }
 
 export interface ITableParams {

@@ -21,7 +21,9 @@ import {
   ArrowLeftToLine,
   ArrowRightToLine,
   GitFork,
+  ChartColumn,
 } from 'lucide-angular';
+
 import { RouterLink, RouterLinkActive } from '@angular/router';
 
 import { AvatarModule } from 'primeng/avatar';
@@ -48,7 +50,9 @@ export class SideBarComponent {
     Users: Users,
     Survey: ClipboardList,
     GitFork: GitFork,
+    Reports: ChartColumn,
     Plus: Plus,
+
     LogOut: LogOut,
     ChevronDown: ChevronDown,
     ArrowLeftToLine: ArrowLeftToLine,
