@@ -5,64 +5,52 @@ export interface SidebarFooterConfig {
   buttons: { label: string; routerLink: string }[];
 }
 
-export const MAIN_MENU_ITEMS: NavItem[] = [
-  { label: 'Dashboard', icon: 'Dashboard', routerLink: '/dashboard' },
-  { label: 'Reports', icon: 'Reports', routerLink: '/reports' },
-  { label: 'Divisions', icon: 'Divisions', routerLink: '/divisions' },
+export const ALL_MENU_ITEMS: NavItem[] = [
+  { label: 'User Management', icon: 'Dashboard', isSection: true },
+  { label: 'Overview', routerLink: '/dashboard' },
+  { label: 'Divisions', routerLink: '/dashboard/divisions' },
   {
     label: 'Entities',
-    icon: 'Entities',
     expanded: false,
     children: [
-      { label: 'Health Directorate', routerLink: '/health-directorate' },
-      { label: 'Health Division', routerLink: '/health-division' },
-      { label: 'Hospitals', routerLink: '/hospitals' },
-      { label: 'Authorities', routerLink: '/authorities' },
-      { label: "Authority's Hospitals", routerLink: '/authorities-hospitals' },
+      { label: 'Health Directorate', routerLink: '/dashboard/health-directorate' },
+      { label: 'Health Division', routerLink: '/dashboard/health-division' },
+      { label: 'Hospitals', routerLink: '/dashboard/hospitals' },
+      { label: 'Authorities', routerLink: '/dashboard/authorities' },
+      { label: "Authority's Hospitals", routerLink: '/dashboard/authorities-hospitals' },
     ],
   },
   {
     label: 'User Management',
-    icon: 'Users',
     expanded: false,
     children: [
-      { label: 'Super Admin', routerLink: '/super-admin-users' },
-      { label: 'Health Directorate', routerLink: '/health-directorate-users' },
-      { label: 'Health Division', routerLink: '/health-division-users' },
-      { label: 'Hospitals', routerLink: '/hospitals-users' },
-      { label: 'Authorities', routerLink: '/authorities-users' },
-      { label: "Authority's Hospitals", routerLink: '/authorities-hospitals-users' },
+      { label: 'Super Admin', routerLink: '/dashboard/super-admin-users' },
+      { label: 'Health Directorate', routerLink: '/dashboard/health-directorate-users' },
+      { label: 'Health Division', routerLink: '/dashboard/health-division-users' },
+      { label: 'Hospitals', routerLink: '/dashboard/hospitals-users' },
+      { label: 'Authorities', routerLink: '/dashboard/authorities-users' },
+      { label: "Authority's Hospitals", routerLink: '/dashboard/authorities-hospitals-users' },
     ],
   },
+
+  { label: 'Survey Builder', icon: 'Survey', isSection: true },
+  { label: 'New Survey', icon: 'Plus', routerLink: '/survey/create/setup', isButton: true },
+  { label: 'Surveys', routerLink: '/survey' },
+  { label: 'Conditional logic', routerLink: '/survey/conditional-logic' },
+
+  { label: 'Reports', icon: 'Reports', isSection: true },
+  { label: 'Overview', routerLink: '/reports/overview' },
+  { label: 'Survey Level', routerLink: '/reports/survey-level' },
+  { label: 'Entity Level', routerLink: '/reports/entity-level' },
+  { label: 'Visit Results', routerLink: '/reports/visit-results' },
+  { label: 'Surveyor Results', routerLink: '/reports/surveyor-results' },
+  { label: 'Action Plan', routerLink: '/reports/action-plan' },
+  { label: 'Filter', routerLink: '/reports/filter' },
 ];
 
-export const REPORTS_MENU_ITEMS: NavItem[] = [
-  { label: 'Overview', icon: 'Dashboard', routerLink: '/reports/overview' },
-  { label: 'Survey Level', icon: 'Survey', routerLink: '/reports/survey-level' },
-  { label: 'Entity Level', icon: 'Divisions', routerLink: '/reports/entity-level' },
-  { label: 'Visit Results', icon: 'GitFork', routerLink: '/reports/visit-results' },
-  { label: 'Surveyor Results', icon: 'Users', routerLink: '/reports/surveyor-results' },
-  { label: 'Action Plan', icon: 'Plus', routerLink: '/reports/action-plan' },
-  { label: 'Filter', icon: 'Dashboard', routerLink: '/reports/filter' },
-];
+export const MAIN_MENU_ITEMS: NavItem[] = ALL_MENU_ITEMS;
+export const REPORTS_MENU_ITEMS: NavItem[] = ALL_MENU_ITEMS;
+export const SURVEY_MENU_ITEMS: NavItem[] = ALL_MENU_ITEMS;
 
-export const SURVEY_MENU_ITEMS: NavItem[] = [
-  { label: 'Surveys', icon: 'Survey', routerLink: '/survey' },
-  { label: 'Conditional logic', icon: 'GitFork', routerLink: '/survey/conditional-logic' },
-];
-
-export const MAIN_FOOTER_CONFIG: SidebarFooterConfig = {
-  title: 'Switch between Dashboard and Survey Builder.',
-  buttons: [
-    { label: 'Reports', routerLink: '/reports' },
-    { label: 'Survey Builder', routerLink: '/survey' },
-  ],
-};
-
-export const SURVEY_FOOTER_CONFIG: SidebarFooterConfig = {
-  title: 'Switch between Dashboard and Survey Builder.',
-  buttons: [
-    { label: 'Dashboard', routerLink: '/dashboard' },
-    { label: 'Reports', routerLink: '/reports' },
-  ],
-};
+export const MAIN_FOOTER_CONFIG: SidebarFooterConfig = undefined as any;
+export const SURVEY_FOOTER_CONFIG: SidebarFooterConfig = undefined as any;

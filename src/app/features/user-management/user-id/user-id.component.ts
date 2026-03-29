@@ -232,7 +232,7 @@ export class UserIdComponent {
       const configKey = this.getConfigKeyFromProp(key);
 
       depsObj[configKey] = options;
-      depsObj[`is${configKey.charAt(0).toUpperCase() + configKey.slice(1)}Loading`] =
+      depsObj[`is${configKey?.charAt(0)?.toUpperCase() + configKey.slice(1)}Loading`] =
         state.resource.isLoading();
     });
 

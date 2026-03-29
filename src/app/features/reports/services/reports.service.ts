@@ -10,4 +10,8 @@ export class ReportsService extends HttpService {
   getOverview(params?: Signal<any>): HttpResourceRef<ReportOverviewResponse | undefined> {
     return this.get<ReportOverviewResponse>('reports/overview', params);
   }
+
+  getOverviewDetails(params?: Signal<any>): HttpResourceRef<any | undefined> {
+    return this.get<any>('reports/overview-details', params);
+  }
 }

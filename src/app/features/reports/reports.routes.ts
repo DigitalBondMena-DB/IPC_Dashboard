@@ -18,7 +18,13 @@ export default [
             (m) => m.OverviewComponent,
           ),
       },
-      // Other pages will be added here
+      {
+        path: 'filter-results',
+        loadComponent: () =>
+          import('@features/reports/pages/filter-results/filter-results.component').then(
+            (m) => m.FilterResultsComponent,
+          ),
+      },
     ],
   },
 ] as Routes;

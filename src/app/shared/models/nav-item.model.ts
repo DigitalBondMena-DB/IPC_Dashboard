@@ -4,4 +4,11 @@ export interface NavItem {
   routerLink?: string;
   children?: NavItem[];
   expanded?: boolean;
+  isSection?: boolean;
+  isButton?: boolean;
+}
+export interface NavItemWithChildren {
+  lable: string;
+  icon: string;
+  children: NavItem[];
 }

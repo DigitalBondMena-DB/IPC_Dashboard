@@ -7,7 +7,7 @@ import {
   effect,
   ViewEncapsulation,
 } from '@angular/core';
-import { LucideAngularModule, Search, Plus, Calendar } from 'lucide-angular';
+import { LucideAngularModule, Search, Plus, CalendarDays } from 'lucide-angular';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { debounceTime, distinctUntilChanged } from 'rxjs';
 import { FormsModule } from '@angular/forms';
@@ -46,7 +46,7 @@ export class BPageHeaderComponent {
   // Icons
   readonly searchIcon = Search;
   readonly plusIcon = Plus;
-  readonly calendarIcon = Calendar;
+  readonly calendarIcon = CalendarDays;
 
   // Internal search state
   searchText = signal<string>('');

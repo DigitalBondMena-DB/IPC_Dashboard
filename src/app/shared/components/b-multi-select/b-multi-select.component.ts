@@ -14,14 +14,22 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { MultiSelectModule } from 'primeng/multiselect';
+import { TooltipModule } from 'primeng/tooltip';
 import { Subject, debounceTime, distinctUntilChanged } from 'rxjs';
-import { BLableComponent } from "../b-lable/b-lable.component";
+import { BLableComponent } from '../b-lable/b-lable.component';
+import { MultiSelectModule } from 'primeng/multiselect';
 
 @Component({
   selector: 'app-b-multi-select',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, FormsModule, MultiSelectModule, BLableComponent],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    FormsModule,
+    MultiSelectModule,
+    BLableComponent,
+    TooltipModule,
+  ],
   templateUrl: './b-multi-select.component.html',
   styleUrl: './b-multi-select.component.css',
   providers: [
@@ -44,6 +52,7 @@ export class BMultiSelectComponent implements ControlValueAccessor, OnDestroy {
   hasError = input<boolean>(false);
   errorMessage = input<string | null>(null);
   virtualScroll = input<boolean>(false);
+  disabledTooltip = input<string>('');
 
   // Outputs
   onSearch = output<string>();
@@ -57,8 +66,8 @@ export class BMultiSelectComponent implements ControlValueAccessor, OnDestroy {
     .pipe(debounceTime(300), distinctUntilChanged())
     .subscribe((text) => this.onSearch.emit(text));
 
-  onChange: any = () => { };
-  onTouched: any = () => { };
+  onChange: any = () => {};
+  onTouched: any = () => {};
 
   onModelChange(val: any) {
     this.value.set(val || []);

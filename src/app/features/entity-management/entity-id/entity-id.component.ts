@@ -187,7 +187,7 @@ export class EntityIdComponent {
       // Map component-internal key back to config expected key (e.g., 'health_directorate_id' -> 'directorates')
       const configKey = this.getConfigKeyFromProp(key);
       deps[configKey] = options;
-      deps[`is${configKey.charAt(0).toUpperCase() + configKey.slice(1)}Loading`] =
+      deps[`is${configKey?.charAt(0)?.toUpperCase() + configKey.slice(1)}Loading`] =
         state.resource.isLoading();
     });
 

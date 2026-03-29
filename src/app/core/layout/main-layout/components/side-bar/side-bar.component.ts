@@ -25,7 +25,6 @@ import {
 } from 'lucide-angular';
 
 import { RouterLink, RouterLinkActive } from '@angular/router';
-
 import { AvatarModule } from 'primeng/avatar';
 import { TooltipModule } from 'primeng/tooltip';
 import { NavItem } from '@/shared/models/nav-item.model';

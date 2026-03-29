@@ -23,7 +23,33 @@
     <div class="space-y-1">
       @for (item of internalMenuItems(); track item.label) {
         <div>
-          @if (item.children) {
+          @if (item.isSection) {
+            <div
+              class="flex items-center gap-2 px-6 py-3 mt-4 text-[#1C398F] font-bold text-base"
+              [class.justify-center]="isCollapsed()"
+            >
+              @if (item.icon) {
+                <lucide-angular [img]="icons[item.icon]" size="24" />
+              }
+              @if (!isCollapsed()) {
+                <span class="ms-1">{{ item.label }}</span>
+              }
+            </div>
+          } @else if (item.isButton) {
+            <div class="px-6 py-2">
+              <a
+                [routerLink]="item.routerLink"
+                class="w-full flex items-center gap-1 bg-primary-500 text-lg text-white rounded-sm py-2.5 px-4 font-medium hover:bg-primary-600 transition-colors"
+              >
+                @if (item.icon) {
+                  <lucide-angular [img]="icons[item.icon]" size="18" />
+                }
+                @if (!isCollapsed()) {
+                  <span>{{ item.label }}</span>
+                }
+              </a>
+            </div>
+          } @else if (item.children) {
             <button
               (click)="toggleSubMenu(item)"
               class="w-full px-6 flex items-center justify-between p-3 rounded-xl transition-all text-gray-300 hover:bg-gray-50 group"
@@ -93,7 +119,7 @@
     </div>
   </nav>
 
-  @if (footerConfig(); as footer) {
+  <!-- @if (footerConfig(); as footer) {
     <div
       class="px-4 py-2 mb-6 transition-transform duration-300 min-w-[285px]"
       [class.-translate-x-full]="isCollapsed()"
@@ -121,7 +147,7 @@
         </div>
       </div>
     </div>
-  }
+  } -->
 
   <!-- Profile Section -->
   <div class="border-t border-gray-200 p-4">
