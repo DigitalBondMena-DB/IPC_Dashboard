@@ -1,260 +1,59 @@
-<app-top-bar />
+<div class="py-6 bg-white px-layout-x">
+  <app-top-bar-breadcrumb />
+</div>
 @if (!isLoading()) {
-  <div class="grid grid-cols-1 gap-10 lg:grid-cols-6">
-    <div class="lg:col-span-3">
-      <div class="statisitcs-card">
-        <div
-          class="bg-[#FFD143] shadow-[0px_11.34px_34.02px_0px_#FFD14366] z-10 relative flex justify-between rounded-[23px] pe-[35px] ps-[28px] py-[26px]"
-        >
-          <svg
-            width="194"
-            height="117"
-            viewBox="0 0 194 117"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            class="absolute inset-e-0 bottom-0 -z-10"
+  <div class="grid grid-cols-1 gap-10 lg:grid-cols-6 px-layout-x pt-6">
+    @for (card of reportCards(); track $index) {
+      <div class="lg:col-span-2">
+        <div class="statisitcs-card h-full">
+          <div
+            class="bg-[#369FFF] z-10 relative shadow-[0px_11.34px_34.02px_0px_#369FFF66] flex justify-between rounded-[23px] ps-[28px] pe-3.5 pt-[26px] pb-3.5 overflow-hidden h-full"
           >
-            <path
-              opacity="0.5"
-              d="M193.956 88.2461C193.956 104.229 180.999 117.185 165.017 117.186H0C7.6967 95.2132 39.8471 51.2686 106.874 51.2686C173.901 51.2685 192.857 17.0895 193.956 0V88.2461Z"
-              fill="#FFC000"
-            />
-          </svg>
-          <svg
-            width="116"
-            class="absolute inset-s-0 top-0 -z-10"
-            height="59"
-            viewBox="0 0 116 59"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              opacity="0.5"
-              d="M29.1318 -1.66674C13.0428 -1.66672 4.68034e-05 11.376 -5.33539e-06 27.4651L-3.2171e-06 54.3655C8.8101 58.4409 32.502 62.7772 68.4658 50.1682C105.533 37.1722 114.532 8.52174 116 -1.66675L29.1318 -1.66674Z"
-              fill="#FFC000"
-            />
-          </svg>
-          <svg
-            width="148"
-            height="150"
-            class="absolute left-1/2 bottom-0 top-1/2 -translate-1/2 -z-10"
-            viewBox="0 0 148 150"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              opacity="0.4"
-              d="M119.988 117.951C117.939 125.014 115.311 132.129 110.629 137.886C103.746 146.351 92.5498 151.018 82.2734 149.692C73.5629 148.573 66.0979 143.62 58.2084 140.02C48.4909 135.584 37.9096 133.15 27.325 131.087C21.6392 129.978 15.7793 128.914 10.9695 125.811C4.29211 121.502 0.422235 113.514 0.0350037 105.267C-0.352227 97.0207 2.50345 88.6086 7.11514 81.4808C9.56922 77.6877 12.6422 74.1072 16.6175 72.0914C20.8236 69.9584 25.6763 69.7501 29.8691 67.5856C33.7545 65.5802 36.7401 62.0587 39.2054 58.3777C42.4244 53.5716 44.95 48.3359 46.7078 42.8251C48.6952 36.5809 49.6433 30.0965 51.5927 23.851C53.5421 17.6055 56.7136 11.3551 61.9747 7.42554C66.9203 3.73081 73.0839 2.51626 79.0129 1.70111C88.6976 0.360685 98.4751 -0.189109 108.249 0.0571734C114.8 0.22685 121.427 0.783471 127.405 3.18091C138.836 7.7635 146.88 19.3718 147.451 32.1038C147.923 42.6525 143.68 53.1339 138.659 62.7404C134.08 71.5006 127.374 80.5657 125.334 90.2683C123.393 99.5239 122.663 108.727 119.988 117.951Z"
-              fill="#FFC921"
-            />
-          </svg>
-          <div>
-            <h3 class="font-semibold text-lg">Total Users</h3>
-            <p class="text-[32px] font-bold">{{ counts()?.users }}</p>
-          </div>
-          <div>
-            <img src="/assets/images/home/users.png" width="122" height="132" alt="total users" />
+            <svg
+              width="194"
+              height="117"
+              viewBox="0 0 194 117"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              class="absolute inset-e-0 bottom-0 -z-10"
+            >
+              <path
+                opacity="0.2"
+                d="M193.956 88.2461C193.956 104.229 180.999 117.185 165.017 117.186H0C7.6967 95.2132 39.8471 51.2686 106.874 51.2686C173.901 51.2685 192.857 17.0895 193.956 0V88.2461Z"
+                fill="#006ED3"
+              />
+            </svg>
+            <svg
+              width="116"
+              class="absolute inset-s-0 top-0 -z-10"
+              height="59"
+              viewBox="0 0 116 59"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                opacity="0.2"
+                d="M29.1318 -1.66674C13.0428 -1.66672 4.68034e-05 11.376 -5.33539e-06 27.4651L-3.2171e-06 54.3655C8.8101 58.4409 32.502 62.7772 68.4658 50.1682C105.533 37.1722 114.532 8.52174 116 -1.66675L29.1318 -1.66674Z"
+                fill="#006ED3"
+              />
+            </svg>
+            <div>
+              <h3 class="font-semibold text-lg">{{ card.title }}</h3>
+              <p class="text-[32px] font-bold">{{ card.value }}</p>
+            </div>
+            <div class="flex items-end">
+              <img
+                [src]="card.image.src"
+                [width]="card.image.width"
+                [height]="card.image.height"
+                alt="total divisions"
+                class="mix-blend-luminosity"
+              />
+            </div>
           </div>
         </div>
       </div>
-    </div>
-    <div class="lg:col-span-3">
-      <div class="statisitcs-card h-full">
-        <div
-          class="bg-[#FF993A] z-10 relative shadow-[0px_11.34px_34.02px_0px_#FF993A66] flex justify-between rounded-[23px] ps-[28px] pt-[26px] overflow-hidden h-full"
-        >
-          <svg
-            width="194"
-            height="117"
-            viewBox="0 0 194 117"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            class="absolute inset-e-0 bottom-0 -z-10"
-          >
-            <path
-              opacity="0.5"
-              d="M193.956 88.2461C193.956 104.229 180.999 117.185 165.017 117.186H0C7.6967 95.2132 39.8471 51.2686 106.874 51.2686C173.901 51.2685 192.857 17.0895 193.956 0V88.2461Z"
-              fill="#FF7E07"
-            />
-          </svg>
-          <svg
-            width="116"
-            class="absolute inset-s-0 top-0 -z-10"
-            height="59"
-            viewBox="0 0 116 59"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              opacity="0.5"
-              d="M29.1318 -1.66674C13.0428 -1.66672 4.68034e-05 11.376 -5.33539e-06 27.4651L-3.2171e-06 54.3655C8.8101 58.4409 32.502 62.7772 68.4658 50.1682C105.533 37.1722 114.532 8.52174 116 -1.66675L29.1318 -1.66674Z"
-              fill="#FF7E07"
-            />
-          </svg>
-          <div>
-            <h3 class="font-semibold text-lg">Total Divisions</h3>
-            <p class="text-[32px] font-bold">{{ counts()?.categories }}</p>
-          </div>
-          <div class="flex items-end">
-            <img
-              src="/assets/images/home/divisions.png"
-              width="185"
-              height="127"
-              alt="total divisions"
-              class="mix-blend-luminosity"
-            />
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="lg:col-span-2">
-      <div class="statisitcs-card h-full">
-        <div
-          class="bg-[#BA43FF] z-10 relative shadow-[0px_11.34px_34.02px_0px_#BA43FF66] flex justify-between rounded-[23px] ps-[28px] pe-3.5 pt-[26px] pb-3.5 overflow-hidden h-full"
-        >
-          <svg
-            width="194"
-            height="117"
-            viewBox="0 0 194 117"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            class="absolute inset-e-0 bottom-0 -z-10"
-          >
-            <path
-              opacity="0.5"
-              d="M193.956 88.2461C193.956 104.229 180.999 117.185 165.017 117.186H0C7.6967 95.2132 39.8471 51.2686 106.874 51.2686C173.901 51.2685 192.857 17.0895 193.956 0V88.2461Z"
-              fill="#8C00FF"
-            />
-          </svg>
-          <svg
-            width="116"
-            class="absolute inset-s-0 top-0 -z-10"
-            height="59"
-            viewBox="0 0 116 59"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              opacity="0.5"
-              d="M29.1318 -1.66674C13.0428 -1.66672 4.68034e-05 11.376 -5.33539e-06 27.4651L-3.2171e-06 54.3655C8.8101 58.4409 32.502 62.7772 68.4658 50.1682C105.533 37.1722 114.532 8.52174 116 -1.66675L29.1318 -1.66674Z"
-              fill="#8C00FF"
-            />
-          </svg>
-          <div>
-            <h3 class="font-semibold text-lg">Health Directorates</h3>
-            <p class="text-[32px] font-bold">{{ counts()?.medical_areas }}</p>
-          </div>
-          <div>
-            <img
-              src="/assets/images/home/health-managment.png"
-              width="126"
-              height="118"
-              alt="total divisions"
-              class="mix-blend-luminosity"
-            />
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="lg:col-span-2">
-      <div class="statisitcs-card h-full">
-        <div
-          class="bg-[#8AC53E] z-10 relative shadow-[0px_11.34px_34.02px_0px_#8AC53E66] flex justify-between rounded-[23px] ps-[28px] pe-1.5 pt-[26px] pb-1 overflow-hidden h-full"
-        >
-          <svg
-            width="194"
-            height="117"
-            viewBox="0 0 194 117"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            class="absolute inset-e-0 bottom-0 -z-10"
-          >
-            <path
-              opacity="0.1"
-              d="M193.956 88.2461C193.956 104.229 180.999 117.185 165.017 117.186H0C7.6967 95.2132 39.8471 51.2686 106.874 51.2686C173.901 51.2685 192.857 17.0895 193.956 0V88.2461Z"
-              fill="#006838"
-            />
-          </svg>
-          <svg
-            width="116"
-            class="absolute inset-s-0 top-0 -z-10"
-            height="59"
-            viewBox="0 0 116 59"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              opacity="0.1"
-              d="M29.1318 -1.66674C13.0428 -1.66672 4.68034e-05 11.376 -5.33539e-06 27.4651L-3.2171e-06 54.3655C8.8101 58.4409 32.502 62.7772 68.4658 50.1682C105.533 37.1722 114.532 8.52174 116 -1.66675L29.1318 -1.66674Z"
-              fill="#006838"
-            />
-          </svg>
-          <div>
-            <h3 class="font-semibold text-lg">Total Health Division</h3>
-            <p class="text-[32px] font-bold">{{ counts()?.governorates }}</p>
-          </div>
-          <div class="flex items-end">
-            <img
-              src="/assets/images/home/health-dir.png"
-              width="92"
-              height="91"
-              alt="total divisions"
-              class="mix-blend-luminosity"
-            />
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="lg:col-span-2">
-      <div class="statisitcs-card h-full">
-        <div
-          class="bg-[#369FFF] z-10 relative shadow-[0px_11.34px_34.02px_0px_#BA43FF66] flex justify-between rounded-[23px] ps-[28px] pe-1.5 pt-[26px] pb-1 overflow-hidden h-full"
-        >
-          <svg
-            width="194"
-            height="117"
-            viewBox="0 0 194 117"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            class="absolute inset-e-0 bottom-0 -z-10"
-          >
-            <path
-              opacity="0.2"
-              d="M193.956 88.2461C193.956 104.229 180.999 117.185 165.017 117.186H0C7.6967 95.2132 39.8471 51.2686 106.874 51.2686C173.901 51.2685 192.857 17.0895 193.956 0V88.2461Z"
-              fill="#006ED3"
-            />
-          </svg>
-          <svg
-            width="116"
-            class="absolute inset-s-0 top-0 -z-10"
-            height="59"
-            viewBox="0 0 116 59"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              opacity="0.2"
-              d="M29.1318 -1.66674C13.0428 -1.66672 4.68034e-05 11.376 -5.33539e-06 27.4651L-3.2171e-06 54.3655C8.8101 58.4409 32.502 62.7772 68.4658 50.1682C105.533 37.1722 114.532 8.52174 116 -1.66675L29.1318 -1.66674Z"
-              fill="#006ED3"
-            />
-          </svg>
-          <div>
-            <h3 class="font-semibold text-lg">Total Hospitals</h3>
-            <p class="text-[32px] font-bold">{{ counts()?.hospitals }}</p>
-          </div>
-          <div class="flex items-end">
-            <img
-              src="/assets/images/home/hospitals.png"
-              width="126"
-              height="118"
-              alt="total divisions"
-              class="mix-blend-luminosity"
-            />
-          </div>
-        </div>
-      </div>
-    </div>
+    }
   </div>
 } @else {
   <app-home-skeleton />

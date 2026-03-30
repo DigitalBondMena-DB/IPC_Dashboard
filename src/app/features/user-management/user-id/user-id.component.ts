@@ -23,26 +23,27 @@ import { API_CONFIG } from '@/core/config/api.config';
   imports: [CommonModule, BPageHeaderComponent, BFormBuilderComponent],
   template: `
     <app-b-page-header [title]="title()" [showCreateButton]="false" />
-
-    <div class="card p-8 bg-white rounded-2xl shadow-sm overflow-x-auto min-w-[600px]">
-      @if (isLoading()) {
-        <div class="flex justify-center py-20">
-          <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-[#197bfd]"></div>
-        </div>
-      } @else {
-        <app-b-form-builder
-          [fields]="fields()"
-          [initialData]="userData()"
-          [submitLabel]="submitLabel()"
-          [loading]="isSubmitting()"
-          [groupValidators]="groupValidators"
-          (formSubmit)="onSubmit($event)"
-          (formCancel)="onCancel()"
-          (onSearch)="onDropdownSearch($event)"
-          (onScrollPagination)="onDropdownScroll($event)"
-          (onValueChange)="onValueChange($event)"
-        />
-      }
+    <div class="px-layout-x pt-2.5">
+      <div class="card p-8 bg-white rounded-2xl shadow-sm overflow-x-auto min-w-[600px]">
+        @if (isLoading()) {
+          <div class="flex justify-center py-20">
+            <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-500"></div>
+          </div>
+        } @else {
+          <app-b-form-builder
+            [fields]="fields()"
+            [initialData]="userData()"
+            [submitLabel]="submitLabel()"
+            [loading]="isSubmitting()"
+            [groupValidators]="groupValidators"
+            (formSubmit)="onSubmit($event)"
+            (formCancel)="onCancel()"
+            (onSearch)="onDropdownSearch($event)"
+            (onScrollPagination)="onDropdownScroll($event)"
+            (onValueChange)="onValueChange($event)"
+          />
+        }
+      </div>
     </div>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,

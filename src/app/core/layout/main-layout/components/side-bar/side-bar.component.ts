@@ -10,9 +10,6 @@ import {
 import {
   LucideAngularModule,
   House,
-  Building2,
-  Combine,
-  Users,
   ClipboardList,
   Plus,
   LogOut,
@@ -20,7 +17,6 @@ import {
   LucideIconData,
   ArrowLeftToLine,
   ArrowRightToLine,
-  GitFork,
   ChartColumn,
 } from 'lucide-angular';
 
@@ -29,7 +25,6 @@ import { AvatarModule } from 'primeng/avatar';
 import { TooltipModule } from 'primeng/tooltip';
 import { NavItem } from '@/shared/models/nav-item.model';
 import { AuthService } from '@/core/services/auth.service';
-import { SidebarFooterConfig } from '@/shared/models/navigation.constants';
 
 @Component({
   selector: 'app-side-bar',
@@ -44,11 +39,7 @@ export class SideBarComponent {
   userData = computed(() => this._AuthService.userData());
   readonly icons: Record<string, LucideIconData> = {
     Dashboard: House,
-    Divisions: Building2,
-    Entities: Combine,
-    Users: Users,
     Survey: ClipboardList,
-    GitFork: GitFork,
     Reports: ChartColumn,
     Plus: Plus,
 
@@ -59,7 +50,6 @@ export class SideBarComponent {
   };
 
   menuItems = input.required<NavItem[]>();
-  footerConfig = input<SidebarFooterConfig>();
   internalMenuItems = signal<NavItem[]>([]);
 
   constructor() {

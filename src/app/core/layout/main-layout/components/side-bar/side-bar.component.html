@@ -1,5 +1,5 @@
 <div
-  class="sidebar-wrapper flex flex-col h-full bg-white border-e border-gray-100 transition-[width] duration-300"
+  class="sidebar-wrapper custom-scrollbar flex flex-col h-full bg-white border-e border-gray-100 transition-[width] duration-300"
   [class.w-[90px]]="isCollapsed()"
   [class.w-[287px]]="!isCollapsed()"
 >
@@ -10,11 +10,14 @@
     @if (!isCollapsed()) {
       <span class="text-primary-500 font-bold text-sm leading-tight">HealthTrack M&E</span>
     }
-    <button (click)="toggleSidebar()">
+    <button
+      (click)="toggleSidebar()"
+      class="z-50 absolute inset-e-0 top-1/2 -translate-y-1/2 translate-x-1/2"
+    >
       <lucide-angular
         [img]="isCollapsed() ? icons['ArrowRightToLine'] : icons['ArrowLeftToLine']"
         size="16"
-        class="text-primary-500 z-50 absolute inset-e-0 top-1/2 -translate-y-1/2 translate-x-1/2"
+        class="text-primary-500"
       />
     </button>
   </div>
@@ -118,37 +121,6 @@
       }
     </div>
   </nav>
-
-  <!-- @if (footerConfig(); as footer) {
-    <div
-      class="px-4 py-2 mb-6 transition-transform duration-300 min-w-[285px]"
-      [class.-translate-x-full]="isCollapsed()"
-    >
-      <div
-        class="bg-primary-500 bg-[url('/assets/images/sidebar/survay-bg-texture.png')] bg-cover bg-center rounded-2xl p-5 text-white relative overflow-hidden group shadow-lg shadow-primary-200"
-      >
-        <div class="relative z-10 flex flex-col items-center">
-          <div class="bg-gray-706 size-8 rounded-full mb-2 flex items-center justify-center">
-            <lucide-angular [img]="icons['Survey']" size="14" class="text-primary-500" />
-          </div>
-          <p class="text-sm font-medium mb-4 leading-relaxed text-center">
-            {{ footer.title }}
-          </p>
-          <div class="flex gap-2.5">
-            @for (btn of footer.buttons; track btn.label) {
-              <a
-                [routerLink]="btn.routerLink"
-                class="bg-white text-primary-500 text-sm font-medium py-1.5 px-2 rounded-2xl flex items-center gap-1.5 justify-center shadow-md active:scale-95 transition-transform"
-              >
-                {{ btn.label }}
-              </a>
-            }
-          </div>
-        </div>
-      </div>
-    </div>
-  } -->
-
   <!-- Profile Section -->
   <div class="border-t border-gray-200 p-4">
     <div class="flex items-center justify-between">

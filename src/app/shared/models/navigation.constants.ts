@@ -49,8 +49,4 @@ export const ALL_MENU_ITEMS: NavItem[] = [
 ];
 
 export const MAIN_MENU_ITEMS: NavItem[] = ALL_MENU_ITEMS;
-export const REPORTS_MENU_ITEMS: NavItem[] = ALL_MENU_ITEMS;
 export const SURVEY_MENU_ITEMS: NavItem[] = ALL_MENU_ITEMS;
-
-export const MAIN_FOOTER_CONFIG: SidebarFooterConfig = undefined as any;
-export const SURVEY_FOOTER_CONFIG: SidebarFooterConfig = undefined as any;

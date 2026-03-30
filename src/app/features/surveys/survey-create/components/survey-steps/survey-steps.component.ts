@@ -8,7 +8,7 @@ import { LucideAngularModule, Check } from 'lucide-angular';
   imports: [CommonModule, LucideAngularModule],
   template: `
     <div
-      class="flex items-center justify-between w-full mx-auto px-4 py-8 overflow-x-auto custom-scrollbar"
+      class="flex items-center justify-between w-full pb-2 mx-auto px-4 overflow-x-auto custom-scrollbar"
     >
       @for (step of steps; track step.id; let i = $index) {
         <div

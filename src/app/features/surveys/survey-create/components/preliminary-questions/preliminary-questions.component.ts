@@ -16,6 +16,7 @@ import { EditorModule } from 'primeng/editor';
 import { SelectModule } from 'primeng/select';
 import { BInputComponent } from '@/shared/components/b-input/b-input.component';
 import { BSelectComponent } from '@/shared/components/b-select/b-select.component';
+import { PreliminaryQuestionsConfirmComponent } from './components/preliminary-questions-confirm/preliminary-questions-confirm.component';
 
 @Component({
   selector: 'app-preliminary-questions',
@@ -29,6 +30,7 @@ import { BSelectComponent } from '@/shared/components/b-select/b-select.componen
     SelectModule,
     BInputComponent,
     BSelectComponent,
+    PreliminaryQuestionsConfirmComponent,
   ],
   templateUrl: './preliminary-questions.component.html',
   styles: [
@@ -66,6 +68,7 @@ export class PreliminaryQuestionsComponent implements OnInit {
       null,
   );
   isSubmitting = signal(false);
+  isConfirmationView = signal(false);
 
   questionsList = signal<any[]>([]);
   editingIndex = signal<number | null>(null);
@@ -152,6 +155,31 @@ export class PreliminaryQuestionsComponent implements OnInit {
     return control ? control.invalid && control.touched : false;
   }
 
+  private syncWithBackend(successMessage: string) {
+    if (!this.id()) return;
+
+    const payload = {
+      preliminary_questions: this.questionsList(),
+    };
+
+    this.surveyService.updateSurvey(this.id()!, payload).subscribe({
+      next: () => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Success',
+          detail: successMessage,
+        });
+      },
+      error: (err) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: err.error?.message || 'Failed to save to backend',
+        });
+      },
+    });
+  }
+
   addQuestionToList() {
     if (this.questionForm.valid) {
       const formValue = this.questionForm.value;
@@ -178,19 +206,21 @@ export class PreliminaryQuestionsComponent implements OnInit {
           newList[this.editingIndex()!] = question;
           return newList;
         });
-        this.messageService.add({
-          severity: 'info',
-          summary: 'Updated',
-          detail: 'Question updated successfully',
-        });
+        this.syncWithBackend('Question updated successfully');
       } else {
         this.questionsList.update((list) => [...list, question]);
+        this.syncWithBackend('Question added successfully');
       }
 
       // Reset form
       this.cancelEdit();
     } else {
       this.questionForm.markAllAsTouched();
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'Please fill all required fields correctly',
+      });
     }
   }
 
@@ -231,23 +261,39 @@ export class PreliminaryQuestionsComponent implements OnInit {
 
   removeQuestionFromList(index: number) {
     this.questionsList.update((list) => list.filter((_, i) => i !== index));
-  }
-
-  onCancel() {
-    this.router.navigate(['/survey']);
+    this.syncWithBackend('Question deleted successfully');
   }
 
   onSkip() {
-    const nextPath = this.id() ? `/survey/edit/${this.id()}/structure` : '/survey';
-    this.router.navigate([nextPath]);
+    this.isConfirmationView.set(true);
   }
 
-  onSubmit() {
+  goToConfirmation() {
     this.questionForm.markAllAsTouched();
     if (this.questionForm.invalid) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'Please fill all required fields correctly',
+      });
       return;
     }
     this.addQuestionToList();
+
+    if (this.questionsList().length === 0) {
+      this.onSkip();
+      return;
+    }
+
+    this.isConfirmationView.set(true);
+  }
+
+  onEditFromConfirm(index: number) {
+    this.isConfirmationView.set(false);
+    this.editQuestion(index);
+  }
+
+  onSubmit() {
     if (!this.id()) {
       this.messageService.add({
         severity: 'error',

@@ -9,7 +9,7 @@ interface Counts {
   users: number;
   categories: number;
   governorates: number;
-  authorities: number;
+  surveys: number;
   medical_areas: number;
   hospitals: number;
 }

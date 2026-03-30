@@ -65,9 +65,9 @@
                     <div class="actions-cell">
                       <label
                         class="toggle-switch"
-                        [class.disabled]="!row.can_be_edited"
+                        [class.disabled]="isCanBeEdited(row)"
                         [pTooltip]="
-                          row.can_be_edited
+                          isCanBeEdited(row)
                             ? 'Click to toggle this record'
                             : 'Now you can not toggle this record'
                         "
@@ -76,7 +76,7 @@
                         <input
                           type="checkbox"
                           [checked]="row[col.field]"
-                          [disabled]="row.can_be_edited === false"
+                          [disabled]="isCanBeEdited(row)"
                           (change)="onToggle(row, col.field)"
                         />
                         <span class="toggle-slider"></span>
@@ -93,9 +93,9 @@
                       }
                       <button
                         class="edit-btn"
-                        [disabled]="!row.can_be_edited"
+                        [disabled]="isCanBeEdited(row)"
                         [pTooltip]="
-                          row.can_be_edited
+                          isCanBeEdited(row)
                             ? 'Click to edit this record'
                             : 'Now you can not edit this record'
                         "
@@ -131,9 +131,9 @@
                       @if (!col.viewOnly) {
                         <button
                           class="edit-btn"
-                          [disabled]="row.can_be_edited === false"
+                          [disabled]="isCanBeEdited(row)"
                           [pTooltip]="
-                            row.can_be_edited !== false
+                            isCanBeEdited(row)
                               ? 'Click to edit this record'
                               : 'Now you can not edit this record'
                           "

@@ -93,7 +93,6 @@ export class SurveySetupComponent implements OnInit {
       label: 'Deadline (Hours)',
       type: 'number',
       placeholder: '168',
-      validators: [Validators.required],
       colSpan: 'col-span-1',
     },
     {
@@ -127,11 +126,16 @@ export class SurveySetupComponent implements OnInit {
 
   onSubmit(data: any) {
     this.isSubmitting.set(true);
-
-    const payload = {
-      ...data,
-      deadline_hours: parseInt(data.deadline_hours, 10) || 0,
-    };
+    let payload = {};
+    if (data.deadline_hours) {
+      payload = {
+        ...data,
+        deadline_hours: parseInt(data.deadline_hours, 10) || 0,
+      };
+    } else {
+      const { deadline_hours, ...rest } = data;
+      payload = rest;
+    }
 
     const obs = this.id()
       ? this.surveyService.updateSurvey(this.id()!, payload)

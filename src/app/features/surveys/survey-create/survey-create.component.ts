@@ -18,7 +18,7 @@ import { SurveyService } from '../services/survey.service';
   ],
   template: `
     <div class="h-full flex flex-col">
-      <div class="bg-white pb-6">
+      <div class="bg-white">
         <app-b-page-header
           [title]="'Manage Survey'"
           createButtonLabel="Publish"

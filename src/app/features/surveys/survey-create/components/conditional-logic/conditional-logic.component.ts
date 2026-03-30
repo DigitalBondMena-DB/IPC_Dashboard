@@ -6,6 +6,7 @@ import {
   effect,
   ChangeDetectionStrategy,
   computed,
+  model,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -29,6 +30,7 @@ import { httpResource } from '@angular/common/http';
 import { LucideAngularModule, Trash2, GitFork, Pencil } from 'lucide-angular';
 import { BSelectComponent } from '@shared/components/b-select/b-select.component';
 import { BCheckboxComponent } from '@shared/components/b-checkbox/b-checkbox.component';
+import { BPageHeaderComponent } from '@/shared/components/b-page-header/b-page-header.component';
 
 @Component({
   selector: 'app-conditional-logic',
@@ -43,6 +45,7 @@ import { BCheckboxComponent } from '@shared/components/b-checkbox/b-checkbox.com
     LucideAngularModule,
     BSelectComponent,
     BCheckboxComponent,
+    BPageHeaderComponent,
   ],
   templateUrl: './conditional-logic.component.html',
   styles: [
@@ -69,8 +72,8 @@ export class ConditionalLogicComponent implements OnInit {
 
   id = signal<string | null>(
     this.route.snapshot.paramMap.get('id') ||
-    this.route.parent?.snapshot.paramMap.get('id') ||
-    null,
+      this.route.parent?.snapshot.paramMap.get('id') ||
+      null,
   );
 
   standaloneMode = signal<boolean>(!this.id());
@@ -90,7 +93,7 @@ export class ConditionalLogicComponent implements OnInit {
   surveyOptions = signal<{ label: string; value: number }[]>([]);
 
   domainTreeNodes = signal<TreeNode[]>([]);
-  selectedTreeNode: any = null;
+  selectedTreeNode = model<any>(null);
 
   // All questions in the survey (flat list useful for lookups)
   allQuestions = signal<any[]>([]);
@@ -100,6 +103,7 @@ export class ConditionalLogicComponent implements OnInit {
 
   // The array of forms for logic rules in the current subdomain
   rulesForms = signal<FormGroup[]>([]);
+  isConfirmationView = signal(false);
 
   // Refactored surveyResource to depend on the final active signal
   activeSurveyId = signal<string | null>(this.id());
@@ -156,7 +160,7 @@ export class ConditionalLogicComponent implements OnInit {
   onSurveyChange(surveyId: number) {
     this.selectedSurveyId.set(surveyId);
     this.activeSurveyId.set(surveyId?.toString() || null);
-    this.selectedTreeNode = null;
+    this.selectedTreeNode.set(null);
     this.currentSubdomainQuestions.set([]);
     this.rulesForms.set([]);
   }
@@ -269,7 +273,7 @@ export class ConditionalLogicComponent implements OnInit {
       ui_action_type: [uiActionType, Validators.required],
       target_question_ids: [
         ruleData?.target_question_ids ||
-        (ruleData?.target_question_id ? [ruleData.target_question_id] : []),
+          (ruleData?.target_question_id ? [ruleData.target_question_id] : []),
       ],
       target_answer_options: [ruleData?.target_answer_options || []],
       alert_type: [alertType],
@@ -309,6 +313,14 @@ export class ConditionalLogicComponent implements OnInit {
     const rules = this.rulesForms();
     rules.push(this.createRuleForm(null));
     this.rulesForms.set([...rules]);
+  }
+
+  openConfirmationView() {
+    this.isConfirmationView.set(true);
+  }
+
+  backFromConfirmation() {
+    this.isConfirmationView.set(false);
   }
 
   removeRule(index: number) {
@@ -414,6 +426,84 @@ export class ConditionalLogicComponent implements OnInit {
     const rules = this.rulesForms();
     rules[index].patchValue({ isEditing: true });
     rules[index].enable();
+  }
+
+  onEditFromConfirmation(index: number) {
+    // Hide confirmation, go back to inputs, enable edit mode and scroll into view.
+    this.isConfirmationView.set(false);
+    // Wait for DOM to render the rule list again.
+    setTimeout(() => {
+      this.editRule(index);
+      this.scrollToCondition(index);
+    }, 0);
+  }
+
+  onDeleteFromConfirmation(index: number) {
+    // Reuse the existing deletion logic.
+    this.removeRule(index);
+  }
+
+  private scrollToCondition(index: number) {
+    const elId = `condition_rule_${index}`;
+    let attempts = 0;
+
+    const tryScroll = () => {
+      const el = document.getElementById(elId);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        return;
+      }
+      attempts += 1;
+      if (attempts >= 10) return;
+      setTimeout(tryScroll, 50);
+    };
+
+    tryScroll();
+  }
+
+  getTriggerQuestionLabel(ruleForm: FormGroup): string {
+    const id = ruleForm.get('trigger_question_id')?.value;
+    if (!id) return '';
+    return this.allQuestions().find((q: any) => q.id === id)?.text || '';
+  }
+
+  getActionSummary(ruleForm: FormGroup): string {
+    const actionType = ruleForm.get('ui_action_type')?.value as string | null;
+    if (!actionType) return '';
+
+    if (actionType === 'alert') {
+      const alertType = ruleForm.get('alert_type')?.value;
+      const alertLabel =
+        this.alertTypeOptions.find((x) => x.value === alertType)?.label || alertType || 'Alert';
+      return `Alert: ${alertLabel}`;
+    }
+
+    const actionLabel =
+      this.actionOptions.find((x) => x.value === actionType)?.label || actionType;
+
+    return actionLabel;
+  }
+
+  getTargetSummary(ruleForm: FormGroup): string {
+    const actionType = ruleForm.get('ui_action_type')?.value as string | null;
+    if (!actionType) return '';
+
+    const targetQId = this.getTargetId(ruleForm);
+    const targetQLabel = targetQId
+      ? this.allQuestions().find((q: any) => q.id === targetQId)?.text || ''
+      : '';
+
+    if (['show', 'hide', 'na', 'limited_answer'].includes(actionType)) {
+      if (actionType === 'limited_answer') {
+        const selected = ruleForm.get('target_answer_options')?.value || [];
+        const answerText = selected.length ? selected.join(', ') : 'Any answer';
+        return `Target: ${targetQLabel} • Answers: ${answerText}`;
+      }
+
+      return `Target: ${targetQLabel}`;
+    }
+
+    return '';
   }
 
   getQuestionOptions(questionId: number | null): any[] {

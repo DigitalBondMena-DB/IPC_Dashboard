@@ -1,6 +1,6 @@
-<div class="page-header flex items-center justify-between pt-2.5 ps-1">
+<div class="page-header flex items-center justify-between py-6 px-layout-x bg-white">
   <div class="header-left">
-    <span class="page-title ps-5">{{ title() }}</span>
+    <app-top-bar-breadcrumb />
     @if (showSearch()) {
       <div class="search-container">
         <lucide-angular [img]="searchIcon" [size]="18" class="search-icon" />

@@ -16,7 +16,6 @@ import {
   Plus,
   Trash2,
   ChevronUp,
-  MessageCircleQuestionMark,
   FastForward,
   ArrowRight,
   LayoutGrid,
@@ -40,35 +39,7 @@ import { SurveyService } from '@features/surveys/services/survey.service';
     TooltipModule,
   ],
   templateUrl: './survey-structure.component.html',
-  styles: [
-    `
-      :host ::ng-deep .p-editor-container .p-editor-content .ql-editor {
-        min-height: 150px;
-        font-family: 'Inter', sans-serif;
-        color: #0e0e0e;
-      }
-      .custom-shadow {
-        box-shadow: 0px 4px 20px 0px rgba(0, 0, 0, 0.05);
-      }
-      .leaf-node {
-        border-left: 2px solid #16a34a;
-        background-color: #f0fdf4;
-      }
-      .question-icon {
-        position: relative;
-        &::before {
-          content: '';
-          position: absolute;
-          top: 50%;
-          left: -8px;
-          transform: translateY(-50%);
-          width: 1px;
-          height: 16px;
-          background-color: var(--color-gray-700);
-        }
-      }
-    `,
-  ],
+  styleUrl: './survey-structure.component.css',
 })
 export class SurveyStructureComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
@@ -80,7 +51,6 @@ export class SurveyStructureComponent implements OnInit {
   readonly plusIcon = Plus;
   readonly trashIcon = Trash2;
   readonly chevronUpIcon = ChevronUp;
-  readonly messageCircleQuestionMark = MessageCircleQuestionMark;
   readonly skipIcon = FastForward;
   readonly arrowRightIcon = ArrowRight;
   readonly domainIcon = LayoutGrid;
@@ -96,8 +66,9 @@ export class SurveyStructureComponent implements OnInit {
   weightingType = signal<'manual' | 'question_count'>('question_count');
   surveyName = signal('');
 
-  // View states: 'tree' | 'add_question'
-  currentView = signal<'tree' | 'add_question'>('tree');
+  // View states: 'tree' | 'add_question' | 'review_questions'
+  currentView = signal<'tree' | 'add_question' | 'review_questions'>('tree');
+  isConfirmationView = signal(false);
 
   // Track context for adding question
   activeNodeContext = signal<{
@@ -404,11 +375,11 @@ export class SurveyStructureComponent implements OnInit {
   }
 
   onSaveQuestion() {
-    if (this.questionForm.invalid) {
-      this.questionForm.markAllAsTouched();
-      return;
-    }
+    // Backward-compatible wrapper (old template may still call it somewhere)
+    this.onNextStepToReviewQuestions();
+  }
 
+  private saveQuestionToActiveDomain() {
     const val = this.questionForm.value;
     const optionsMapped: string[] = [];
     const weightsMapped: any = {};
@@ -429,8 +400,6 @@ export class SurveyStructureComponent implements OnInit {
     });
 
     const meta_data: any = { options: optionsMapped };
-
-    // Always attach weights and allow_na if manual weighting is active or simply required
     meta_data.weights = weightsMapped;
     meta_data.allow_na = allowNa;
 
@@ -443,37 +412,94 @@ export class SurveyStructureComponent implements OnInit {
       type: 'radio',
     };
 
-    const targetNode = this.activeNodeContext()?.domain;
-    const editIndex = this.activeNodeContext()?.editIndex;
+    const ctx = this.activeNodeContext();
+    const targetNode = ctx?.domain;
+    const editIndex = ctx?.editIndex;
 
-    if (targetNode) {
-      if (editIndex !== undefined) {
-        // Update existing question
-        const qGroup = this.getQuestions(targetNode).at(editIndex) as FormGroup;
-        qGroup.patchValue(questionData);
-      } else {
-        // Add new question
-        this.getQuestions(targetNode).push(this.fb.group(questionData));
-      }
-      this.syncDomains();
+    if (!targetNode) return;
+
+    if (editIndex !== undefined) {
+      const qGroup = this.getQuestions(targetNode).at(editIndex) as FormGroup;
+      qGroup.patchValue(questionData);
+    } else {
+      this.getQuestions(targetNode).push(this.fb.group(questionData));
     }
 
-    this.currentView.set('tree');
+    this.syncDomains();
+  }
+
+  private clearEditIndexFromContext() {
+    const ctx = this.activeNodeContext();
+    if (!ctx) return;
+    this.activeNodeContext.set({ domain: ctx.domain, breadcrumbs: ctx.breadcrumbs });
+  }
+
+  onAddQuestion() {
+    if (this.questionForm.invalid) {
+      this.questionForm.markAllAsTouched();
+      return;
+    }
+
+    this.saveQuestionToActiveDomain();
+    this.clearEditIndexFromContext();
+    this.resetQuestionForm();
+    this.currentView.set('add_question');
+  }
+
+  onNextStepToReviewQuestions() {
+    if (this.questionForm.invalid) {
+      this.questionForm.markAllAsTouched();
+      return;
+    }
+
+    this.saveQuestionToActiveDomain();
+    this.clearEditIndexFromContext();
+    this.currentView.set('review_questions');
   }
 
   onSaveStructure() {
     this.router.navigate(['/survey', 'edit', this.id(), 'conditional-logic']);
   }
 
+  goToConfirmation() {
+    if (this.isStructureValid()) {
+      // Ensure the confirmation UI (bottom actions) is visible.
+      this.currentView.set('tree');
+      this.isConfirmationView.set(true);
+    }
+  }
+
   onCancelView() {
-    if (this.currentView() === 'add_question') {
+    if (this.currentView() === 'add_question' || this.currentView() === 'review_questions') {
       this.currentView.set('tree');
     } else {
       this.router.navigate(['/survey']);
     }
   }
 
-  onSkip() {
-    this.router.navigate(['/survey', 'edit', this.id(), 'conditional-logic']);
+  createBadge(level: number, index: number, pathIds: number[] = []): string {
+    if (level === 0) {
+      return `D${index + 1}`;
+    }
+
+    let badge = `D${(pathIds[0] !== undefined ? pathIds[0] : 0) + 1}`;
+
+    if (level >= 1) {
+      const sIndex = level === 1 ? index : pathIds[1];
+      badge += `-S${(sIndex !== undefined ? sIndex : 0) + 1}`;
+    }
+
+    if (level >= 2) {
+      for (let i = 2; i < level; i++) {
+        badge += `-${(pathIds[i] !== undefined ? pathIds[i] : 0) + 1}`;
+      }
+      badge += `-${index + 1}`;
+    }
+
+    return badge;
+  }
+  getMaxQuestionScore(weights: any): number {
+    const max: number = Math.max(...Object.values(weights) as number[]);
+    return max || 0;
   }
 }

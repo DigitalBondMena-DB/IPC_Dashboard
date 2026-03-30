@@ -20,22 +20,23 @@ import { ENTITY_TYPE_CONFIG } from '../config/entity-type.config';
       (searchChange)="onSearch($event)"
       (createClick)="onCreate()"
     />
-
-    <app-b-data-table
-      [columns]="config().columns"
-      [data]="tableData()"
-      [totalRecords]="totalRecords()"
-      [rows]="tableState().perPage"
-      [page]="tableState().page"
-      [loading]="isLoading()"
-      [hasError]="hasError()"
-      (pageChange)="onPageChange($event)"
-      (sortChange)="onSortChange($event)"
-      (rowsChange)="onRowsChange($event)"
-      (retryLoad)="onRetry()"
-      (toggleChange)="onToggle($event)"
-      (editClick)="onEdit($event)"
-    />
+    <div class="px-layout-x">
+      <app-b-data-table
+        [columns]="config().columns"
+        [data]="tableData()"
+        [totalRecords]="totalRecords()"
+        [rows]="tableState().perPage"
+        [page]="tableState().page"
+        [loading]="isLoading()"
+        [hasError]="hasError()"
+        (pageChange)="onPageChange($event)"
+        (sortChange)="onSortChange($event)"
+        (rowsChange)="onRowsChange($event)"
+        (retryLoad)="onRetry()"
+        (toggleChange)="onToggle($event)"
+        (editClick)="onEdit($event)"
+      />
+    </div>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

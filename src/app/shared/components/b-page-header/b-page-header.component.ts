@@ -13,11 +13,12 @@ import { debounceTime, distinctUntilChanged } from 'rxjs';
 import { FormsModule } from '@angular/forms';
 import { NgxDaterangepickerMd, LocaleService, LOCALE_CONFIG } from 'ngx-daterangepicker-material';
 import moment from 'moment';
+import { TopBarBreadcrumbComponent } from '@/core/layout/main-layout/components/top-bar/top-bar.component';
 
 @Component({
   selector: 'app-b-page-header',
   standalone: true,
-  imports: [LucideAngularModule, FormsModule, NgxDaterangepickerMd],
+  imports: [LucideAngularModule, FormsModule, NgxDaterangepickerMd, TopBarBreadcrumbComponent],
   templateUrl: './b-page-header.component.html',
   styleUrl: './b-page-header.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,

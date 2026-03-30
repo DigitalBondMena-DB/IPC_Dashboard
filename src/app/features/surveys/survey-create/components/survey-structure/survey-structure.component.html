@@ -1,4 +1,4 @@
-<div class="mt-6 space-y-8 pb-20">
+<div class="mt-6 space-y-8 pb-20 pt-6 px-4 rounded-xl bg-white">
   <div class="flex items-center justify-between">
     <div class="flex items-center gap-3">
       <div class="p-2 bg-blue-50 rounded-lg text-blue-500">
@@ -30,7 +30,7 @@
 
   @if (currentView() === 'tree') {
     <!-- Tree View -->
-    <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-6">
+    <div class="rounded-xl space-y-6">
       @if (!isLoaded()) {
         <!-- Loading State -->
         <div class="flex items-center justify-center py-16">
@@ -64,7 +64,10 @@
         <!-- Recursive Form Array -->
         <div [formGroup]="structureForm" class="space-y-4">
           <ng-container
-            *ngTemplateOutlet="domainList; context: { $implicit: domains, level: 0, parents: [] }"
+            *ngTemplateOutlet="
+              domainList;
+              context: { $implicit: domains, level: 0, parents: [], pathIds: [] }
+            "
           ></ng-container>
         </div>
 
@@ -97,46 +100,46 @@
       }
 
       <!-- Bottom Actions -->
-      <div class="flex items-center justify-between pt-8 border-t border-gray-100 mt-8">
-        <button
-          (click)="onCancelView()"
-          class="flex items-center gap-2 px-14 py-3 text-sm rounded-lg bg-[#F9F9F9] text-gray-703 hover:bg-gray-100 transition-colors font-medium"
-        >
-          Cancel
-        </button>
-
+      <div class="flex items-center justify-end pt-8 border-t border-gray-100 mt-8">
         <div class="flex items-center gap-4">
-          @if (isStructureValid()) {
+          @if (!isConfirmationView()) {
             <button
-              (click)="onSkip()"
+              (click)="goToConfirmation()"
+              [disabled]="!isStructureValid()"
+              [pTooltip]="
+                !isStructureValid()
+                  ? 'All leaf domains and subdomains must have at least one question.'
+                  : ''
+              "
+              tooltipPosition="top"
+              class="flex items-center gap-2 px-14 py-3 rounded-lg bg-primary-500 text-white hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed text-sm transition-colors font-medium"
+            >
+              Next Step
+            </button>
+          } @else {
+            <button
+              (click)="isConfirmationView.set(false)"
               class="flex items-center gap-2 px-14 py-3 text-sm rounded-lg bg-[#F9F9F9] text-gray-703 hover:bg-gray-100 transition-colors font-medium"
             >
-              Skip
+              Cancel
+            </button>
+            <button
+              (click)="onSaveStructure()"
+              [disabled]="isSubmitting() || !isStructureValid()"
+              class="flex items-center gap-2 px-14 py-3 rounded-lg bg-primary-500 text-white hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed text-sm transition-colors font-medium"
+            >
+              @if (isSubmitting()) {
+                <span
+                  class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"
+                ></span>
+              }
+              Confirm & Save
             </button>
           }
-          <button
-            (click)="onSaveStructure()"
-            [disabled]="isSubmitting() || !isStructureValid()"
-            [pTooltip]="
-              !isStructureValid()
-                ? 'All leaf domains and subdomains must have at least one question.'
-                : ''
-            "
-            tooltipPosition="top"
-            showDelay="100"
-            class="flex items-center gap-2 px-14 py-3 rounded-lg bg-primary-500 text-white hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed text-sm transition-colors font-medium"
-          >
-            @if (isSubmitting()) {
-              <span
-                class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"
-              ></span>
-            }
-            Next Step
-          </button>
         </div>
       </div>
     </div>
-  } @else {
+  } @else if (currentView() === 'add_question') {
     <!-- Add Question Form View -->
     <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-8 space-y-8">
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -252,7 +255,9 @@
                         type="number"
                         formControlName="weight"
                         class="w-16 px-2 py-1 border border-gray-200 rounded text-center text-sm font-bold bg-gray-50 focus:outline-0 text-black-400"
-                        [class.border-red-500]="opt.get('weight')?.invalid && opt.get('weight')?.touched"
+                        [class.border-red-500]="
+                          opt.get('weight')?.invalid && opt.get('weight')?.touched
+                        "
                       />
                     </div>
                     @if (opt.get('weight')?.hasError('min')) {
@@ -281,9 +286,116 @@
         >
           Cancel
         </button>
+        <div class="flex items-center gap-4">
+          <button
+            type="button"
+            (click)="onAddQuestion()"
+            class="flex items-center gap-2 px-14 py-3 rounded-lg bg-[#16A34A] text-white hover:bg-green-700 text-sm transition-colors font-medium"
+          >
+            Add Question
+          </button>
+          <button
+            type="button"
+            (click)="onNextStepToReviewQuestions()"
+            class="flex items-center gap-2 px-14 py-3 rounded-lg bg-primary-500 text-white hover:bg-blue-600 text-sm transition-colors font-medium"
+          >
+            Next Step
+          </button>
+        </div>
+      </div>
+    </div>
+  } @else {
+    <!-- Review Questions View -->
+    <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-8 space-y-8">
+      <div>
+        <h2 class="text-lg font-semibold text-black-400">Review Questions</h2>
+        <p class="text-sm text-gray-500">
+          {{ activeNodeContext()?.breadcrumbs?.join(' > ') || '' }}
+        </p>
+      </div>
+
+      @if (!activeNodeContext() || !activeNodeContext()?.domain) {
+        <div class="flex items-center justify-center py-16">
+          <p class="text-gray-500">No domain selected.</p>
+        </div>
+      } @else {
+        @if (getQuestions(activeNodeContext()!.domain).length > 0) {
+          <div class="space-y-3">
+            @for (q of getQuestions(activeNodeContext()!.domain).controls; track $index) {
+              <div
+                class="py-3.5 px-6.5 rounded-lg flex items-center justify-between border border-[#E5E7EB]"
+              >
+                <div class="flex items-center gap-3">
+                  <div class="bg-gray-200 text-xs font-semibold text-gray-300 p-2 rounded-lg">
+                    {{ 'Q' + ($index + 1) }}
+                  </div>
+                  <div>
+                    <p class="font-medium text-[#111827]">{{ q.get('text')?.value }}</p>
+                    <p class="text-sm text-gray-703">
+                      {{ q.get('description')?.value || 'No description' }}
+                    </p>
+                  </div>
+                </div>
+                <div class="flex items-center gap-1">
+                  <p class="font-medium text-sm text-gray-703">
+                    highest score: 
+                    <span class="font-normal text-sm text-black-400">
+                      {{ getMaxQuestionScore(q.get('meta_data')?.value?.weights) || 0 }}
+                    </span>
+                  </p>
+                  <button
+                    (click)="prepareEditQuestion(activeNodeContext()!.domain, activeNodeContext()!.breadcrumbs, $index)"
+                    class="text-blue-400 hover:text-blue-500 rounded hover:bg-blue-50 transition-colors p-2.5  bg-[#EFF6FF]"
+                    title="Edit Question"
+                  >
+                    <lucide-angular [img]="pencilIcon" [size]="14" />
+                  </button>
+                  <button
+                    (click)="getQuestions(activeNodeContext()!.domain).removeAt($index); syncDomains()"
+                    class="text-red-100 hover:text-red-500 bg-red-200 p-1 rounded hover:bg-red-50 transition-colors"
+                    title="Delete Question"
+                  >
+                    <lucide-angular [img]="trashIcon" [size]="16" />
+                  </button>
+                </div>
+              </div>
+            }
+          </div>
+        } @else {
+          <div class="flex flex-col items-center justify-center py-16 space-y-6">
+            <div
+              class="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center text-gray-300"
+            >
+              <lucide-angular [img]="domainIcon" [size]="32" />
+            </div>
+            <div class="text-center">
+              <h3 class="text-xl font-bold text-black-400">No questions yet</h3>
+              <p class="text-gray-500 max-w-sm mt-2">
+                Add questions for this domain to see them here.
+              </p>
+            </div>
+          </div>
+        }
+      }
+
+      <!-- Review Footer -->
+      <div class="flex items-center justify-between pt-8 border-t border-gray-100 mt-8">
         <button
-          (click)="onSaveQuestion()"
-          class="flex items-center gap-2 px-14 py-3 rounded-lg bg-primary-500 text-white hover:bg-blue-600 text-sm transition-colors font-medium"
+          (click)="onCancelView()"
+          class="flex items-center gap-2 px-14 py-3 text-sm rounded-lg bg-[#F9F9F9] text-gray-703 hover:bg-gray-100 transition-colors font-medium"
+        >
+          Back to Structure
+        </button>
+        <button
+          (click)="goToConfirmation()"
+          [disabled]="!isStructureValid()"
+          [pTooltip]="
+            !isStructureValid()
+              ? 'All leaf domains and subdomains must have at least one question.'
+              : ''
+          "
+          tooltipPosition="top"
+          class="flex items-center gap-2 px-14 py-3 rounded-lg bg-primary-500 text-white hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed text-sm transition-colors font-medium"
         >
           Next Step
         </button>
@@ -292,17 +404,30 @@
   }
 </div>
 
-<ng-template #domainList let-domainsArr let-level="level" let-parents="parents">
+<ng-template
+  #domainList
+  let-domainsArr
+  let-level="level"
+  let-parents="parents"
+  let-pathIds="pathIds"
+>
   <div class="space-y-4">
     @for (domainNode of domainsArr.controls; track $index) {
       <div
-        class="border border-gray-100 rounded-2xl shadow-sm transition-all duration-200"
-        [class.bg-white]="level === 0"
-        [class.bg-gray-50]="level > 0"
+        class="rounded-2xl transition-all duration-200"
+        [class.border]="level === 0"
+        [class.border-gray-100]="level === 0"
+        [class.bg-white]="level > 0 && isConfirmationView()"
+        [class.bg-[#F9FAFB]]="level === 0"
+        [class.shadow-[0_2px_10px_rgb(0,0,0,0.05)]]="level === 0"
+        [class.mb-4]="level === 0"
       >
         <!-- Node Header -->
-        <div class="p-4 flex items-center justify-between group">
-          <div class="flex items-center gap-3 flex-1">
+        <div
+          class="p-4 flex items-center justify-between group rounded-lg"
+          [class.bg-white]="level > 0"
+        >
+          <div class="flex items-center gap-3 flex-1" [class.subdomain-card]="level > 0">
             <button
               (click)="toggleNode(domainNode)"
               class="p-1 hover:bg-gray-100 rounded transition-colors"
@@ -317,26 +442,37 @@
 
             <!-- Level Badge -->
             <div
+              [class.text-blue-600]="level === 0"
+              [class.bg-blue-100]="level === 0"
+              [class.text-green-600]="level === 1"
+              [class.bg-green-100]="level === 1"
+              [class.text-yellow-600]="level >= 2"
+              [class.bg-yellow-100]="level >= 2"
               class="px-2 py-0.5 rounded text-[10px] font-bold uppercase"
-              [class]="level === 0 ? 'bg-blue-100 text-blue-600' : 'bg-green-100 text-green-600'"
             >
-              {{ level === 0 ? 'D' + ($index + 1) : 'S' + level }}
+              {{ createBadge(level, $index, pathIds) }}
             </div>
 
             <!-- Title Input -->
-            <input
-              [formControl]="domainNode.get('title')"
-              (blur)="onNodeBlur(domainNode)"
-              placeholder="Enter name..."
-              class="flex-1 bg-transparent border-none focus:outline-0 text-sm font-semibold text-black-400"
-            />
+            @if (!isConfirmationView()) {
+              <input
+                [formControl]="domainNode.get('title')"
+                (blur)="onNodeBlur(domainNode)"
+                placeholder="Enter name..."
+                class="flex-1 bg-transparent border-none focus:outline-0 text-sm font-semibold text-black-400"
+              />
+            } @else {
+              <span class="flex-1 text-sm font-semibold text-black-400 truncate pr-4">
+                {{ domainNode.get('title')?.value }}
+              </span>
+            }
           </div>
 
           <div class="flex items-center gap-3">
             <!-- Score Input (Manual Weighting) -->
             @if (weightingType() === 'manual') {
               <div class="flex items-center gap-2">
-                <span class="text-xs text-gray-500">Score:</span>
+                <span class="text-xs text-gray-500">Percentage:</span>
                 <input
                   type="number"
                   max="100"
@@ -396,7 +532,7 @@
           <div class="px-4 pb-4 space-y-3">
             <!-- Subdomains -->
             @if (getSubdomains(domainNode).length > 0) {
-              <div class="ml-6 pl-6 border-l-2 border-gray-100 mt-2">
+              <div class="ml-6 pl-6 border-gray-100 mt-2">
                 <ng-container
                   *ngTemplateOutlet="
                     domainList;
@@ -404,6 +540,7 @@
                       $implicit: getSubdomains(domainNode),
                       level: level + 1,
                       parents: parents.concat(domainNode.get('title')?.value),
+                      pathIds: pathIds.concat($index),
                     }
                   "
                 ></ng-container>
@@ -414,19 +551,24 @@
               <div class="ml-6 pl-6 space-y-2 mt-2">
                 @for (q of getQuestions(domainNode).controls; track $index) {
                   <div
-                    class="bg-green-50 py-3.5 px-6.5 rounded-lg flex items-center justify-between border border-[#A7F3D0]"
+                    class="py-3.5 px-6.5 rounded-lg flex items-center justify-between border"
+                    [class.border-[#E5E7EB]]="isConfirmationView()"
+                    [class.border-[#A7F3D0]]="isConfirmationView()"
+                    [class.bg-[#F9F9F9]]="isConfirmationView()"
+                    [class.bg-green-50]="!isConfirmationView()"
                   >
                     <div class="flex items-center gap-3">
-                      <div class="bg-[#D1FAE5] p-2 rounded-lg question-icon">
-                        <lucide-angular
-                          [img]="messageCircleQuestionMark"
-                          [size]="16"
-                          class="text-[#16A34A]"
-                        />
+                      <div
+                        class="bg-[#D1FAE5] text-xs font-semibold text-gray-300 p-2 rounded-lg question-icon"
+                      >
+                        {{ 'Q' + ($index + 1) }}
                       </div>
                       <div>
                         <p class="font-medium text-[#111827]">{{ q.get('text')?.value }}</p>
-                        <p class="text-xs text-[#047857]">
+                        <p
+                          class="text-xs text-[#047857]"
+                          [class.text-gray-703]="isConfirmationView()"
+                        >
                           Available Answers: {{ q.get('meta_data')?.value?.options?.length || 0 }}
                         </p>
                       </div>

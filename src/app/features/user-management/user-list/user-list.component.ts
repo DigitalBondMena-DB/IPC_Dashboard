@@ -21,22 +21,23 @@ import { USER_TYPE_CONFIG } from '../config/user-type.config';
       [showSearch]="true"
       (createClick)="onCreate()"
     />
-
-    <app-b-data-table
-      [columns]="columns()"
-      [data]="tableData()"
-      [totalRecords]="totalRecords()"
-      [rows]="tableState().perPage"
-      [page]="tableState().page"
-      [loading]="isLoading()"
-      [hasError]="hasError()"
-      (pageChange)="onPageChange($event)"
-      (sortChange)="onSortChange($event)"
-      (rowsChange)="onRowsChange($event)"
-      (retryLoad)="onRetry()"
-      (toggleChange)="onToggle($event)"
-      (editClick)="onEdit($event)"
-    />
+    <div class="px-layout-x">
+      <app-b-data-table
+        [columns]="columns()"
+        [data]="tableData()"
+        [totalRecords]="totalRecords()"
+        [rows]="tableState().perPage"
+        [page]="tableState().page"
+        [loading]="isLoading()"
+        [hasError]="hasError()"
+        (pageChange)="onPageChange($event)"
+        (sortChange)="onSortChange($event)"
+        (rowsChange)="onRowsChange($event)"
+        (retryLoad)="onRetry()"
+        (toggleChange)="onToggle($event)"
+        (editClick)="onEdit($event)"
+      />
+    </div>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -46,7 +47,9 @@ export class UserListComponent {
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
 
-  readonly type = toSignal(this.route.data.pipe(map((d) => d['type'] as string)), { initialValue: '' });
+  readonly type = toSignal(this.route.data.pipe(map((d) => d['type'] as string)), {
+    initialValue: '',
+  });
   readonly config = computed(() => USER_TYPE_CONFIG[this.type()]);
 
   readonly columns = computed<ITableColumn[]>(() => this.config().columns);

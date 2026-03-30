@@ -1,300 +1,400 @@
-<div class="h-full flex flex-col pt-8 bg-white py-6 px-4 border border-[#E1E7EF] rounded-xl">
-  <!-- Header -->
-  <div class="flex items-start gap-4 mb-8">
-    <div class="p-3 bg-blue-50 text-blue-500 rounded-lg">
-      <lucide-angular [img]="GitForkIcon" class="w-6 h-6"></lucide-angular>
-    </div>
-    <div>
-      <h2 class="text-xl font-semibold text-gray-900">Conditional Logic</h2>
-      <p class="text-gray-500 text-sm mt-1">Add preliminary and graded questions</p>
-    </div>
-  </div>
-
-  <!-- Domain & Subdomain Selection -->
-  <div class="bg-white rounded-xl border border-gray-200 p-6 mb-8 custom-shadow">
-    @if (!standaloneMode()) {
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div class="col-span-1 md:col-span-2">
-          <label for="domain_subdomain_tree" class="block font-semibold text-black-400 mb-1.5">
-            Domain & Subdomain <span class="text-red-500">*</span>
-          </label>
-          <p-treeSelect
-            [(ngModel)]="selectedTreeNode"
-            id="domain_subdomain_tree"
-            [options]="domainTreeNodes()"
-            class="w-full"
-            appendTo="body"
-            placeholder="Select Domain / Subdomain"
-            [filter]="true"
-            filterBy="label,searchTitle"
-            filterPlaceholder="Search domain, subdomain or question..."
-            filterMode="lenient"
-            (onNodeSelect)="onNodeSelect($event)"
-          ></p-treeSelect>
-        </div>
+<app-b-page-header [title]="'Conditional Logic'" [showCreateButton]="false" />
+<div class="pt-2.5 px-layout-x">
+  <div class="h-full flex flex-col pt-8 bg-white py-6 px-4 border border-[#E1E7EF] rounded-xl">
+    <!-- Header -->
+    <div class="flex items-start gap-4 mb-8">
+      <div class="p-3 bg-blue-50 text-blue-500 rounded-lg">
+        <lucide-angular [img]="GitForkIcon" class="w-6 h-6"></lucide-angular>
       </div>
-    } @else {
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div class="col-span-1 md:col-span-2">
-          <label class="block font-semibold text-black-400 mb-1.5">
-            Survey Name <span class="text-red-500">*</span>
-          </label>
-          <app-b-select
-            [options]="surveyOptions()"
-            [ngModel]="selectedSurveyId()"
-            (ngModelChange)="onSurveyChange($event)"
-            [filter]="true"
-            [virtualScroll]="true"
-            [loading]="surveysResource?.isLoading() || false"
-            (onSearch)="onSurveySearch($event)"
-            (onScrollPagination)="onSurveyScroll($event)"
-            placeholder="Select survey name.."
-          ></app-b-select>
-        </div>
-        <div class="col-span-1 md:col-span-2">
-          <label
-            for="domain_subdomain_tree_standalone"
-            class="block font-semibold text-black-400 mb-1.5"
-          >
-            Domain & Subdomain <span class="text-red-500">*</span>
-          </label>
-          <p-treeSelect
-            [(ngModel)]="selectedTreeNode"
-            id="domain_subdomain_tree_standalone"
-            [options]="domainTreeNodes()"
-            class="w-full"
-            appendTo="body"
-            placeholder="Select Domain / Subdomain"
-            [filter]="true"
-            filterBy="label,searchTitle"
-            filterPlaceholder="Search domain, subdomain or question..."
-            filterMode="lenient"
-            (onNodeSelect)="onNodeSelect($event)"
-            [disabled]="!selectedSurveyId()"
-          ></p-treeSelect>
-        </div>
+      <div>
+        <h2 class="text-xl font-semibold text-gray-900">Conditional Logic</h2>
+        <p class="text-gray-500 text-sm mt-1">Add preliminary and graded questions</p>
       </div>
-    }
-  </div>
+    </div>
 
-  <!-- Logic Rules List -->
-  @if (selectedTreeNode && currentSubdomainQuestions().length > 0) {
-    <div class="space-y-6">
-      @for (ruleForm of rulesForms(); track $index; let i = $index) {
-        <div class="bg-white rounded-xl border border-blue-200 p-6 custom-shadow relative">
-          <div class="flex items-center justify-between mb-6">
-            <h3 class="text-lg font-bold text-blue-500">Condition Logic #{{ i + 1 }}</h3>
-            <div class="flex items-center gap-2">
-              @if (!ruleForm.get('isEditing')?.value) {
-                <button
-                  type="button"
-                  class="text-blue-500 hover:bg-blue-50 p-2 rounded-lg transition-colors"
-                  (click)="editRule(i)"
-                >
-                  <lucide-angular [img]="EditIcon" class="w-5 h-5"></lucide-angular>
-                </button>
-              }
-              <button
-                type="button"
-                class="text-red-500 hover:bg-red-50 p-2 rounded-lg transition-colors"
-                (click)="removeRule(i)"
-              >
-                <lucide-angular [img]="TrashIcon" class="w-5 h-5"></lucide-angular>
-              </button>
-            </div>
+    <!-- Domain & Subdomain Selection -->
+    <div class="rounded-xl border bg-[#F9FAFB] border-[#E5E7EB] p-6 mb-8 custom-shadow">
+      @if (!standaloneMode()) {
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="col-span-1 md:col-span-2">
+            <label for="domain_subdomain_tree" class="block font-semibold text-black-400 mb-1.5">
+              Domain & Subdomain <span class="text-red-500">*</span>
+            </label>
+            <p-treeSelect
+              [(ngModel)]="selectedTreeNode"
+              id="domain_subdomain_tree"
+              [options]="domainTreeNodes()"
+              class="w-full"
+              appendTo="body"
+              placeholder="Select Domain / Subdomain"
+              [filter]="true"
+              filterBy="label,searchTitle"
+              filterPlaceholder="Search domain, subdomain or question..."
+              filterMode="lenient"
+              (onNodeSelect)="onNodeSelect($event)"
+            ></p-treeSelect>
           </div>
+        </div>
+      } @else {
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="col-span-1 md:col-span-2">
+            <label class="block font-semibold text-black-400 mb-1.5">
+              Survey Name <span class="text-red-500">*</span>
+            </label>
+            <app-b-select
+              [options]="surveyOptions()"
+              [ngModel]="selectedSurveyId()"
+              (ngModelChange)="onSurveyChange($event)"
+              [filter]="true"
+              [virtualScroll]="true"
+              [loading]="surveysResource?.isLoading() || false"
+              (onSearch)="onSurveySearch($event)"
+              (onScrollPagination)="onSurveyScroll($event)"
+              placeholder="Select survey name.."
+            ></app-b-select>
+          </div>
+          <div class="col-span-1 md:col-span-2">
+            <label
+              for="domain_subdomain_tree_standalone"
+              class="block font-semibold text-black-400 mb-1.5"
+            >
+              Domain & Subdomain <span class="text-red-500">*</span>
+            </label>
+            <p-treeSelect
+              [(ngModel)]="selectedTreeNode"
+              id="domain_subdomain_tree_standalone"
+              [options]="domainTreeNodes()"
+              class="w-full"
+              appendTo="body"
+              placeholder="Select Domain / Subdomain"
+              [filter]="true"
+              filterBy="label,searchTitle"
+              filterPlaceholder="Search domain, subdomain or question..."
+              filterMode="lenient"
+              (onNodeSelect)="onNodeSelect($event)"
+              [disabled]="!selectedSurveyId()"
+            ></p-treeSelect>
+          </div>
+        </div>
+      }
+    </div>
 
-          <form [formGroup]="ruleForm" class="space-y-6 text-black-400">
-            <!-- If This Question -->
-            <div class="flex items-start gap-4">
-              <div class="mt-2 text-xs font-semibold px-2 py-1 bg-blue-50 text-blue-500 rounded">
-                If
-              </div>
-              <div class="flex-1">
-                <app-b-select
-                  id="trigger_question_{{ i }}"
-                  label="This Question"
-                  [options]="getTriggerQuestionOptions(ruleForm.get('trigger_question_id')?.value)"
-                  formControlName="trigger_question_id"
-                  placeholder="Select a question..."
-                ></app-b-select>
-              </div>
-            </div>
-
-            <!-- Has The answer -->
-            <div class="flex items-start gap-4">
-              <div
-                class="mt-2 text-xs font-semibold px-2 py-1 bg-yellow-50 text-yellow-600 rounded"
-              >
-                Has
-              </div>
-              <div class="flex-1">
-                <app-b-select
-                  [id]="'trigger_answer_' + i"
-                  label="The answer"
-                  [options]="getQuestionOptions(ruleForm.get('trigger_question_id')?.value)"
-                  formControlName="trigger_answer"
-                  placeholder="Select an answer option..."
-                ></app-b-select>
-              </div>
-            </div>
-
-            <!-- Then Action -->
-            <div class="flex items-start gap-4">
-              <div class="mt-2 text-xs font-semibold px-2 py-1 bg-green-50 text-green-600 rounded">
-                Then
-              </div>
-              <div class="flex-1">
-                <label class="block text-sm font-medium text-gray-703 mb-3">Action</label>
-                <div class="flex flex-wrap items-center gap-6">
-                  @for (opt of actionOptions; track opt.value) {
-                    <div class="flex items-center gap-2">
-                      <p-radioButton
-                        [inputId]="'action_' + i + '_' + opt.value"
-                        [value]="opt.value"
-                        formControlName="ui_action_type"
-                        class="radio-btn"
-                      ></p-radioButton>
-                      <label
-                        [for]="'action_' + i + '_' + opt.value"
-                        class="text-sm text-[#6F6F6F]"
-                        >{{ opt.label }}</label
-                      >
-                    </div>
+    <!-- Logic Rules List -->
+    @if (!isConfirmationView()) {
+      @if (selectedTreeNode() && currentSubdomainQuestions().length > 0) {
+        <div class="space-y-6">
+          @for (ruleForm of rulesForms(); track $index; let i = $index) {
+            <div
+              class="bg-white rounded-xl border border-blue-200 p-6 custom-shadow relative"
+              [attr.id]="'condition_rule_' + i"
+            >
+              <div class="flex items-center justify-between mb-6">
+                <h3 class="text-lg font-bold text-blue-500">Condition Logic #{{ i + 1 }}</h3>
+                <div class="flex items-center gap-2">
+                  @if (!ruleForm.get('isEditing')?.value) {
+                    <button
+                      type="button"
+                      class="text-blue-500 hover:bg-blue-50 p-2 rounded-lg transition-colors"
+                      (click)="editRule(i)"
+                    >
+                      <lucide-angular [img]="EditIcon" class="w-5 h-5"></lucide-angular>
+                    </button>
                   }
+                  <button
+                    type="button"
+                    class="text-red-500 hover:bg-red-50 p-2 rounded-lg transition-colors"
+                    (click)="removeRule(i)"
+                  >
+                    <lucide-angular [img]="TrashIcon" class="w-5 h-5"></lucide-angular>
+                  </button>
+                </div>
+              </div>
+
+              <form [formGroup]="ruleForm" class="space-y-6 text-black-400">
+                <!-- If This Question -->
+                <div class="flex items-start gap-4">
+                  <div
+                    class="mt-2 text-xs font-semibold px-2 py-1 bg-blue-50 text-blue-500 rounded"
+                  >
+                    If
+                  </div>
+                  <div class="flex-1">
+                    <app-b-select
+                      id="trigger_question_{{ i }}"
+                      label="This Question"
+                      [options]="
+                        getTriggerQuestionOptions(ruleForm.get('trigger_question_id')?.value)
+                      "
+                      formControlName="trigger_question_id"
+                      placeholder="Select a question..."
+                    ></app-b-select>
+                  </div>
                 </div>
 
-                <!-- Dynamic Fields based on Action -->
-                @if (
-                  ruleForm.get('ui_action_type')?.value &&
-                  !['mandatory_comment', 'mandatory_action_plan'].includes(
-                    ruleForm.get('ui_action_type')?.value
-                  )
-                ) {
-                  <div class="mt-6 space-y-4">
-                    @if (ruleForm.get('ui_action_type')?.value === 'alert') {
-                      <app-b-select
-                        id="alert_type_{{ i }}"
-                        label="Alert Type"
-                        [options]="alertTypeOptions"
-                        formControlName="alert_type"
-                        placeholder="Select alert type..."
-                      ></app-b-select>
-                    }
+                <!-- Has The answer -->
+                <div class="flex items-start gap-4">
+                  <div
+                    class="mt-2 text-xs font-semibold px-2 py-1 bg-yellow-50 text-yellow-600 rounded"
+                  >
+                    Has
+                  </div>
+                  <div class="flex-1">
+                    <app-b-select
+                      [id]="'trigger_answer_' + i"
+                      label="The answer"
+                      [options]="getQuestionOptions(ruleForm.get('trigger_question_id')?.value)"
+                      formControlName="trigger_answer"
+                      placeholder="Select an answer option..."
+                    ></app-b-select>
+                  </div>
+                </div>
 
+                <!-- Then Action -->
+                <div class="flex items-start gap-4">
+                  <div
+                    class="mt-2 text-xs font-semibold px-2 py-1 bg-green-50 text-green-600 rounded"
+                  >
+                    Then
+                  </div>
+                  <div class="flex-1">
+                    <label class="block text-sm font-medium text-gray-703 mb-3"
+                      >Action</label
+                    >
+                    <div class="flex flex-wrap items-center gap-6">
+                      @for (opt of actionOptions; track opt.value) {
+                        <div class="flex items-center gap-2">
+                          <p-radioButton
+                            [inputId]="'action_' + i + '_' + opt.value"
+                            [value]="opt.value"
+                            formControlName="ui_action_type"
+                            class="radio-btn"
+                          ></p-radioButton>
+                          <label
+                            [for]="'action_' + i + '_' + opt.value"
+                            class="text-sm text-[#6F6F6F]"
+                            >{{ opt.label }}</label
+                          >
+                        </div>
+                      }
+                    </div>
+
+                    <!-- Dynamic Fields based on Action -->
                     @if (
-                      ['show', 'hide', 'na', 'limited_answer'].includes(
+                      ruleForm.get('ui_action_type')?.value &&
+                      !['mandatory_comment', 'mandatory_action_plan'].includes(
                         ruleForm.get('ui_action_type')?.value
                       )
                     ) {
-                      <app-b-select
-                        [id]="'target_question_id_' + i"
-                        label="Apply Action to Question"
-                        [options]="
-                          getFilteredTargetOptions(ruleForm.get('trigger_question_id')?.value)
-                        "
-                        [ngModel]="getTargetId(ruleForm)"
-                        (ngModelChange)="setTargetId(ruleForm, $event)"
-                        [ngModelOptions]="{ standalone: true }"
-                        [disabled]="ruleForm.disabled"
-                        placeholder="Select a question..."
-                      ></app-b-select>
+                      <div class="mt-6 space-y-4">
+                        @if (ruleForm.get('ui_action_type')?.value === 'alert') {
+                          <app-b-select
+                            id="alert_type_{{ i }}"
+                            label="Alert Type"
+                            [options]="alertTypeOptions"
+                            formControlName="alert_type"
+                            placeholder="Select alert type..."
+                          ></app-b-select>
+                        }
+
+                        @if (
+                          ['show', 'hide', 'na', 'limited_answer'].includes(
+                            ruleForm.get('ui_action_type')?.value
+                          )
+                        ) {
+                          <app-b-select
+                            [id]="'target_question_id_' + i"
+                            label="Apply Action to Question"
+                            [options]="
+                              getFilteredTargetOptions(ruleForm.get('trigger_question_id')?.value)
+                            "
+                            [ngModel]="getTargetId(ruleForm)"
+                            (ngModelChange)="setTargetId(ruleForm, $event)"
+                            [ngModelOptions]="{ standalone: true }"
+                            [disabled]="ruleForm.disabled"
+                            placeholder="Select a question..."
+                          ></app-b-select>
+                        }
+
+                        @if (
+                          ruleForm.get('ui_action_type')?.value === 'limited_answer' &&
+                          getTargetId(ruleForm)
+                        ) {
+                          <div class="mt-4">
+                            <label
+                              class="block text-sm font-medium text-gray-703 mb-2"
+                              >Question's Answers</label
+                            >
+                            <div class="grid grid-cols-1 gap-2">
+                              @for (
+                                ans of getQuestionOptions(getTargetId(ruleForm));
+                                track ans.value
+                              ) {
+                                <app-b-checkbox
+                                  class="rounded-md! border-gray-300! checked:border-primary-500!"
+                                  [id]="'ans_' + i + '_' + ans.value"
+                                  [label]="ans.label"
+                                  [ngModel]="isAnswerSelected(ruleForm, ans.value)"
+                                  (ngModelChange)="toggleAnswer(ruleForm, ans.value)"
+                                  [ngModelOptions]="{ standalone: true }"
+                                  [disabled]="ruleForm.disabled"
+                                ></app-b-checkbox>
+                              }
+                            </div>
+                          </div>
+                        }
+                      </div>
                     }
 
-                    @if (
-                      ruleForm.get('ui_action_type')?.value === 'limited_answer' &&
-                      getTargetId(ruleForm)
-                    ) {
-                      <div class="mt-4">
-                        <label class="block text-sm font-medium text-gray-703 mb-2"
-                          >Question's Answers</label
+                    @if (ruleForm.get('isEditing')?.value) {
+                      <div class="mt-4 flex justify-end">
+                        <button
+                          type="button"
+                          class="px-5 py-2 bg-blue-500 text-white font-medium rounded-lg hover:bg-blue-600 transition-colors shadow-sm text-sm"
+                          (click)="saveRule(i)"
+                          [disabled]="ruleForm.invalid"
+                          [class.opacity-50]="ruleForm.invalid"
                         >
-                        <div class="grid grid-cols-1 gap-2">
-                          @for (ans of getQuestionOptions(getTargetId(ruleForm)); track ans.value) {
-                            <app-b-checkbox
-                              class="rounded-md! border-gray-300! checked:border-primary-500!"
-                              [id]="'ans_' + i + '_' + ans.value"
-                              [label]="ans.label"
-                              [ngModel]="isAnswerSelected(ruleForm, ans.value)"
-                              (ngModelChange)="toggleAnswer(ruleForm, ans.value)"
-                              [ngModelOptions]="{ standalone: true }"
-                              [disabled]="ruleForm.disabled"
-                            ></app-b-checkbox>
+                          @if (ruleForm.get('id')?.value) {
+                            Save Edits
+                          } @else {
+                            Save Rule
                           }
-                        </div>
+                        </button>
                       </div>
                     }
                   </div>
-                }
-
-                @if (ruleForm.get('isEditing')?.value) {
-                  <div class="mt-4 flex justify-end">
-                    <button
-                      type="button"
-                      class="px-5 py-2 bg-blue-500 text-white font-medium rounded-lg hover:bg-blue-600 transition-colors shadow-sm text-sm"
-                      (click)="saveRule(i)"
-                      [disabled]="ruleForm.invalid"
-                      [class.opacity-50]="ruleForm.invalid"
-                    >
-                      @if (ruleForm.get('id')?.value) {
-                        Save Edits
-                      } @else {
-                        Save Rule
-                      }
-                    </button>
-                  </div>
-                }
-              </div>
+                </div>
+              </form>
             </div>
-          </form>
+          }
+        </div>
+    } @else if (selectedTreeNode()) {
+        <div
+          class="flex items-center justify-center p-12 text-gray-500 bg-gray-50 rounded-xl border border-gray-200 border-dashed"
+        >
+          No questions available in this subdomain to apply logic.
         </div>
       }
-    </div>
-  } @else if (selectedTreeNode) {
-    <div
-      class="flex items-center justify-center p-12 text-gray-500 bg-gray-50 rounded-xl border border-gray-200 border-dashed"
-    >
-      No questions available in this subdomain to apply logic.
-    </div>
-  }
-  <div class="flex items-center justify-between pt-6 mt-auto">
-    <button
-      type="button"
-      class="flex items-center gap-2 px-14 py-3 text-sm rounded-lg bg-[#F9F9F9] text-gray-703 hover:bg-gray-100 transition-colors font-medium"
-      (click)="onCancel()"
-    >
-      Cancel
-    </button>
+    } @else {
+      <div
+        class="space-y-6"
+      >
+        <div class="flex items-start justify-between">
+          <div>
+            <h3 class="text-lg font-semibold text-black-400">Added Conditions</h3>
+            <p class="text-sm text-gray-500">
+              Review before confirming. You can edit or delete anytime.
+            </p>
+          </div>
+        </div>
 
-    <div class="flex items-center gap-3">
-      @if (!standaloneMode()) {
-        <button
-          type="button"
-          class="flex items-center gap-2 px-14 py-3 text-sm rounded-lg bg-[#F9F9F9] text-gray-703 hover:bg-gray-100 transition-colors font-medium"
-          (click)="onSkip()"
-        >
-          Skip
-        </button>
-      }
-      @if (selectedTreeNode && currentSubdomainQuestions().length > 0) {
-        <button
-          type="button"
-          class="flex items-center gap-2 bg-[#16A34A] text-white px-6.5 py-3 rounded-2xl hover:bg-green-700 transition-colors font-medium"
-          (click)="addRule()"
-        >
-          Add New Condition
-        </button>
-      }
+        @if (rulesForms().length > 0) {
+          <div class="grid gap-4">
+            @for (ruleForm of rulesForms(); track $index; let i = $index) {
+              <div class="bg-white p-4 rounded-xl border border-gray-100 shadow-sm flex items-center justify-between">
+                <div class="flex items-center gap-4">
+                  <div class="w-10 h-10 bg-blue-50 text-blue-500 rounded-lg flex items-center justify-center">
+                    <span class="font-bold">{{ i + 1 }}</span>
+                  </div>
+                  <div>
+                    <h4 class="font-medium text-black-400">
+                      If {{ getTriggerQuestionLabel(ruleForm) }} has {{ ruleForm.get('trigger_answer')?.value }}
+                    </h4>
+                    <p class="text-sm text-gray-500">
+                      {{ getActionSummary(ruleForm) }}
+                      @if (getTargetSummary(ruleForm)) { <span>• {{ getTargetSummary(ruleForm) }}</span> }
+                    </p>
+                  </div>
+                </div>
+                <div class="flex items-center gap-2">
+                  <button
+                    type="button"
+                    class="p-2 text-blue-500 hover:bg-blue-50 rounded-lg transition-colors"
+                    (click)="onEditFromConfirmation(i)"
+                    title="Edit Condition"
+                  >
+                    <lucide-angular [img]="EditIcon" [size]="18" />
+                  </button>
+                  <button
+                    type="button"
+                    class="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                    (click)="onDeleteFromConfirmation(i)"
+                    title="Delete Condition"
+                  >
+                    <lucide-angular [img]="TrashIcon" [size]="18" />
+                  </button>
+                </div>
+              </div>
+            }
+          </div>
+        } @else {
+          <div
+            class="text-center py-12 text-gray-500 bg-gray-50 rounded-xl border border-dashed border-gray-200"
+          >
+            No active conditions added.
+          </div>
+        }
+      </div>
+    }
 
-      @if (!standaloneMode()) {
-        <button
-          type="button"
-          class="flex items-center gap-2 px-9.5 py-3 rounded-lg bg-primary-500 text-white hover:bg-blue-600 disabled:opacity-50 text-sm transition-colors font-medium"
-          (click)="onNext()"
-        >
-          Next Step
-        </button>
-      }
+    <div class="flex items-center justify-between pt-6 mt-auto">
+      <button
+        type="button"
+        class="flex items-center gap-2 px-14 py-3 text-sm rounded-lg bg-[#F9F9F9] text-gray-703 hover:bg-gray-100 transition-colors font-medium"
+        (click)="onCancel()"
+      >
+        Cancel
+      </button>
+
+      <div class="flex items-center gap-3">
+        @if (!isConfirmationView()) {
+          @if (!standaloneMode()) {
+            <button
+              type="button"
+              class="flex items-center gap-2 px-14 py-3 text-sm rounded-lg bg-[#F9F9F9] text-gray-703 hover:bg-gray-100 transition-colors font-medium"
+              (click)="onSkip()"
+            >
+              Skip
+            </button>
+          }
+          @if (selectedTreeNode() && currentSubdomainQuestions().length > 0) {
+            <button
+              type="button"
+              class="flex items-center gap-2 bg-[#16A34A] text-white px-6.5 py-3 rounded-2xl hover:bg-green-700 transition-colors font-medium"
+              (click)="addRule()"
+            >
+              Add New Condition
+            </button>
+          }
+
+          @if (!standaloneMode()) {
+            <button
+              type="button"
+              class="flex items-center gap-2 px-9.5 py-3 rounded-lg bg-primary-500 text-white hover:bg-blue-600 disabled:opacity-50 text-sm transition-colors font-medium"
+              (click)="openConfirmationView()"
+            >
+              Next Step
+            </button>
+          }
+        } @else {
+          @if (!standaloneMode()) {
+            <button
+              type="button"
+              class="flex items-center gap-2 px-14 py-3 text-sm rounded-lg bg-[#F9F9F9] text-gray-703 hover:bg-gray-100 transition-colors font-medium"
+              (click)="backFromConfirmation()"
+            >
+              Back
+            </button>
+            <button
+              type="button"
+              class="flex items-center gap-2 px-9.5 py-3 rounded-lg bg-primary-500 text-white hover:bg-blue-600 disabled:opacity-50 text-sm transition-colors font-medium"
+              (click)="onNext()"
+            >
+              Confirm
+            </button>
+          }
+        }
+      </div>
     </div>
   </div>
 </div>

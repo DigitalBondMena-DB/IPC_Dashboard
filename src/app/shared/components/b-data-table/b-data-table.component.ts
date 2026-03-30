@@ -162,7 +162,7 @@ export class BDataTableComponent {
   }
 
   onToggle(item: any, field: string): void {
-    if (item.can_be_edited === false) return;
+    if (item?.can_be_edited === false) return;
     this.toggleChange.emit({ item, field, value: !item[field] });
   }
 
@@ -183,5 +183,15 @@ export class BDataTableComponent {
     if (!column.sortable) return null;
     if (this.currentSortField() !== column.field) return this.arrowUpDownIcon;
     return this.currentSortDir() === 'asc' ? this.arrowUpIcon : this.arrowDownIcon;
+  }
+  isCanBeEdited(item: any): boolean {
+    console.log(item.can_be_edited === undefined);
+    console.log(item.can_be_edited);
+    if (item.can_be_edited === undefined) {
+      return false;
+    }
+    {
+      return item?.can_be_edited === false;
+    }
   }
 }

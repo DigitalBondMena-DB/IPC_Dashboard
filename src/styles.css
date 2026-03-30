@@ -11,6 +11,8 @@
   --color-gray-704: #b0b0b0;
   --color-gray-706: #eff6ff;
   --color-red-100: #dc2626;
+  --color-red-200: #FFFCFC;
+  --padding-layout-x: 1rem;
 
   @keyframes slide-down {
     from {
