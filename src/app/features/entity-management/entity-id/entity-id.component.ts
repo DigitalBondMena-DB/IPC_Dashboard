@@ -130,19 +130,16 @@ export class EntityIdComponent {
       const accumulated = signal<any[]>([]);
 
       // Sync accumulated data
-      effect(
-        () => {
-          if (resource.isLoading()) return;
-          const res = resource.value();
-          if (res?.data) {
-            if (page() === 1) accumulated.set(res.data);
-            else accumulated.update((prev) => [...prev, ...res.data]);
-          } else if (!res && !resource.isLoading()) {
-            accumulated.set([]);
-          }
-        },
-        { allowSignalWrites: true },
-      );
+      effect(() => {
+        if (resource.isLoading()) return;
+        const res = resource.value();
+        if (res?.data) {
+          if (page() === 1) accumulated.set(res.data);
+          else accumulated.update((prev) => [...prev, ...res.data]);
+        } else if (!res && !resource.isLoading()) {
+          accumulated.set([]);
+        }
+      });
 
       state[depConfig.key] = { searchTerm, page, accumulated, resource };
     });

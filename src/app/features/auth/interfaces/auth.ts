@@ -11,4 +11,5 @@ export interface IUser {
   id: string;
   name: string;
   email: string;
+  entity_type: string;
 }

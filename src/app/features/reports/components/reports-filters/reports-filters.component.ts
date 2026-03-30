@@ -255,19 +255,16 @@ export class ReportsFiltersComponent implements OnInit {
   }
 
   private setupAccumulation(state: any, resource: any) {
-    effect(
-      () => {
-        if (resource.isLoading()) return;
-        const res = resource.value();
-        if (res?.data) {
-          if (state.page() === 1) state.accumulated.set(res.data);
-          else state.accumulated.update((prev: any[]) => [...prev, ...res.data]);
-        } else if (!res && !resource.isLoading()) {
-          if (state.page() === 1) state.accumulated.set([]);
-        }
-      },
-      { allowSignalWrites: true },
-    );
+    effect(() => {
+      if (resource.isLoading()) return;
+      const res = resource.value();
+      if (res?.data) {
+        if (state.page() === 1) state.accumulated.set(res.data);
+        else state.accumulated.update((prev: any[]) => [...prev, ...res.data]);
+      } else if (!res && !resource.isLoading()) {
+        if (state.page() === 1) state.accumulated.set([]);
+      }
+    });
   }
 
   private mapOptions(state: any, resource: any) {

@@ -40,11 +40,6 @@ export class BDataTableComponent {
   hasError = input<boolean>(false);
   page = input(1);
   showPagination = input(true);
-  constructor() {
-    effect(() => {
-      console.log('Table hasError:', this.hasError());
-    });
-  }
   // Outputs
   pageChange = output<number>();
   sortChange = output<{ field: string; direction: 'asc' | 'desc' }>();
@@ -185,8 +180,6 @@ export class BDataTableComponent {
     return this.currentSortDir() === 'asc' ? this.arrowUpIcon : this.arrowDownIcon;
   }
   isCanBeEdited(item: any): boolean {
-    console.log(item.can_be_edited === undefined);
-    console.log(item.can_be_edited);
     if (item.can_be_edited === undefined) {
       return false;
     }

@@ -1,4 +1,5 @@
 import { ILoginResponse } from '@/features/auth/interfaces/auth';
+import { Role } from '@/shared/models/users-role.model';
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { Router } from '@angular/router';
 
@@ -10,6 +11,7 @@ export class AuthService {
   private readonly USERDATA_STORAGE = 'userData';
   private _userData = signal<ILoginResponse | null>(null);
   public userData = this._userData.asReadonly();
+  public role = computed<Role>(() => this._userData()?.user.entity_type as Role);
   isAuthenticated = computed(() => !!this._userData()?.token);
   constructor() {
     this.initializeFromStorage();

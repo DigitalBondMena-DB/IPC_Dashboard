@@ -198,6 +198,12 @@ export const getUserFormConfig = (
           virtualScroll: true,
           loading: deps.isGeneralDivisionsLoading,
         },
+        {
+          key: 'has_all_entity_surveys',
+          label: 'Has All Entity Surveys',
+          type: 'checkbox',
+          colSpan: 'col-span-1',
+        },
       ];
       break;
 
@@ -269,6 +275,12 @@ export const getUserFormConfig = (
           filter: true,
           virtualScroll: true,
           loading: deps.isGeneralDivisionsLoading,
+        },
+        {
+          key: 'has_all_entity_surveys',
+          label: 'Has All Entity Surveys',
+          type: 'checkbox',
+          colSpan: 'col-span-1',
         },
       ];
       break;

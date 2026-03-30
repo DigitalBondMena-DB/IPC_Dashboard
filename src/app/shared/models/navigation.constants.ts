@@ -8,10 +8,11 @@ export interface SidebarFooterConfig {
 export const ALL_MENU_ITEMS: NavItem[] = [
   { label: 'User Management', icon: 'Dashboard', isSection: true },
   { label: 'Overview', routerLink: '/dashboard' },
-  { label: 'Divisions', routerLink: '/dashboard/divisions' },
+  { label: 'Divisions', roles: ['ministry'], routerLink: '/dashboard/divisions' },
   {
     label: 'Entities',
     expanded: false,
+    roles: ['ministry'],
     children: [
       { label: 'Health Directorate', routerLink: '/dashboard/health-directorate' },
       { label: 'Health Division', routerLink: '/dashboard/health-division' },
@@ -24,19 +25,45 @@ export const ALL_MENU_ITEMS: NavItem[] = [
     label: 'User Management',
     expanded: false,
     children: [
-      { label: 'Super Admin', routerLink: '/dashboard/super-admin-users' },
-      { label: 'Health Directorate', routerLink: '/dashboard/health-directorate-users' },
-      { label: 'Health Division', routerLink: '/dashboard/health-division-users' },
-      { label: 'Hospitals', routerLink: '/dashboard/hospitals-users' },
-      { label: 'Authorities', routerLink: '/dashboard/authorities-users' },
-      { label: "Authority's Hospitals", routerLink: '/dashboard/authorities-hospitals-users' },
+      { label: 'Super Admin', roles: ['ministry'], routerLink: '/dashboard/super-admin-users' },
+      {
+        label: 'Health Directorate',
+        roles: ['ministry', 'governorate'],
+        routerLink: '/dashboard/health-directorate-users',
+      },
+      {
+        label: 'Health Division',
+        roles: ['ministry', 'governorate'],
+        routerLink: '/dashboard/health-division-users',
+      },
+      {
+        label: 'Hospitals',
+        roles: ['ministry', 'governorate'],
+        routerLink: '/dashboard/hospitals-users',
+      },
+      {
+        label: 'Authorities',
+        roles: ['ministry', 'governorate'],
+        routerLink: '/dashboard/authorities-users',
+      },
+      {
+        label: "Authority's Hospitals",
+        roles: ['ministry', 'governorate'],
+        routerLink: '/dashboard/authorities-hospitals-users',
+      },
     ],
   },
 
-  { label: 'Survey Builder', icon: 'Survey', isSection: true },
-  { label: 'New Survey', icon: 'Plus', routerLink: '/survey/create/setup', isButton: true },
-  { label: 'Surveys', routerLink: '/survey' },
-  { label: 'Conditional logic', routerLink: '/survey/conditional-logic' },
+  { label: 'Survey Builder', roles: ['ministry'], icon: 'Survey', isSection: true },
+  {
+    label: 'New Survey',
+    roles: ['ministry'],
+    icon: 'Plus',
+    routerLink: '/survey/create/setup',
+    isButton: true,
+  },
+  { label: 'Surveys', roles: ['ministry'], routerLink: '/survey' },
+  { label: 'Conditional logic', roles: ['ministry'], routerLink: '/survey/conditional-logic' },
 
   { label: 'Reports', icon: 'Reports', isSection: true },
   { label: 'Overview', routerLink: '/reports/overview' },

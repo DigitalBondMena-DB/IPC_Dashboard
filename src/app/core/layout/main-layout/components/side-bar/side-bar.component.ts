@@ -25,6 +25,7 @@ import { AvatarModule } from 'primeng/avatar';
 import { TooltipModule } from 'primeng/tooltip';
 import { NavItem } from '@/shared/models/nav-item.model';
 import { AuthService } from '@/core/services/auth.service';
+import { Role } from '@/shared/models/users-role.model';
 
 @Component({
   selector: 'app-side-bar',
@@ -35,6 +36,7 @@ import { AuthService } from '@/core/services/auth.service';
 })
 export class SideBarComponent {
   private readonly _AuthService = inject(AuthService);
+  private readonly userRole = computed<Role>(() => this._AuthService.role());
   isCollapsed = signal(false);
   userData = computed(() => this._AuthService.userData());
   readonly icons: Record<string, LucideIconData> = {
@@ -53,13 +55,10 @@ export class SideBarComponent {
   internalMenuItems = signal<NavItem[]>([]);
 
   constructor() {
-    effect(
-      () => {
-        const items = this.menuItems();
-        this.internalMenuItems.set(items);
-      },
-      { allowSignalWrites: true },
-    );
+    effect(() => {
+      const items = this.menuItems();
+      this.internalMenuItems.set(items);
+    });
   }
 
   toggleSubMenu(item: NavItem) {
@@ -76,5 +75,11 @@ export class SideBarComponent {
   }
   logout() {
     this._AuthService.logout();
+  }
+  getVisibleItems(items: Role[]): boolean {
+    if (this.userRole() && items.length !== 0) {
+      return items.includes(this.userRole()!);
+    }
+    return true;
   }
 }
