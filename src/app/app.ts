@@ -8,10 +8,10 @@ import { NotificationsService } from './core/services/notifications.service';
   templateUrl: './app.html',
 })
 export class App {
-  private notificationsService = inject(NotificationsService);
-  constructor() {
-    this.notificationsService.connect(
-      'https://ipc.mshmohm.com/api/admin/notifications/stream?token=107|KbwHJP2x1LC7HYIDfMBWFyuO70Mm5jGq2wvh6WnB6ac7969c',
-    );
-  }
+  // private notificationsService = inject(NotificationsService);
+  // constructor() {
+  //   this.notificationsService.connect(
+  //     'https://ipc.mshmohm.com/api/admin/notifications/stream?token=107|KbwHJP2x1LC7HYIDfMBWFyuO70Mm5jGq2wvh6WnB6ac7969c',
+  //   );
+  // }
 }

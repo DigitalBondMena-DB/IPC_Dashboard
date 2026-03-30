@@ -33,22 +33,22 @@ export const ALL_MENU_ITEMS: NavItem[] = [
       },
       {
         label: 'Health Division',
-        roles: ['ministry', 'governorate'],
+        roles: ['ministry', 'governorate', 'medical_area'],
         routerLink: '/dashboard/health-division-users',
       },
       {
         label: 'Hospitals',
-        roles: ['ministry', 'governorate'],
+        roles: ['ministry', 'governorate', 'medical_area', 'hospital'],
         routerLink: '/dashboard/hospitals-users',
       },
       {
         label: 'Authorities',
-        roles: ['ministry', 'governorate'],
+        roles: ['ministry', 'authority', 'authority_hospital'],
         routerLink: '/dashboard/authorities-users',
       },
       {
         label: "Authority's Hospitals",
-        roles: ['ministry', 'governorate'],
+        roles: ['ministry', 'authority_hospital'],
         routerLink: '/dashboard/authorities-hospitals-users',
       },
     ],
