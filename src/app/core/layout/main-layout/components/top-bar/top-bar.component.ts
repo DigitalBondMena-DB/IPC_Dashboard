@@ -19,7 +19,7 @@ export class TopBarBreadcrumbComponent {
   ChevronsRight = ChevronsRight;
   username = computed(() => this._AuthService.userData()?.user.name);
 
-  activeBreadcrumb = signal<{ section: string; item: string } | null>(null);
+  activeBreadcrumb = signal<{ section: string; parent: string; item: string } | null>(null);
 
   constructor() {
     this.router.events
@@ -38,13 +38,15 @@ export class TopBarBreadcrumbComponent {
   private updateBreadcrumb(url: string) {
     let currentSection = '';
     let foundSection = '';
+    let foundParent = '';
     let foundItem = '';
     let longestMatch = '';
 
-    const checkMatch = (link: string | undefined, label: string) => {
+    const checkMatch = (link: string | undefined, label: string, parentLabel: string = '') => {
       if (link && url.includes(link) && link.length > longestMatch.length) {
         longestMatch = link;
         foundSection = currentSection;
+        foundParent = parentLabel;
         foundItem = label;
       }
     };
@@ -56,7 +58,7 @@ export class TopBarBreadcrumbComponent {
 
       if (item.children) {
         for (const child of item.children) {
-          checkMatch(child.routerLink, child.label);
+          checkMatch(child.routerLink, child.label, item.label);
         }
       } else {
         checkMatch(item.routerLink, item.label);
@@ -64,7 +66,7 @@ export class TopBarBreadcrumbComponent {
     }
 
     if (foundItem) {
-      this.activeBreadcrumb.set({ section: foundSection, item: foundItem });
+      this.activeBreadcrumb.set({ section: foundSection, parent: foundParent, item: foundItem });
     } else {
       this.activeBreadcrumb.set(null);
     }

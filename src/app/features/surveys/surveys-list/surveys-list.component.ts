@@ -62,8 +62,8 @@ export class SurveysListComponent {
   onDateChange(event: { from: string; to: string; range?: string }) {
     this.params.update((p) => ({
       ...p,
-      from: event.from,
-      to: event.to,
+      start_date: event.from,
+      end_date: event.to,
       page: 1,
     }));
   }

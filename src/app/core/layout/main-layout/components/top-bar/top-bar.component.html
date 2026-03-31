@@ -3,6 +3,10 @@
     @if (activeBreadcrumb(); as breadcrumb) {
       <div class="flex items-center gap-2">
         <span class="text-gray-300 font-medium text-nowrap text-lg">{{ breadcrumb.section }}</span>
+        @if (breadcrumb.parent) {
+          <lucide-angular [img]="ChevronsRight" [size]="24" class="text-gray-300" />
+          <span class="text-gray-300 font-medium text-nowrap text-lg">{{ breadcrumb.parent }}</span>
+        }
         <lucide-angular [img]="ChevronsRight" [size]="24" class="text-gray-300" />
         <span class="text-[#1C398F] font-semibold text-[28px] text-nowrap">{{
           breadcrumb.item
