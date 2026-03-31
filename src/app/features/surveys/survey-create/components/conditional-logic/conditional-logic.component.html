@@ -1,4 +1,3 @@
-<app-b-page-header [title]="'Conditional Logic'" [showCreateButton]="false" />
 <div class="pt-2.5 px-layout-x">
   <div class="h-full flex flex-col pt-8 bg-white py-6 px-4 border border-[#E1E7EF] rounded-xl">
     <!-- Header -->
@@ -81,7 +80,7 @@
 
     <!-- Logic Rules List -->
     @if (!isConfirmationView()) {
-      @if (selectedTreeNode() && currentSubdomainQuestions().length > 0) {
+      @if (rulesForms().length > 0) {
         <div class="space-y-6">
           @for (ruleForm of rulesForms(); track $index; let i = $index) {
             <div
@@ -89,7 +88,7 @@
               [attr.id]="'condition_rule_' + i"
             >
               <div class="flex items-center justify-between mb-6">
-                <h3 class="text-lg font-bold text-blue-500">Condition Logic #{{ i + 1 }}</h3>
+                <h3 class="text-lg font-bold text-blue-500">Conditional Logic</h3>
                 <div class="flex items-center gap-2">
                   @if (!ruleForm.get('isEditing')?.value) {
                     <button
@@ -157,9 +156,7 @@
                     Then
                   </div>
                   <div class="flex-1">
-                    <label class="block text-sm font-medium text-gray-703 mb-3"
-                      >Action</label
-                    >
+                    <label class="block text-sm font-medium text-gray-703 mb-3">Action</label>
                     <div class="flex flex-wrap items-center gap-6">
                       @for (opt of actionOptions; track opt.value) {
                         <div class="flex items-center gap-2">
@@ -220,8 +217,7 @@
                           getTargetId(ruleForm)
                         ) {
                           <div class="mt-4">
-                            <label
-                              class="block text-sm font-medium text-gray-703 mb-2"
+                            <label class="block text-sm font-medium text-gray-703 mb-2"
                               >Question's Answers</label
                             >
                             <div class="grid grid-cols-1 gap-2">
@@ -244,31 +240,14 @@
                         }
                       </div>
                     }
-
-                    @if (ruleForm.get('isEditing')?.value) {
-                      <div class="mt-4 flex justify-end">
-                        <button
-                          type="button"
-                          class="px-5 py-2 bg-blue-500 text-white font-medium rounded-lg hover:bg-blue-600 transition-colors shadow-sm text-sm"
-                          (click)="saveRule(i)"
-                          [disabled]="ruleForm.invalid"
-                          [class.opacity-50]="ruleForm.invalid"
-                        >
-                          @if (ruleForm.get('id')?.value) {
-                            Save Edits
-                          } @else {
-                            Save Rule
-                          }
-                        </button>
-                      </div>
-                    }
                   </div>
                 </div>
               </form>
             </div>
           }
         </div>
-    } @else if (selectedTreeNode()) {
+      }
+      @if (selectedTreeNode() && currentSubdomainQuestions().length === 0) {
         <div
           class="flex items-center justify-center p-12 text-gray-500 bg-gray-50 rounded-xl border border-gray-200 border-dashed"
         >
@@ -276,9 +255,7 @@
         </div>
       }
     } @else {
-      <div
-        class="space-y-6"
-      >
+      <div class="space-y-6">
         <div class="flex items-start justify-between">
           <div>
             <h3 class="text-lg font-semibold text-black-400">Added Conditions</h3>
@@ -288,41 +265,75 @@
           </div>
         </div>
 
-        @if (rulesForms().length > 0) {
-          <div class="grid gap-4">
-            @for (ruleForm of rulesForms(); track $index; let i = $index) {
-              <div class="bg-white p-4 rounded-xl border border-gray-100 shadow-sm flex items-center justify-between">
-                <div class="flex items-center gap-4">
-                  <div class="w-10 h-10 bg-blue-50 text-blue-500 rounded-lg flex items-center justify-center">
-                    <span class="font-bold">{{ i + 1 }}</span>
-                  </div>
-                  <div>
-                    <h4 class="font-medium text-black-400">
-                      If {{ getTriggerQuestionLabel(ruleForm) }} has {{ ruleForm.get('trigger_answer')?.value }}
-                    </h4>
-                    <p class="text-sm text-gray-500">
-                      {{ getActionSummary(ruleForm) }}
-                      @if (getTargetSummary(ruleForm)) { <span>• {{ getTargetSummary(ruleForm) }}</span> }
-                    </p>
+        @if (allLogicRules().length > 0) {
+          <div class="grid gap-6">
+            @for (ruleEntry of allLogicRules(); track ruleEntry.rule.id; let i = $index) {
+              <div
+                class="bg-white rounded-xl border border-blue-200 p-6 custom-shadow relative group"
+              >
+                <div class="flex items-center justify-between mb-4">
+                  <h3 class="text-lg font-bold text-blue-500">Logic Rule #{{ i + 1 }}</h3>
+                  <div
+                    class="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity"
+                  >
+                    <button
+                      type="button"
+                      class="text-blue-500 hover:bg-blue-50 p-2 rounded-lg transition-colors"
+                      (click)="onEditFromConfirmation(i)"
+                    >
+                      <lucide-angular [img]="EditIcon" class="w-5 h-5"></lucide-angular>
+                    </button>
+                    <button
+                      type="button"
+                      class="text-red-500 hover:bg-red-50 p-2 rounded-lg transition-colors"
+                      (click)="onDeleteFromConfirmation(i)"
+                    >
+                      <lucide-angular [img]="TrashIcon" class="w-5 h-5"></lucide-angular>
+                    </button>
                   </div>
                 </div>
-                <div class="flex items-center gap-2">
-                  <button
-                    type="button"
-                    class="p-2 text-blue-500 hover:bg-blue-50 rounded-lg transition-colors"
-                    (click)="onEditFromConfirmation(i)"
-                    title="Edit Condition"
-                  >
-                    <lucide-angular [img]="EditIcon" [size]="18" />
-                  </button>
-                  <button
-                    type="button"
-                    class="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors"
-                    (click)="onDeleteFromConfirmation(i)"
-                    title="Delete Condition"
-                  >
-                    <lucide-angular [img]="TrashIcon" [size]="18" />
-                  </button>
+
+                <div class="space-y-4 text-sm text-gray-700">
+                  <div class="flex items-start gap-4">
+                    <div
+                      class="mt-1 text-xs font-semibold px-2 py-0.5 bg-blue-50 text-blue-500 rounded"
+                    >
+                      If
+                    </div>
+                    <div class="flex-1 font-medium">{{ ruleEntry.triggerQuestion.text }}</div>
+                  </div>
+                  <div class="flex items-start gap-4">
+                    <div
+                      class="mt-1 text-xs font-semibold px-2 py-0.5 bg-yellow-50 text-yellow-600 rounded"
+                    >
+                      Has
+                    </div>
+                    <div class="flex-1">{{ ruleEntry.rule.trigger_answer }}</div>
+                  </div>
+                  <div class="flex items-start gap-4">
+                    <div
+                      class="mt-1 text-xs font-semibold px-2 py-0.5 bg-green-50 text-green-600 rounded"
+                    >
+                      Then
+                    </div>
+                    <div class="flex-1">
+                      <span class="font-bold text-green-700">{{
+                        ruleEntry.rule.action_type | uppercase
+                      }}</span>
+                      @if (ruleEntry.rule.target_question_id) {
+                        on question:
+                        <span class="text-blue-600 italic"
+                          >"{{ getQuestionTextById(ruleEntry.rule.target_question_id) }}"</span
+                        >
+                      }
+                      @if (ruleEntry.rule.target_answer_options?.length) {
+                        • Options:
+                        <span class="font-medium">{{
+                          ruleEntry.rule.target_answer_options.join(', ')
+                        }}</span>
+                      }
+                    </div>
+                  </div>
                 </div>
               </div>
             }
@@ -364,6 +375,13 @@
               (click)="addRule()"
             >
               Add New Condition
+            </button>
+            <button
+              type="button"
+              class="flex items-center gap-2 px-9.5 py-3 rounded-lg bg-primary-500 text-white hover:bg-blue-600 disabled:opacity-50 text-sm transition-colors font-medium"
+              (click)="saveAllRules()"
+            >
+              Save
             </button>
           }
 

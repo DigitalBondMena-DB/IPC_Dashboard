@@ -102,7 +102,7 @@ export class ConditionalLogicComponent implements OnInit {
   currentSubdomainQuestions = signal<any[]>([]);
 
   // The array of forms for logic rules in the current subdomain
-  rulesForms = signal<FormGroup[]>([]);
+  rulesForms = signal<FormGroup[]>([this.createRuleForm(null)]);
   isConfirmationView = signal(false);
 
   // Refactored surveyResource to depend on the final active signal
@@ -111,6 +111,24 @@ export class ConditionalLogicComponent implements OnInit {
     const surveyId = this.activeSurveyId();
     if (!surveyId) return undefined;
     return `${API_CONFIG.BASE_URL}${API_CONFIG.ENDPOINTS.SURVEYS.BASE}/${surveyId}`;
+  });
+
+  allLogicRules = computed(() => {
+    const questions = this.allQuestions();
+    const rules: any[] = [];
+    const ruleIds = new Set<number>();
+
+    questions.forEach((q) => {
+      if (q.logic_rules) {
+        q.logic_rules.forEach((r: any) => {
+          if (!ruleIds.has(r.id)) {
+            ruleIds.add(r.id);
+            rules.push({ triggerQuestion: q, rule: r });
+          }
+        });
+      }
+    });
+    return rules;
   });
 
   actionOptions = [
@@ -190,6 +208,17 @@ export class ConditionalLogicComponent implements OnInit {
     this.allQuestions.set(allQs);
   }
 
+  findFirstLeaf(nodes: TreeNode[]): TreeNode | null {
+    for (const node of nodes) {
+      if (node.selectable) return node;
+      if (node.children) {
+        const childLeaf = this.findFirstLeaf(node.children);
+        if (childLeaf) return childLeaf;
+      }
+    }
+    return null;
+  }
+
   mapDomainToTreeNode(domain: any, allQuestionsRef: any[]): TreeNode {
     const questionsText = (domain.questions || []).map((q: any) => q.text).join(' ');
     const node: TreeNode & { searchTitle?: string } = {
@@ -252,6 +281,10 @@ export class ConditionalLogicComponent implements OnInit {
       existingRules.push(this.createRuleForm(entry.triggerId, entry.rule));
     });
 
+    if (existingRules.length === 0) {
+      existingRules.push(this.createRuleForm(null));
+    }
+
     this.rulesForms.set(existingRules);
   }
 
@@ -311,8 +344,80 @@ export class ConditionalLogicComponent implements OnInit {
 
   addRule() {
     const rules = this.rulesForms();
-    rules.push(this.createRuleForm(null));
-    this.rulesForms.set([...rules]);
+    const pendingRules = rules.filter((f) => f.get('isEditing')?.value || f.dirty);
+
+    if (pendingRules.length > 0) {
+      // Validate pending forms first
+      const invalidForms = pendingRules.filter((f) => f.invalid);
+      if (invalidForms.length > 0) {
+        invalidForms.forEach((f) => f.markAllAsTouched());
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Incomplete Rule',
+          detail: 'Please complete the current rule before adding a new one.',
+        });
+        return;
+      }
+
+      // Save all pending rules, then add new form
+      let savedCount = 0;
+      const totalToSave = pendingRules.length;
+
+      pendingRules.forEach((form) => {
+        const val = form.getRawValue();
+        const triggerQId = val.trigger_question_id;
+
+        let backendActionType = val.ui_action_type;
+        if (backendActionType === 'alert') {
+          backendActionType = val.alert_type;
+        }
+        const targetId = val.target_question_ids?.length ? val.target_question_ids[0] : undefined;
+        const payload = {
+          trigger_answer: val.trigger_answer,
+          action_type: backendActionType,
+          target_question_id: targetId,
+          target_question_ids: val.target_question_ids?.length ? val.target_question_ids : undefined,
+          target_answer_options: val.target_answer_options?.length
+            ? val.target_answer_options
+            : undefined,
+        };
+
+        const request = val.id
+          ? this.logicService.updateLogicRule(val.id, payload)
+          : this.logicService.createLogicRule(triggerQId, payload);
+
+        request.subscribe({
+          next: (res) => {
+            form.patchValue({ id: res.data?.id || res.id, isEditing: false });
+            form.disable();
+            savedCount++;
+            if (savedCount === totalToSave) {
+              // All saved – add new empty form
+              const updatedRules = this.rulesForms();
+              updatedRules.push(this.createRuleForm(null));
+              this.rulesForms.set([...updatedRules]);
+              this.surveyResource?.reload();
+              this.messageService.add({
+                severity: 'success',
+                summary: 'Saved',
+                detail: 'Previous rule saved. New condition added.',
+              });
+            }
+          },
+          error: () => {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: 'Could not save the current rule.',
+            });
+          },
+        });
+      });
+    } else {
+      // No pending rules, just add new
+      rules.push(this.createRuleForm(null));
+      this.rulesForms.set([...rules]);
+    }
   }
 
   openConfirmationView() {
@@ -331,6 +436,10 @@ export class ConditionalLogicComponent implements OnInit {
       this.logicService.deleteLogicRule(ruleId).subscribe({
         next: () => {
           rules.splice(index, 1);
+          // Always keep at least one form
+          if (rules.length === 0) {
+            rules.push(this.createRuleForm(null));
+          }
           this.rulesForms.set([...rules]);
           this.messageService.add({
             severity: 'success',
@@ -348,6 +457,10 @@ export class ConditionalLogicComponent implements OnInit {
       });
     } else {
       rules.splice(index, 1);
+      // Always keep at least one form
+      if (rules.length === 0) {
+        rules.push(this.createRuleForm(null));
+      }
       this.rulesForms.set([...rules]);
     }
   }
@@ -426,6 +539,97 @@ export class ConditionalLogicComponent implements OnInit {
     const rules = this.rulesForms();
     rules[index].patchValue({ isEditing: true });
     rules[index].enable();
+  }
+
+  getQuestionTextById(id: number | null): string {
+    if (!id) return '';
+    return this.allQuestions().find((q) => q.id === id)?.text || 'Question ' + id;
+  }
+
+  saveAllRules(silent: boolean = false) {
+    const rules = this.rulesForms();
+    const pendingRules = rules.filter((f) => f.get('isEditing')?.value || f.dirty);
+
+    if (pendingRules.length === 0 && !silent) {
+      // Nothing to save – reset domain and show one empty form
+      this.selectedTreeNode.set(null);
+      this.currentSubdomainQuestions.set([]);
+      this.rulesForms.set([this.createRuleForm(null)]);
+      return;
+    }
+
+    // Check validity
+    const invalidForms = pendingRules.filter((f) => f.invalid);
+    if (invalidForms.length > 0) {
+      invalidForms.forEach((f) => f.markAllAsTouched());
+      if (!silent) {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Incomplete Rules',
+          detail: 'Please finish all required fields in logic rules.',
+        });
+      }
+      return;
+    }
+
+    // Execute saves
+    let savedCount = 0;
+    const totalToSave = pendingRules.length;
+
+    if (totalToSave === 0) {
+      if (!silent) this.selectedTreeNode.set(null);
+      return;
+    }
+
+    pendingRules.forEach((form, i) => {
+      const val = form.getRawValue();
+      const triggerQId = val.trigger_question_id;
+
+      let backendActionType = val.ui_action_type;
+      if (backendActionType === 'alert') {
+        backendActionType = val.alert_type;
+      }
+      const targetId = val.target_question_ids?.length ? val.target_question_ids[0] : undefined;
+      const payload = {
+        trigger_answer: val.trigger_answer,
+        action_type: backendActionType,
+        target_question_id: targetId,
+        target_question_ids: val.target_question_ids?.length ? val.target_question_ids : undefined,
+        target_answer_options: val.target_answer_options?.length
+          ? val.target_answer_options
+          : undefined,
+      };
+
+      const request = val.id
+        ? this.logicService.updateLogicRule(val.id, payload)
+        : this.logicService.createLogicRule(triggerQId, payload);
+
+      request.subscribe({
+        next: (res) => {
+          savedCount++;
+          if (savedCount === totalToSave) {
+            if (!silent) {
+              this.messageService.add({
+                severity: 'success',
+                summary: 'Saved',
+                detail: 'All rules saved successfully',
+              });
+              this.selectedTreeNode.set(null);
+              this.currentSubdomainQuestions.set([]);
+              this.rulesForms.set([this.createRuleForm(null)]);
+            }
+            this.surveyResource?.reload();
+          }
+        },
+        error: () => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'Some rules could not be saved.',
+          });
+        },
+      });
+    });
   }
 
   onEditFromConfirmation(index: number) {
@@ -575,6 +779,7 @@ export class ConditionalLogicComponent implements OnInit {
   }
 
   onNext() {
+    this.saveAllRules(true);
     this.router.navigate(['/survey', 'edit', this.id(), 'overview']);
   }
 }
