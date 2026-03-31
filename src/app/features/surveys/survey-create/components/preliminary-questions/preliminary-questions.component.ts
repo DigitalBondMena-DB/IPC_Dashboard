@@ -88,11 +88,10 @@ export class PreliminaryQuestionsComponent implements OnInit {
     { label: 'DateTime', value: 'datetime' },
     { label: 'True/False', value: 'true_false' },
     { label: 'Radio', value: 'radio' },
-    { label: 'TextArea', value: 'textarea' },
     { label: 'File', value: 'file' },
     { label: 'Location', value: 'location' },
     { label: 'Decimal', value: 'decimal' },
-    { label: 'EnumList', value: 'enumlist' },
+    { label: 'Enum List', value: 'enumlist' },
   ];
 
   showOptions = linkedSignal(() => {
@@ -152,6 +151,11 @@ export class PreliminaryQuestionsComponent implements OnInit {
 
   isFieldInvalid(name: string) {
     const control = this.questionForm.get(name);
+    return control ? control.invalid && control.touched : false;
+  }
+
+  isOptionInvalid(index: number) {
+    const control = this.optionsArray.at(index);
     return control ? control.invalid && control.touched : false;
   }
 

@@ -116,7 +116,10 @@ export class BFormBuilderComponent implements OnInit {
       const requiredLength = control.errors?.['minlength']?.requiredLength;
       return `${field.label} must be at least ${requiredLength} characters`;
     }
-    if (control.hasError('passwordMismatch')) return 'Passwords do not match';
+    if (control.hasError('min')) {
+      const minVal = control.errors?.['min']?.min;
+      return `${field.label} must be at least ${minVal}`;
+    }
 
     return `${field.label} is invalid`;
   }

@@ -5,10 +5,11 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { filter } from 'rxjs/operators';
 import { ALL_MENU_ITEMS } from '@/shared/models/navigation.constants';
 import { LucideAngularModule, ChevronsRight } from 'lucide-angular';
+import { Tooltip } from 'primeng/tooltip';
 
 @Component({
   selector: 'app-top-bar-breadcrumb',
-  imports: [LucideAngularModule],
+  imports: [LucideAngularModule, Tooltip],
   templateUrl: './top-bar.component.html',
   styleUrl: './top-bar.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,

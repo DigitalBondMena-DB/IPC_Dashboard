@@ -74,7 +74,7 @@ export class SurveySetupComponent implements OnInit {
       key: 'title',
       label: 'Survey Title',
       type: 'text',
-      placeholder: 'Patient Satisfaction Survey',
+      placeholder: 'Survey Title',
       validators: [Validators.required],
       colSpan: 'col-span-1',
     },
@@ -84,6 +84,7 @@ export class SurveySetupComponent implements OnInit {
       type: 'multiselect',
       placeholder: 'Select Divisions',
       options: this.categories().map((c) => ({ label: c.name, value: c.id })),
+      filter: true,
       loading: this.isLoadingCategories(),
       validators: [Validators.required],
       colSpan: 'col-span-1',
@@ -93,6 +94,7 @@ export class SurveySetupComponent implements OnInit {
       label: 'Deadline (Hours)',
       type: 'number',
       placeholder: '168',
+      validators: [Validators.min(1)],
       colSpan: 'col-span-1',
     },
     {
@@ -126,15 +128,14 @@ export class SurveySetupComponent implements OnInit {
 
   onSubmit(data: any) {
     this.isSubmitting.set(true);
-    let payload = {};
-    if (data.deadline_hours) {
-      payload = {
-        ...data,
-        deadline_hours: parseInt(data.deadline_hours, 10) || 0,
-      };
+    const deadlineHours = data.deadline_hours ? parseInt(data.deadline_hours, 10) : 0;
+    
+    let payload: any = { ...data };
+    
+    if (deadlineHours > 0) {
+      payload.deadline_hours = deadlineHours;
     } else {
-      const { deadline_hours, ...rest } = data;
-      payload = rest;
+      delete payload.deadline_hours;
     }
 
     const obs = this.id()

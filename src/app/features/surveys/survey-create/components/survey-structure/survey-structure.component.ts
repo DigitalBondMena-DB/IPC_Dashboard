@@ -161,7 +161,7 @@ export class SurveyStructureComponent implements OnInit {
     return this.fb.group({
       id: [data.id || null],
       title: [titleValue, Validators.required],
-      weight: [data.weight || 0],
+      weight: [data.weight || 1],
       isExpanded: [data.isExpanded !== undefined ? data.isExpanded : true],
       lastTitle: [data.lastTitle !== undefined ? data.lastTitle : titleValue],
       questions: this.fb.array((data.questions || []).map((q: any) => this.fb.group(q))),
@@ -499,7 +499,7 @@ export class SurveyStructureComponent implements OnInit {
     return badge;
   }
   getMaxQuestionScore(weights: any): number {
-    const max: number = Math.max(...Object.values(weights) as number[]);
+    const max: number = Math.max(...(Object.values(weights) as number[]));
     return max || 0;
   }
 }

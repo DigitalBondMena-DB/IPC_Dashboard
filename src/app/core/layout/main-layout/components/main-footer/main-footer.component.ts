@@ -9,7 +9,7 @@ import { Component } from '@angular/core';
       <span>Powered by</span>
       <a href="https://www.digitalbondmena.com/" rel="noopener noreferrer" target="_blank">
         <img
-          src="assets/images/shared/digital-bond-logo.png"
+          src="assets/images/shared/digital-bond-logo.webp"
           width="22"
           height="18"
           alt="Digital Bond"
