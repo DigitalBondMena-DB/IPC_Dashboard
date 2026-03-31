@@ -107,12 +107,12 @@ export class SurveysListComponent {
 
   onDuplicate(item: any) {
     this._SurveyService.duplicateSurvey(item.id).subscribe({
-      next: () => {
+      next: (res) => {
         this._MessageService.add({
           summary: 'Success',
           detail: `Entity Duplicated successfully`,
         });
-        this.router.navigate(['/survey/edit', item.id]);
+        this.router.navigate(['/survey/edit', res.data.id]);
       },
       error: () => {
         this._MessageService.add({

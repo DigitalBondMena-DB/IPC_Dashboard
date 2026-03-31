@@ -200,7 +200,7 @@ export const getUserFormConfig = (
         },
         {
           key: 'has_all_entity_surveys',
-          label: 'Has All Entity Surveys',
+          label: 'Supervisor',
           type: 'checkbox',
           colSpan: 'col-span-1',
         },
@@ -278,7 +278,7 @@ export const getUserFormConfig = (
         },
         {
           key: 'has_all_entity_surveys',
-          label: 'Has All Entity Surveys',
+          label: 'Supervisor',
           type: 'checkbox',
           colSpan: 'col-span-1',
         },

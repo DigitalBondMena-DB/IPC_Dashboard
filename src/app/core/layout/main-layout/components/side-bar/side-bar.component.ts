@@ -40,7 +40,7 @@ export class SideBarComponent {
   private readonly userRole = computed<Role>(() => this._AuthService.role());
   isCollapsed = signal(false);
   userData = computed(() => this._AuthService.userData());
-  
+
   private currentUrl = signal<string>('');
 
   readonly icons: Record<string, LucideIconData> = {
@@ -61,15 +61,14 @@ export class SideBarComponent {
   // Determine active section based on current route
   getActiveSectionByRoute = computed(() => {
     const url = this.router.url;
-    console.log(url);
-    
+
     if (url.includes('/dashboard') || url === '/') {
       return 'User Management';
     } else if (url.includes('/survey')) {
       return 'Survey Builder';
     } else if (url.includes('/reports')) {
       return 'Reports';
-    } 
+    }
     return null;
   });
 
@@ -83,11 +82,6 @@ export class SideBarComponent {
   isActiveSectionWhenCollapsed(item: NavItem): boolean {
     if (!item.isSection || !this.isCollapsed()) return false;
     const activeSection = this.getActiveSectionByRoute();
-    console.log(item.label === activeSection);
-    console.log(activeSection);
-    console.log(item.label);
-    
-    
     return item.label === activeSection;
   }
 
