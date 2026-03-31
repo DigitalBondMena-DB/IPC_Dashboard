@@ -20,7 +20,7 @@ import {
   ChartColumn,
 } from 'lucide-angular';
 
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { AvatarModule } from 'primeng/avatar';
 import { TooltipModule } from 'primeng/tooltip';
 import { NavItem } from '@/shared/models/nav-item.model';
@@ -36,9 +36,13 @@ import { Role } from '@/shared/models/users-role.model';
 })
 export class SideBarComponent {
   private readonly _AuthService = inject(AuthService);
+  private readonly router = inject(Router);
   private readonly userRole = computed<Role>(() => this._AuthService.role());
   isCollapsed = signal(false);
   userData = computed(() => this._AuthService.userData());
+  
+  private currentUrl = signal<string>('');
+
   readonly icons: Record<string, LucideIconData> = {
     Dashboard: House,
     Survey: ClipboardList,
@@ -54,11 +58,37 @@ export class SideBarComponent {
   menuItems = input.required<NavItem[]>();
   internalMenuItems = signal<NavItem[]>([]);
 
+  // Determine active section based on current route
+  getActiveSectionByRoute = computed(() => {
+    const url = this.router.url;
+    console.log(url);
+    
+    if (url.includes('/dashboard') || url === '/') {
+      return 'User Management';
+    } else if (url.includes('/survey')) {
+      return 'Survey Builder';
+    } else if (url.includes('/reports')) {
+      return 'Reports';
+    } 
+    return null;
+  });
+
   constructor() {
     effect(() => {
       const items = this.menuItems();
       this.internalMenuItems.set(items);
     });
+  }
+
+  isActiveSectionWhenCollapsed(item: NavItem): boolean {
+    if (!item.isSection || !this.isCollapsed()) return false;
+    const activeSection = this.getActiveSectionByRoute();
+    console.log(item.label === activeSection);
+    console.log(activeSection);
+    console.log(item.label);
+    
+    
+    return item.label === activeSection;
   }
 
   toggleSubMenu(item: NavItem) {

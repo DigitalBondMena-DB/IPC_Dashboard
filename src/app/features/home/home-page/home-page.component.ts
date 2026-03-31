@@ -4,13 +4,14 @@ import { IHomeResponse } from '../interfaces/home';
 import { HttpResourceRef } from '@angular/common/http';
 import { HomeSkeletonComponent } from '../components/home-skeleton/home-skeleton.component';
 import { TopBarBreadcrumbComponent } from '@/core/layout/main-layout/components/top-bar/top-bar.component';
+import { BPageHeaderComponent } from "@/shared/components/b-page-header/b-page-header.component";
 
 @Component({
   selector: 'app-home-page',
   templateUrl: './home-page.component.html',
   styleUrl: './home-page.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [HomeSkeletonComponent, TopBarBreadcrumbComponent],
+  imports: [HomeSkeletonComponent, TopBarBreadcrumbComponent, BPageHeaderComponent],
 })
 export class HomePageComponent {
   private homeService = inject(HomeService);

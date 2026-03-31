@@ -1,6 +1,4 @@
-<div class="py-6 bg-white px-layout-x">
-  <app-top-bar-breadcrumb />
-</div>
+  <app-b-page-header [title]="''" [showCreateButton]="false"/>
 @if (!isLoading()) {
   <div class="grid grid-cols-1 gap-10 lg:grid-cols-6 px-layout-x pt-6">
     @for (card of reportCards(); track $index) {

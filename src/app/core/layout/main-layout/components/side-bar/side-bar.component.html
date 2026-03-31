@@ -8,7 +8,7 @@
       <img src="/assets/images/shared/ipc-logo.webp" alt="ipc logo" width="48" height="48" />
     </div>
     @if (!isCollapsed()) {
-      <span class="text-primary-500 font-bold text-sm leading-tight">HealthTrack M&E</span>
+      <span class="text-primary-500 font-bold text-sm leading-tight">HealthTrack</span>
     }
     <button
       (click)="toggleSidebar()"
@@ -29,8 +29,10 @@
           <div>
             @if (item.isSection) {
               <div
-                class="flex items-center gap-2 px-6 py-3 mt-4 text-[#1C398F] font-bold text-base"
+                class="flex items-center gap-2 px-6 py-3 mt-4 text-[#1C398F] font-bold text-base relative"
                 [class.justify-center]="isCollapsed()"
+                [pTooltip]="isCollapsed() ? item.label : '' "
+                [class.activeItem]="isCollapsed() && isActiveSectionWhenCollapsed(item)"
               >
                 @if (item.icon) {
                   <lucide-angular [img]="icons[item.icon]" size="24" />
