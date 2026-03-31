@@ -40,7 +40,7 @@
         <tr>
           @for (col of columns(); track col.field) {
             <th [class.sortable]="col.sortable" (click)="onSort(col)">
-              <div class="th-content capitalize">
+              <div class="th-content capitalize" [class]="col?.customClass">
                 {{ col.header }}
                 @if (getSortIcon(col); as icon) {
                   <lucide-angular [img]="icon" [size]="16" class="sort-icon" />
@@ -163,42 +163,40 @@
         }
       </tbody>
     </table>
+    @if (showPagination()) {
+      <div class="pagination-bar">
+        <div class="pagination-left">
+          <span class="show-label">Show</span>
+          <select class="rows-select" (change)="onRowsChange($event)">
+            @for (opt of dynamicRowOptions(); track opt.value) {
+              <option [value]="opt.value" [selected]="opt.value === rows()">{{ opt.label }}</option>
+            }
+          </select>
+          <span class="records-info">
+            Showing data {{ startRecord() }} to {{ endRecord() }} of {{ totalRecords() }} entries
+          </span>
+        </div>
+
+        <div class="pagination-right">
+          <button class="page-btn nav-btn" [disabled]="page() === 1" (click)="onPrev()">
+            <lucide-angular [img]="chevronLeftIcon" [size]="16" />
+          </button>
+
+          @for (p of visiblePages(); track $index) {
+            @if (p === '...') {
+              <span class="page-dots">...</span>
+            } @else {
+              <button class="page-btn" [class.active]="p === page()" (click)="onPageChange(p)">
+                {{ p }}
+              </button>
+            }
+          }
+
+          <button class="page-btn nav-btn" [disabled]="page() === lastPage()" (click)="onNext()">
+            <lucide-angular [img]="chevronRightIcon" [size]="16" />
+          </button>
+        </div>
+      </div>
+    }
   </div>
-
-  <!-- Pagination -->
-  @if (showPagination()) {
-    <div class="pagination-bar">
-      <div class="pagination-left">
-        <span class="show-label">Show</span>
-        <select class="rows-select" (change)="onRowsChange($event)">
-          @for (opt of dynamicRowOptions(); track opt.value) {
-            <option [value]="opt.value" [selected]="opt.value === rows()">{{ opt.label }}</option>
-          }
-        </select>
-        <span class="records-info">
-          Showing data {{ startRecord() }} to {{ endRecord() }} of {{ totalRecords() }} entries
-        </span>
-      </div>
-
-      <div class="pagination-right">
-        <button class="page-btn nav-btn" [disabled]="page() === 1" (click)="onPrev()">
-          <lucide-angular [img]="chevronLeftIcon" [size]="16" />
-        </button>
-
-        @for (p of visiblePages(); track $index) {
-          @if (p === '...') {
-            <span class="page-dots">...</span>
-          } @else {
-            <button class="page-btn" [class.active]="p === page()" (click)="onPageChange(p)">
-              {{ p }}
-            </button>
-          }
-        }
-
-        <button class="page-btn nav-btn" [disabled]="page() === lastPage()" (click)="onNext()">
-          <lucide-angular [img]="chevronRightIcon" [size]="16" />
-        </button>
-      </div>
-    </div>
-  }
 }

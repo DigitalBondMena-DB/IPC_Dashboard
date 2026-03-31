@@ -6,6 +6,7 @@ export interface ITableColumn {
   type?: 'text' | 'date' | 'toggle' | 'actions';
   duplicate?: boolean;
   viewOnly?: boolean;
+  customClass?: string;
 }
 
 export interface ITableParams {

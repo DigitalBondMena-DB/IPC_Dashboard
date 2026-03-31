@@ -11,7 +11,7 @@ export const ENTITY_TYPE_CONFIG: Record<string, any> = {
       { field: 'name', header: 'Name', sortable: true },
       { field: 'updated_at', header: 'Last Update', sortable: true, type: 'date' },
       { field: 'updated_by', header: 'Updated By', sortable: true },
-      { field: 'is_active', header: 'Actions', type: 'toggle' },
+      { field: 'is_active', header: 'Actions', type: 'toggle', customClass: 'justify-end' },
     ],
     formFields: () => [
       {
@@ -34,7 +34,7 @@ export const ENTITY_TYPE_CONFIG: Record<string, any> = {
       { field: 'name', header: 'Name', sortable: true },
       { field: 'updated_at', header: 'Last Update', sortable: true, type: 'date' },
       { field: 'updated_by', header: 'Updated By', sortable: true },
-      { field: 'is_active', header: 'Actions', type: 'toggle' },
+      { field: 'is_active', header: 'Actions', type: 'toggle', customClass: 'justify-end' },
     ],
     formFields: () => [
       {
@@ -58,7 +58,7 @@ export const ENTITY_TYPE_CONFIG: Record<string, any> = {
       { field: 'directorate', header: 'Directorate', sortable: true, type: 'text' },
       { field: 'updated_at', header: 'Last Update', sortable: true, type: 'date' },
       { field: 'updated_by', header: 'Updated By', sortable: true },
-      { field: 'is_active', header: 'Actions', type: 'toggle' },
+      { field: 'is_active', header: 'Actions', type: 'toggle', customClass: 'justify-end' },
     ],
     formFields: (deps: any) => [
       {
@@ -97,7 +97,7 @@ export const ENTITY_TYPE_CONFIG: Record<string, any> = {
       { field: 'directorate', header: 'Directorate', sortable: true, type: 'text' },
       { field: 'updated_at', header: 'Last Update', sortable: true, type: 'date' },
       { field: 'updated_by', header: 'Updated By', sortable: true },
-      { field: 'is_active', header: 'Actions', type: 'toggle' },
+      { field: 'is_active', header: 'Actions', type: 'toggle', customClass: 'justify-end' },
     ],
     formFields: (deps: any) => [
       {
@@ -159,7 +159,7 @@ export const ENTITY_TYPE_CONFIG: Record<string, any> = {
       { field: 'name', header: 'Name', sortable: true },
       { field: 'updated_at', header: 'Last Update', sortable: true, type: 'date' },
       { field: 'updated_by', header: 'Updated By', sortable: true },
-      { field: 'is_active', header: 'Actions', type: 'toggle' },
+      { field: 'is_active', header: 'Actions', type: 'toggle', customClass: 'justify-end' },
     ],
     formFields: () => [
       {
@@ -185,7 +185,7 @@ export const ENTITY_TYPE_CONFIG: Record<string, any> = {
       { field: 'division', header: 'Division', sortable: true, type: 'text' },
       { field: 'updated_at', header: 'Last Update', sortable: true, type: 'date' },
       { field: 'updated_by', header: 'Updated By', sortable: true },
-      { field: 'is_active', header: 'Actions', type: 'toggle' },
+      { field: 'is_active', header: 'Actions', type: 'toggle', customClass: 'justify-end' },
     ],
     formFields: (deps: any) => [
       {

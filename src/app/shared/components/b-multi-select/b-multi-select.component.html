@@ -1,6 +1,10 @@
 <div class="form-group">
   <app-b-lable [id]="id()" [label]="label()" [subLable]="subLable()"></app-b-lable>
-  <div class="input-container" [pTooltip]="disabled() ? disabledTooltip() : ''" tooltipPosition="top">
+  <div
+    class="input-container"
+    [pTooltip]="disabled() ? disabledTooltip() : ''"
+    tooltipPosition="top"
+  >
     <p-multiSelect
       [id]="id()"
       [appendTo]="'body'"
@@ -13,16 +17,12 @@
       [showClear]="true"
       [class]="'w-full custom-multiselect ' + (hasError() ? 'border-red-500' : '')"
       panelStyleClass="custom-multiselect-panel"
-      [panelStyle]="{ height: '260px' }"
       optionLabel="label"
       optionValue="value"
       [ngModel]="value()"
       (ngModelChange)="onModelChange($event)"
       [maxSelectedLabels]="3"
       display="chip"
-      [virtualScroll]="virtualScroll()"
-      [virtualScrollItemSize]="38"
-      [virtualScrollOptions]="{ lazy: true }"
       (onFilter)="onFilterChange($event)"
       (onLazyLoad)="onScrollPagination.emit($event)"
     >

@@ -30,7 +30,13 @@ export class SurveysListComponent {
     { field: 'created', header: 'Created', type: 'date', sortable: true },
     { field: 'last_update', header: 'Last Update', type: 'date', sortable: true },
     { field: 'updated_by', header: 'Updated By', sortable: true },
-    { field: 'is_active', header: 'Actions', type: 'toggle', duplicate: true },
+    {
+      field: 'is_active',
+      header: 'Actions',
+      type: 'toggle',
+      duplicate: true,
+      customClass: 'justify-center',
+    },
   ];
 
   // State
@@ -42,7 +48,6 @@ export class SurveysListComponent {
     sort_dir: 'desc',
     date_from: '',
     date_to: '',
-    date_range: '',
   });
   hasError = computed(() => !!this.surveysResource.error());
   isLoading = computed(() => this.surveysResource.isLoading());
@@ -55,13 +60,10 @@ export class SurveysListComponent {
   }
 
   onDateChange(event: { from: string; to: string; range?: string }) {
-    console.log(event);
-
     this.params.update((p) => ({
       ...p,
-      date_from: event.from,
-      date_to: event.to,
-      date_range: event.range || '',
+      from: event.from,
+      to: event.to,
       page: 1,
     }));
   }
