@@ -379,7 +379,6 @@ export class UserIdComponent {
       'health_division_id',
       'health_directorate_id',
       'authority_id',
-      'category_ids',
     ];
 
     entityKeys.forEach((key) => {

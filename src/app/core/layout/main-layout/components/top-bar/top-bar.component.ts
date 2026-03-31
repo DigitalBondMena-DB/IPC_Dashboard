@@ -43,6 +43,7 @@ export class TopBarBreadcrumbComponent {
     let longestMatch = '';
 
     const checkMatch = (link: string | undefined, label: string, parentLabel: string = '') => {
+      console.log(parentLabel);
       if (link && url.includes(link) && link.length > longestMatch.length) {
         longestMatch = link;
         foundSection = currentSection;
