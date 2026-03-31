@@ -65,14 +65,14 @@ export const ALL_MENU_ITEMS: NavItem[] = [
   { label: 'Surveys', roles: ['ministry'], routerLink: '/survey' },
   { label: 'Conditional logic', roles: ['ministry'], routerLink: '/survey/conditional-logic' },
 
-  { label: 'Reports', icon: 'Reports', isSection: true },
-  { label: 'Overview', routerLink: '/reports/overview' },
-  { label: 'Survey Level', routerLink: '/reports/survey-level' },
-  { label: 'Entity Level', routerLink: '/reports/entity-level' },
-  { label: 'Visit Results', routerLink: '/reports/visit-results' },
-  { label: 'Surveyor Results', routerLink: '/reports/surveyor-results' },
-  { label: 'Action Plan', routerLink: '/reports/action-plan' },
-  { label: 'Filter', routerLink: '/reports/filter' },
+  // { label: 'Reports', icon: 'Reports', isSection: true },
+  // { label: 'Overview', routerLink: '/reports/overview' },
+  // { label: 'Survey Level', routerLink: '/reports/survey-level' },
+  // { label: 'Entity Level', routerLink: '/reports/entity-level' },
+  // { label: 'Visit Results', routerLink: '/reports/visit-results' },
+  // { label: 'Surveyor Results', routerLink: '/reports/surveyor-results' },
+  // { label: 'Action Plan', routerLink: '/reports/action-plan' },
+  // { label: 'Filter', routerLink: '/reports/filter' },
 ];
 
 export const MAIN_MENU_ITEMS: NavItem[] = ALL_MENU_ITEMS;
