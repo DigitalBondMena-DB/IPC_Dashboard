@@ -39,7 +39,7 @@
                   <span class="ms-1">{{ item.label }}</span>
                 }
               </div>
-            } @else if (item.isButton) {
+            } @else if (item.isButton && !isCollapsed()) {
               <div class="px-6 py-2">
                 <a
                   [routerLink]="item.routerLink"
@@ -53,7 +53,7 @@
                   }
                 </a>
               </div>
-            } @else if (item.children) {
+            } @else if (item.children && !isCollapsed()) {
               <button
                 (click)="toggleSubMenu(item)"
                 class="w-full px-6 flex items-center justify-between p-3 rounded-xl transition-all text-gray-300 hover:bg-gray-50 group"
@@ -99,7 +99,7 @@
                   }
                 </div>
               }
-            } @else {
+            } @else if (!isCollapsed()) {
               <a
                 [routerLink]="item.routerLink"
                 routerLinkActive="activeItem"

@@ -18,7 +18,7 @@ import { BPageHeaderComponent } from '@/shared/components/b-page-header/b-page-h
         <app-b-page-header title="Reports" [showCreateButton]="false" />
         <!-- Content -->
         <main class="flex-1 overflow-y-auto px-8 pt-4 custom-scrollbar text-[#F5F7FA] bg-[#F5F7FA]">
-          <div class="max-w-[1600px] mx-auto flex flex-col justify-between min-h-full">
+          <div class="mx-auto flex flex-col justify-between min-h-full">
             <div class="flex-1">
               <router-outlet />
             </div>

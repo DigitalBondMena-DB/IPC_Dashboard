@@ -18,6 +18,12 @@
   gap: 40px;
 }
 
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
 .page-title {
   font-weight: 600;
   font-size: 28px;

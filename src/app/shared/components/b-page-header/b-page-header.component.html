@@ -19,13 +19,13 @@
           <input
             (click)="toggleDateDropdown()"
             placeholder="Date"
-            class="flex items-center gap-2 px-4 py-2 text-gray-703 border border-gray-700 rounded-[8px] transition bg-white"
+            class="flex items-center gap-2 px-4 py-2 text-gray-703 border border-gray-700 rounded-lg transition bg-white"
             [value]="selectedRange()?.chosenLabel"
           />
           <lucide-angular
             [img]="calendarIcon"
             [size]="18"
-            class="absolute end-2 top-1/2 -translate-y-1/2 text-gray-704"
+            class="absolute inset-e-2 top-1/2 -translate-y-1/2 text-gray-704"
           />
         </div>
 
@@ -56,10 +56,13 @@
     }
   </div>
 
-  @if (showCreateButton()) {
-    <button class="create-btn" (click)="onCreateClick()">
-      <lucide-angular [img]="createButtonIcon()" [size]="18" />
-      {{ createButtonLabel() }}
-    </button>
-  }
+  <div class="header-right flex items-center gap-3">
+    <app-b-notification />
+    @if (showCreateButton()) {
+      <button class="create-btn" (click)="onCreateClick()">
+        <lucide-angular [img]="createButtonIcon()" [size]="18" />
+        {{ createButtonLabel() }}
+      </button>
+    }
+  </div>
 </div>

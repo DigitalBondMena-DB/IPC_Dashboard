@@ -17,7 +17,7 @@ import { MAIN_MENU_ITEMS } from '@/shared/models/navigation.constants';
       <div class="flex-1 flex flex-col min-w-0">
         <!-- Content -->
         <main class="flex-1 overflow-y-auto custom-scrollbar text-[#F5F7FA] bg-[#F5F7FA]">
-          <div class="max-w-[1600px] mx-auto flex flex-col justify-between min-h-full bg-[#F5F7FA]">
+          <div class="mx-auto flex flex-col justify-between min-h-full bg-[#F5F7FA]">
             <div class="flex-1">
               <router-outlet />
             </div>
