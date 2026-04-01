@@ -1,4 +1,4 @@
-import { Component, inject, signal, OnInit, effect, computed } from '@angular/core';
+import { Component, inject, signal, OnInit, effect, computed, model } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -11,6 +11,8 @@ import {
   FormsModule,
 } from '@angular/forms';
 import { TooltipModule } from 'primeng/tooltip';
+import { TreeSelectModule } from 'primeng/treeselect';
+import { TreeNode } from 'primeng/api';
 import {
   LucideAngularModule,
   Plus,
@@ -37,6 +39,7 @@ import { SurveyService } from '@features/surveys/services/survey.service';
     EditorModule,
     BInputComponent,
     TooltipModule,
+    TreeSelectModule,
   ],
   templateUrl: './survey-structure.component.html',
   styleUrl: './survey-structure.component.css',
@@ -66,8 +69,10 @@ export class SurveyStructureComponent implements OnInit {
   weightingType = signal<'manual' | 'question_count'>('question_count');
   surveyName = signal('');
 
-  // View states: 'tree' | 'add_question' | 'review_questions'
-  currentView = signal<'tree' | 'add_question' | 'review_questions'>('tree');
+  // View states: 'tree' | 'add_question' | 'review_questions' | 'graded_form' | 'graded_review'
+  currentView = signal<
+    'tree' | 'add_question' | 'review_questions' | 'graded_form' | 'graded_review'
+  >('tree');
   isConfirmationView = signal(false);
 
   // Track context for adding question
@@ -76,6 +81,8 @@ export class SurveyStructureComponent implements OnInit {
     breadcrumbs: string[];
     editIndex?: number;
   } | null>(null);
+
+  isEditMode = computed(() => this.activeNodeContext()?.editIndex !== undefined);
 
   structureForm: FormGroup = this.fb.group({
     domains: this.fb.array([]),
@@ -86,6 +93,10 @@ export class SurveyStructureComponent implements OnInit {
     description: ['', Validators.required],
     options: this.fb.array([]),
   });
+
+  // Tree node signals for graded questions step
+  domainTreeNodes = signal<TreeNode[]>([]);
+  selectedGradedTreeNode = model<any>(null);
 
   // Resource for loading existing survey data
   surveyResource = this.id() ? this.surveyService.getSurveyById(this.id()!) : null;
@@ -431,7 +442,11 @@ export class SurveyStructureComponent implements OnInit {
   private clearEditIndexFromContext() {
     const ctx = this.activeNodeContext();
     if (!ctx) return;
-    this.activeNodeContext.set({ domain: ctx.domain, breadcrumbs: ctx.breadcrumbs });
+    this.activeNodeContext.set({
+      domain: ctx.domain,
+      breadcrumbs: ctx.breadcrumbs,
+      editIndex: undefined,
+    });
   }
 
   onAddQuestion() {
@@ -469,9 +484,263 @@ export class SurveyStructureComponent implements OnInit {
     }
   }
 
+  // Navigate to graded questions form step
+  goToGradedQuestions() {
+    if (this.isStructureValid()) {
+      this.buildTreeNodes();
+      this.selectedGradedTreeNode.set(null);
+      this.activeNodeContext.set(null);
+      this.resetQuestionForm();
+      this.currentView.set('graded_form');
+    }
+  }
+
+  // Build tree nodes from the domains FormArray for p-treeSelect
+  buildTreeNodes() {
+    const nodes: TreeNode[] = [];
+    this.domains.controls.forEach((d, i) => {
+      const domain = d as FormGroup;
+      nodes.push(this.mapFormGroupToTreeNode(domain, [domain.get('title')?.value], 0));
+    });
+    this.domainTreeNodes.set(nodes);
+  }
+
+  private mapFormGroupToTreeNode(node: FormGroup, breadcrumbs: string[], level: number): TreeNode {
+    const subdomains = this.getSubdomains(node);
+    const title = node.get('title')?.value || 'Untitled';
+    const treeNode: TreeNode & { searchTitle?: string } = {
+      key: `node_${title}_${level}_${Math.random().toString(36).substring(7)}`,
+      label: title,
+      data: { formGroup: node, breadcrumbs },
+      selectable: subdomains.length === 0, // Only leaf nodes (no sub_domains) are selectable
+      searchTitle: title,
+    };
+
+    if (subdomains.length > 0) {
+      treeNode.children = subdomains.controls.map((sd, i) => {
+        const sdGroup = sd as FormGroup;
+        const sdTitle = sdGroup.get('title')?.value || 'Untitled';
+        return this.mapFormGroupToTreeNode(sdGroup, [...breadcrumbs, sdTitle], level + 1);
+      });
+    }
+
+    return treeNode;
+  }
+
+  onGradedTreeNodeSelect(event: any) {
+    const data = event.node?.data;
+    if (!data) return;
+    this.activeNodeContext.set({
+      domain: data.formGroup,
+      breadcrumbs: data.breadcrumbs,
+      editIndex: undefined,
+    });
+    this.resetQuestionForm();
+  }
+
+  // Add question in graded form and stay on same view
+  onAddGradedQuestion() {
+    if (this.questionForm.invalid) {
+      this.questionForm.markAllAsTouched();
+      return;
+    }
+    if (!this.activeNodeContext()) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'Please select a domain or subdomain first.',
+      });
+      return;
+    }
+
+    const isUpdate = this.activeNodeContext()?.editIndex !== undefined;
+
+    this.saveQuestionToActiveDomain();
+    this.clearEditIndexFromContext();
+    this.resetQuestionForm();
+
+    this.messageService.add({
+      severity: 'success',
+      summary: 'Success',
+      detail: isUpdate ? 'Question updated successfully.' : 'Question added successfully.',
+    });
+
+    if (isUpdate) {
+      this.currentView.set('graded_review');
+    }
+  }
+
+  // Go to graded review step
+  goToGradedReview() {
+    if (this.questionForm.invalid) {
+      this.questionForm.markAllAsTouched();
+      return;
+    }
+
+    if (!this.activeNodeContext()) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'Please select a domain or subdomain first.',
+      });
+      return;
+    }
+
+    const isUpdate = this.activeNodeContext()?.editIndex !== undefined;
+
+    this.saveQuestionToActiveDomain();
+    this.clearEditIndexFromContext();
+    this.resetQuestionForm();
+
+    this.messageService.add({
+      severity: 'success',
+      summary: 'Success',
+      detail: isUpdate ? 'Question updated successfully.' : 'Question added successfully.',
+    });
+
+    this.currentView.set('graded_review');
+  }
+
+  // Collect all questions from all domains recursively with breadcrumbs
+  getAllQuestionsFlat(): {
+    question: any;
+    breadcrumbs: string[];
+    domainNode: FormGroup;
+    questionIndex: number;
+  }[] {
+    const result: {
+      question: any;
+      breadcrumbs: string[];
+      domainNode: FormGroup;
+      questionIndex: number;
+    }[] = [];
+    this.collectQuestionsRecursive(this.domains, [], result);
+    return result;
+  }
+
+  private collectQuestionsRecursive(
+    domainsArray: FormArray,
+    parentBreadcrumbs: string[],
+    result: {
+      question: any;
+      breadcrumbs: string[];
+      domainNode: FormGroup;
+      questionIndex: number;
+    }[],
+  ) {
+    domainsArray.controls.forEach((d) => {
+      const node = d as FormGroup;
+      const title = node.get('title')?.value || 'Untitled';
+      const breadcrumbs = [...parentBreadcrumbs, title];
+      const questions = this.getQuestions(node);
+      const subdomains = this.getSubdomains(node);
+
+      questions.controls.forEach((q, qi) => {
+        result.push({
+          question: q.value,
+          breadcrumbs,
+          domainNode: node,
+          questionIndex: qi,
+        });
+      });
+
+      if (subdomains.length > 0) {
+        this.collectQuestionsRecursive(subdomains, breadcrumbs, result);
+      }
+    });
+  }
+
+  // Edit a question from the graded review
+  onEditFromGradedReview(item: {
+    question: any;
+    breadcrumbs: string[];
+    domainNode: FormGroup;
+    questionIndex: number;
+  }) {
+    this.activeNodeContext.set({
+      domain: item.domainNode,
+      breadcrumbs: item.breadcrumbs,
+      editIndex: item.questionIndex,
+    });
+    this.currentView.set('graded_form');
+    this.buildTreeNodes();
+    // Find and set the tree node
+    this.selectedGradedTreeNode.set(null);
+
+    const qGroup = this.getQuestions(item.domainNode).at(item.questionIndex) as FormGroup;
+    const val = qGroup.value;
+
+    this.resetOptionsAndWeights();
+    this.questionForm.patchValue({
+      text: val.text,
+      description: val.description,
+    });
+
+    const metaData = val.meta_data || {};
+    const options = metaData.options || [];
+    const weights = metaData.weights || {};
+    const allowNa = metaData.allow_na || false;
+
+    options.forEach((optText: string) => {
+      if (allowNa && optText === 'N/A') {
+        this.optionsArray.push(
+          this.fb.group({
+            text: ['N/A', Validators.required],
+            weight: [0],
+            isNa: [true],
+          }),
+        );
+      } else {
+        const weightValue = weights[optText] !== undefined ? weights[optText] : 0;
+        this.optionsArray.push(
+          this.fb.group({
+            text: [optText, Validators.required],
+            weight: [weightValue, [Validators.required, Validators.min(0)]],
+            isNa: [false],
+          }),
+        );
+      }
+    });
+
+    if (options.length === 0) {
+      this.addOption();
+    }
+  }
+
+  // Delete a question from the graded review
+  onDeleteFromGradedReview(item: { domainNode: FormGroup; questionIndex: number }) {
+    this.getQuestions(item.domainNode).removeAt(item.questionIndex);
+    this.syncDomains();
+  }
+
+  // Back from graded form to tree
+  backFromGradedForm() {
+    this.currentView.set('tree');
+    this.activeNodeContext.set(null);
+  }
+
+  // Back from graded review to graded form
+  backFromGradedReview() {
+    this.buildTreeNodes();
+    this.selectedGradedTreeNode.set(null);
+    this.activeNodeContext.set(null);
+    this.resetQuestionForm();
+    this.currentView.set('graded_form');
+  }
+
+  // Confirm from graded review → navigate to conditional logic
+  confirmGradedAndNavigate() {
+    this.router.navigate(['/survey', 'edit', this.id(), 'conditional-logic']);
+  }
+
   onCancelView() {
-    if (this.currentView() === 'add_question' || this.currentView() === 'review_questions') {
+    const view = this.currentView();
+    if (view === 'add_question' || view === 'review_questions') {
       this.currentView.set('tree');
+    } else if (view === 'graded_form') {
+      this.backFromGradedForm();
+    } else if (view === 'graded_review') {
+      this.backFromGradedReview();
     } else {
       this.router.navigate(['/survey']);
     }

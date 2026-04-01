@@ -27,7 +27,7 @@ import { MultiSelectModule } from 'primeng/multiselect';
 import { RadioButtonModule } from 'primeng/radiobutton';
 import { TreeNode } from 'primeng/api';
 import { httpResource } from '@angular/common/http';
-import { LucideAngularModule, Trash2, GitFork, Pencil } from 'lucide-angular';
+import { LucideAngularModule, Trash2, GitFork, Pencil, Save, Check } from 'lucide-angular';
 import { BSelectComponent } from '@shared/components/b-select/b-select.component';
 import { BCheckboxComponent } from '@shared/components/b-checkbox/b-checkbox.component';
 import { BPageHeaderComponent } from '@/shared/components/b-page-header/b-page-header.component';
@@ -69,6 +69,8 @@ export class ConditionalLogicComponent implements OnInit {
   readonly GitForkIcon = GitFork;
   readonly TrashIcon = Trash2;
   readonly EditIcon = Pencil;
+  readonly SaveIcon = Save;
+  readonly CheckIcon = Check;
 
   id = signal<string | null>(
     this.route.snapshot.paramMap.get('id') ||
@@ -105,6 +107,9 @@ export class ConditionalLogicComponent implements OnInit {
   rulesForms = signal<FormGroup[]>([this.createRuleForm(null)]);
   isConfirmationView = signal(false);
 
+  reviewEditIndex = signal<number | null>(null);
+  reviewEditForm = signal<FormGroup | null>(null);
+
   // Refactored surveyResource to depend on the final active signal
   activeSurveyId = signal<string | null>(this.id());
   surveyResource = httpResource<any>(() => {
@@ -129,6 +134,13 @@ export class ConditionalLogicComponent implements OnInit {
       }
     });
     return rules;
+  });
+
+  isAnyRuleEditing = computed(() => {
+    return (
+      this.rulesForms().some((form) => form.get('isEditing')?.value && !!form.get('id')?.value) ||
+      this.reviewEditIndex() !== null
+    );
   });
 
   actionOptions = [
@@ -376,7 +388,9 @@ export class ConditionalLogicComponent implements OnInit {
           trigger_answer: val.trigger_answer,
           action_type: backendActionType,
           target_question_id: targetId,
-          target_question_ids: val.target_question_ids?.length ? val.target_question_ids : undefined,
+          target_question_ids: val.target_question_ids?.length
+            ? val.target_question_ids
+            : undefined,
           target_answer_options: val.target_answer_options?.length
             ? val.target_answer_options
             : undefined,
@@ -499,6 +513,7 @@ export class ConditionalLogicComponent implements OnInit {
         next: (res) => {
           form.patchValue({ isEditing: false });
           form.disable();
+          this.rulesForms.set([...rules]); // Notify signal of change
           this.messageService.add({
             severity: 'success',
             summary: 'Success',
@@ -518,6 +533,7 @@ export class ConditionalLogicComponent implements OnInit {
         next: (res) => {
           form.patchValue({ id: res.data?.id || res.id, isEditing: false });
           form.disable();
+          this.rulesForms.set([...rules]); // Notify signal of change
           this.messageService.add({
             severity: 'success',
             summary: 'Success',
@@ -539,6 +555,7 @@ export class ConditionalLogicComponent implements OnInit {
     const rules = this.rulesForms();
     rules[index].patchValue({ isEditing: true });
     rules[index].enable();
+    this.rulesForms.set([...rules]); // Notify signal of change
   }
 
   getQuestionTextById(id: number | null): string {
@@ -633,13 +650,62 @@ export class ConditionalLogicComponent implements OnInit {
   }
 
   onEditFromConfirmation(index: number) {
-    // Hide confirmation, go back to inputs, enable edit mode and scroll into view.
-    this.isConfirmationView.set(false);
-    // Wait for DOM to render the rule list again.
-    setTimeout(() => {
-      this.editRule(index);
-      this.scrollToCondition(index);
-    }, 0);
+    const ruleEntry = this.allLogicRules()[index];
+    if (!ruleEntry) return;
+
+    this.reviewEditIndex.set(index);
+    const form = this.createRuleForm(ruleEntry.triggerQuestion.id, ruleEntry.rule);
+    form.get('isEditing')?.setValue(true);
+    form.enable();
+    this.reviewEditForm.set(form);
+  }
+
+  saveReviewRule(index: number) {
+    const form = this.reviewEditForm();
+    if (!form || form.invalid) {
+      form?.markAllAsTouched();
+      return;
+    }
+
+    const val = form.getRawValue();
+    const triggerQId = val.trigger_question_id;
+    let backendActionType = val.ui_action_type;
+    if (backendActionType === 'alert') backendActionType = val.alert_type;
+
+    const targetId = val.target_question_ids?.length ? val.target_question_ids[0] : undefined;
+    const payload = {
+      trigger_answer: val.trigger_answer,
+      action_type: backendActionType,
+      target_question_id: targetId,
+      target_question_ids: val.target_question_ids?.length ? val.target_question_ids : undefined,
+      target_answer_options: val.target_answer_options?.length
+        ? val.target_answer_options
+        : undefined,
+    };
+
+    this.logicService.updateLogicRule(val.id, payload).subscribe({
+      next: () => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Success',
+          detail: 'Rule updated',
+        });
+        this.reviewEditIndex.set(null);
+        this.reviewEditForm.set(null);
+        this.surveyResource?.reload();
+      },
+      error: () =>
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Could not update rule',
+        }),
+    });
+  }
+
+  cancelReviewEdit() {
+    this.reviewEditIndex.set(null);
+    this.reviewEditForm.set(null);
   }
 
   onDeleteFromConfirmation(index: number) {
@@ -682,8 +748,7 @@ export class ConditionalLogicComponent implements OnInit {
       return `Alert: ${alertLabel}`;
     }
 
-    const actionLabel =
-      this.actionOptions.find((x) => x.value === actionType)?.label || actionType;
+    const actionLabel = this.actionOptions.find((x) => x.value === actionType)?.label || actionType;
 
     return actionLabel;
   }
@@ -739,6 +804,16 @@ export class ConditionalLogicComponent implements OnInit {
 
   getFilteredTargetOptions(triggerQuestionId: number): any[] {
     return this.targetQuestionOptions.filter((opt) => opt.value !== triggerQuestionId);
+  }
+
+  getReviewTriggerOptions(currentId: number | null): any[] {
+    return this.allQuestions().map((q) => ({ label: q.text, value: q.id }));
+  }
+
+  getReviewTargetOptions(triggerId: number | null): any[] {
+    return this.allQuestions()
+      .filter((q) => q.id !== triggerId)
+      .map((q) => ({ label: q.text, value: q.id }));
   }
 
   isAnswerSelected(form: FormGroup, answer: string): boolean {
