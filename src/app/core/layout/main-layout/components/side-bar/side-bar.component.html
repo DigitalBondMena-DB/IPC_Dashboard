@@ -31,7 +31,7 @@
               <div
                 class="flex items-center gap-2 px-6 py-3 mt-4 text-[#1C398F] font-bold text-base relative"
                 [class.justify-center]="isCollapsed()"
-                [pTooltip]="isCollapsed() ? item.label : '' "
+                [pTooltip]="isCollapsed() ? item.label : ''"
                 [class.activeItem]="isCollapsed() && isActiveSectionWhenCollapsed(item)"
               >
                 @if (item.icon) {
@@ -143,7 +143,7 @@
             <span class="text-sm font-medium text-black-400">{{ userData()?.user?.name }}</span>
             <span
               class="text-[10px] text-gray-703 whitespace-nowrap overflow-hidden text-ellipsis w-32"
-              title="sarahahmed12@gmail.com"
+              [title]="userData()?.user?.email"
               >{{ userData()?.user?.email }}</span
             >
           </div>

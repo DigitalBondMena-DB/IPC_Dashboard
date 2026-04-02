@@ -25,8 +25,8 @@
         <span
           class="text-[#1C398F] font-semibold text-[28px] truncate 2xl:max-w-[250px] inline-block"
           [class]="{
-            'max-w-[180px]': breadcrumb.item !== 'Surveys',
-            'max-w-[50px]': breadcrumb.item === 'Surveys',
+            'max-w-[180px]': breadcrumb.item !== 'Surveys' && !breadcrumb.parent,
+            'max-w-[50px]': breadcrumb.item === 'Surveys' || breadcrumb.parent,
           }"
           [pTooltip]="breadcrumb.item"
           tooltipPosition="bottom"

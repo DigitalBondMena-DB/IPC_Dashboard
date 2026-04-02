@@ -9,7 +9,67 @@
     </div>
   </div>
 
-  @if (!isConfirmationView()) {
+  @if (isConfirmationView()) {
+    <!-- View Mode -->
+    <div class="bg-white p-6 rounded-xl border border-gray-100 min-h-[400px] flex flex-col">
+      @if (questionsList().length === 0) {
+        <!-- Empty State -->
+        <div class="flex-1 flex flex-col items-center justify-center py-16">
+          <div class="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mb-6 shadow-sm border border-gray-100">
+            <lucide-angular [img]="listChecksIcon" [size]="32" class="text-gray-400" />
+          </div>
+          <h3 class="text-lg font-bold text-black-400 mb-2">No preliminary questions added yet</h3>
+          <p class="text-gray-500 text-sm mb-8 text-center max-w-sm">
+            Start by adding your first preliminary questions to build your survey.
+          </p>
+          <button 
+            (click)="isConfirmationView.set(false)"
+            class="flex items-center gap-2 bg-[#1877F2] text-white px-6 py-3 rounded-lg hover:bg-blue-600 transition-colors font-medium text-sm"
+          >
+            <lucide-angular [img]="plusIcon" [size]="18" />
+            Create First Preliminary Questions
+          </button>
+        </div>
+      } @else {
+        <app-preliminary-questions-confirm
+          [questions]="questionsList()"
+          (editClick)="onEditFromConfirm($event)"
+          (removeClick)="removeQuestionFromList($event)"
+        />
+        
+        <div class="mt-6 flex justify-end">
+          <button 
+            (click)="isConfirmationView.set(false)"
+            class="flex items-center gap-2 text-primary-500 font-medium hover:text-blue-600 transition-colors text-sm"
+          >
+            <lucide-angular [img]="plusIcon" [size]="16" />
+            Add Another Question
+          </button>
+        </div>
+      }
+    </div>
+
+    <!-- View Mode Footer Actions -->
+    <div class="flex items-center justify-between pt-8 border-t border-gray-100 mt-8">
+      <button
+        (click)="onSkip()"
+        class="flex items-center gap-2 px-14 py-3 text-sm rounded-lg bg-[#F9F9F9] text-gray-703 hover:bg-gray-100 transition-colors font-medium"
+      >
+        Skip
+      </button>
+
+      <button
+        (click)="onSubmit()"
+        [disabled]="isSubmitting()"
+        class="flex items-center gap-2 px-9.5 py-3 rounded-lg bg-primary-500 text-white hover:bg-blue-600 disabled:opacity-50 text-sm transition-colors font-medium"
+      >
+        @if (isSubmitting()) {
+          <span class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+        }
+        Next Step
+      </button>
+    </div>
+  } @else {
     <!-- Question Creation Form -->
     <div class="bg-white p-6 space-y-6">
       <form [formGroup]="questionForm" class="space-y-6">
@@ -115,65 +175,18 @@
     <!-- Form Footer Actions -->
     <div class="flex items-center justify-between pt-8 border-t border-gray-100 mt-8">
       <button
-        (click)="onSkip()"
-        class="flex items-center gap-2 px-14 py-3 text-sm rounded-lg bg-[#F9F9F9] text-gray-703 hover:bg-gray-100 transition-colors font-medium"
-      >
-        Skip
-      </button>
-      <div class="flex items-center gap-4">
-        @if (editingIndex() !== null) {
-          <button
-            type="button"
-            (click)="cancelEdit()"
-            class="flex items-center gap-2 bg-gray-100 text-gray-600 px-6.5 py-3 rounded-2xl hover:bg-gray-200 transition-colors font-medium"
-          >
-            Cancel Edit
-          </button>
-        }
-
-        <button
-          type="button"
-          (click)="addQuestionToList()"
-          class="flex items-center gap-2 bg-[#16A34A] text-white px-6.5 py-3 rounded-2xl hover:bg-green-700 transition-colors font-medium"
-        >
-          {{ editingIndex() !== null ? 'Update Question' : '+ Add Question' }}
-        </button>
-        <button
-          (click)="goToConfirmation()"
-          class="flex items-center gap-2 px-9.5 py-3 rounded-lg bg-primary-500 text-white hover:bg-blue-600 disabled:opacity-50 text-sm transition-colors font-medium"
-        >
-          Next Step
-        </button>
-      </div>
-    </div>
-  } @else {
-    <!-- Confirmation View -->
-    <app-preliminary-questions-confirm
-      [questions]="questionsList()"
-      (editClick)="onEditFromConfirm($event)"
-      (removeClick)="removeQuestionFromList($event)"
-    />
-
-    <!-- Confirm Footer Actions -->
-    <div class="flex items-center justify-between pt-8 border-t border-gray-100 mt-8">
-      <button
-        (click)="isConfirmationView.set(false)"
+        (click)="cancelEdit(); isConfirmationView.set(true)"
         class="flex items-center gap-2 px-14 py-3 text-sm rounded-lg bg-[#F9F9F9] text-gray-703 hover:bg-gray-100 transition-colors font-medium"
       >
         Cancel
       </button>
-
+      
       <button
-        (click)="onSubmit()"
-        [disabled]="isSubmitting()"
-        class="flex items-center gap-2 px-9.5 py-3 rounded-lg bg-primary-500 text-white hover:bg-blue-600 disabled:opacity-50 text-sm transition-colors font-medium"
+        type="button"
+        (click)="addQuestionToList()"
+        class="flex items-center gap-2 bg-[#16A34A] text-white px-6.5 py-3 rounded-xl hover:bg-green-700 transition-colors font-medium"
       >
-        @if (isSubmitting()) {
-          <span
-            class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"
-          ></span>
-        }
-        Next Step
+        {{ editingIndex() !== null ? 'Update Question' : '+ Add Question' }}
       </button>
     </div>
   }

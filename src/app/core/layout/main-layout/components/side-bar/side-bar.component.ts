@@ -41,8 +41,6 @@ export class SideBarComponent {
   isCollapsed = signal(false);
   userData = computed(() => this._AuthService.userData());
 
-  private currentUrl = signal<string>('');
-
   readonly icons: Record<string, LucideIconData> = {
     Dashboard: House,
     Survey: ClipboardList,

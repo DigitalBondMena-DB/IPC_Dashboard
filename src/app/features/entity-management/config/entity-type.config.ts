@@ -93,7 +93,7 @@ export const ENTITY_TYPE_CONFIG: Record<string, any> = {
     navPath: '/dashboard/hospitals',
     columns: [
       { field: 'name', header: 'Name', sortable: true },
-      { field: 'division', header: 'Division', sortable: true, type: 'text' },
+      { field: 'categories', header: 'Division', sortable: true, type: 'text' },
       { field: 'directorate', header: 'Directorate', sortable: true, type: 'text' },
       { field: 'updated_at', header: 'Last Update', sortable: true, type: 'date' },
       { field: 'updated_by', header: 'Updated By', sortable: true },

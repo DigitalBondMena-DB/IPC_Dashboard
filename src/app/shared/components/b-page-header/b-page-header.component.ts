@@ -6,6 +6,8 @@ import {
   signal,
   effect,
   ViewEncapsulation,
+  computed,
+  inject,
 } from '@angular/core';
 import { LucideAngularModule, Search, Plus, CalendarDays } from 'lucide-angular';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
@@ -15,6 +17,8 @@ import { NgxDaterangepickerMd, LocaleService, LOCALE_CONFIG } from 'ngx-daterang
 import moment from 'moment';
 import { TopBarBreadcrumbComponent } from '@/core/layout/main-layout/components/top-bar/top-bar.component';
 import { BNotificationComponent } from '../b-notification/b-notification.component';
+import { SideBarService } from '@/core/layout/main-layout/components/side-bar/services/side-bar.service';
+import { Avatar } from 'primeng/avatar';
 
 @Component({
   selector: 'app-b-page-header',
@@ -25,6 +29,7 @@ import { BNotificationComponent } from '../b-notification/b-notification.compone
     NgxDaterangepickerMd,
     TopBarBreadcrumbComponent,
     BNotificationComponent,
+    Avatar,
   ],
   templateUrl: './b-page-header.component.html',
   styleUrl: './b-page-header.component.css',
@@ -43,6 +48,11 @@ export class BPageHeaderComponent {
   showCreateButton = input<boolean>(true);
   showSearch = input<boolean>(false);
   createButtonIcon = input<any>(Plus);
+  private readonly _SideBarService = inject(SideBarService);
+  userLogoResource = this._SideBarService.getIcon();
+  userLogo = computed(() => {
+    return this.userLogoResource.value();
+  });
   // Outputs
   searchChange = output<string>();
   createClick = output<void>();

@@ -25,10 +25,8 @@ export default [
       },
       {
         path: 'preliminary-questions',
-        loadComponent: () =>
-          import('@features/surveys/survey-create/components/preliminary-questions/preliminary-questions.component').then(
-            (m) => m.PreliminaryQuestionsComponent,
-          ),
+        loadChildren: () =>
+          import('@features/surveys/survey-create/components/preliminary-questions/preliminary-questions.routes'),
       },
       {
         path: 'structure',
@@ -70,10 +68,8 @@ export default [
       },
       {
         path: 'preliminary-questions',
-        loadComponent: () =>
-          import('@features/surveys/survey-create/components/preliminary-questions/preliminary-questions.component').then(
-            (m) => m.PreliminaryQuestionsComponent,
-          ),
+        loadChildren: () =>
+          import('@features/surveys/survey-create/components/preliminary-questions/preliminary-questions.routes'),
       },
       {
         path: 'structure',
