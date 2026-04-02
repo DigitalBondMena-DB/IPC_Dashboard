@@ -85,8 +85,6 @@ export class UserIdComponent {
     if (!data) return {};
     const transformed = { ...data };
     const type = this.config().userType;
-    console.log(type);
-
     if (type === API_CONFIG.ENDPOINTS.USERS.TYPE.HOSPITAL) {
       transformed.health_directorate_id = data.entity.parent.parent_id;
       transformed.health_division_id = data.entity.parent_id;

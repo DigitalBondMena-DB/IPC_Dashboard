@@ -111,10 +111,6 @@ export class OverviewComponent {
     { field: 'actions', header: 'Actions', type: 'actions', viewOnly: true, sortable: false },
   ];
 
-  onView(item: any) {
-    console.log('View:', item);
-  }
-
   // Icons
   readonly icons = {
     TotalSurveys: ClipboardList,

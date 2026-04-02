@@ -37,7 +37,6 @@ import { ReportsFiltersComponent } from '../../components/reports-filters/report
               (pageChange)="onPageChange($event)"
               (rowsChange)="onRowsChange($event)"
               (sortChange)="onSortChange($event)"
-              (viewClick)="onView($event)"
               (retryLoad)="resultsResource.reload()"
             />
           </div>
@@ -114,9 +113,5 @@ export class FilterResultsComponent {
       sort_by: event.field,
       sort_dir: event.direction,
     }));
-  }
-
-  onView(item: any) {
-    console.log('View:', item);
   }
 }

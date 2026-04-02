@@ -162,8 +162,6 @@ export class ConditionalLogicComponent implements OnInit {
     effect(() => {
       const res = this.surveysResource?.value();
       if (res?.data) {
-        console.log(res.data);
-
         const mapped = res.data.map((s: any) => ({ label: s.name, value: s.id }));
         if (this.surveyPage() === 1) {
           this.surveyOptions.set(mapped);

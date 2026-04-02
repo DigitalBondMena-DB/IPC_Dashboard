@@ -107,8 +107,6 @@ export class SurveyStructureComponent implements OnInit {
     effect(() => {
       const data = this.surveyResource?.value();
       if (data) {
-        console.log(data);
-
         this.weightingType.set(data.weighting_type || 'question_count');
         this.surveyName.set(data.title);
         if (data.domains && data.domains.length > 0) {

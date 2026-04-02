@@ -56,7 +56,7 @@ export class BNotificationComponent implements OnInit, OnDestroy {
 
   toggleDropdown(): void {
     this.isDropdownOpen.update((value) => !value);
-
+    this.unreadCount.set(0);
     // Load notifications when opening dropdown
     if (this.isDropdownOpen()) {
       this.loadNotifications();
@@ -91,7 +91,6 @@ export class BNotificationComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (response) => {
           this.unreadCount.set(response.data.unread_count);
-          
         },
         error: (error) => {
           console.error('Failed to load unread count:', error);
@@ -118,9 +117,7 @@ export class BNotificationComponent implements OnInit, OnDestroy {
   }
 
   onNotificationClick(notification: Notification): void {
-      console.log(notification);
     if (notification.link) {
-        
       this.router.navigate([notification.link]);
     }
     this.closeDropdown();
