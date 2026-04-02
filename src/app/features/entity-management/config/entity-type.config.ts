@@ -182,7 +182,7 @@ export const ENTITY_TYPE_CONFIG: Record<string, any> = {
     columns: [
       { field: 'name', header: 'Name', sortable: true },
       { field: 'authority', header: 'Authority', sortable: true, type: 'text' },
-      { field: 'division', header: 'Division', sortable: true, type: 'text' },
+      { field: 'categories', header: 'Division', sortable: true, type: 'text' },
       { field: 'updated_at', header: 'Last Update', sortable: true, type: 'date' },
       { field: 'updated_by', header: 'Updated By', sortable: true },
       { field: 'is_active', header: 'Actions', type: 'toggle', customClass: 'justify-end' },
