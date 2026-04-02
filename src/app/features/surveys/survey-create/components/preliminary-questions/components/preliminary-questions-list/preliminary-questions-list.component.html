@@ -13,14 +13,16 @@
     @if (questions.length === 0) {
       <!-- Empty State -->
       <div class="flex-1 flex flex-col items-center justify-center py-16">
-        <div class="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mb-6 shadow-sm border border-gray-100">
+        <div
+          class="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mb-6 shadow-sm border border-gray-100"
+        >
           <lucide-angular [img]="listChecksIcon" [size]="32" class="text-gray-400" />
         </div>
         <h3 class="text-lg font-bold text-black-400 mb-2">No preliminary questions added yet</h3>
         <p class="text-gray-500 text-sm mb-8 text-center max-w-sm">
           Start by adding your first preliminary questions to build your survey.
         </p>
-        <button 
+        <button
           (click)="onCreateClick()"
           class="flex items-center gap-2 bg-[#1877F2] text-white px-6 py-3 rounded-lg hover:bg-blue-600 transition-colors font-medium text-sm"
         >
@@ -31,18 +33,25 @@
     } @else {
       <!-- List of Added Questions -->
       <div class="space-y-4">
-        <h3 class="text-lg font-semibold text-black-400">Added Questions ({{ questions.length }})</h3>
+        <h3 class="text-lg font-semibold text-black-400">
+          Added Questions ({{ questions.length }})
+        </h3>
         <div class="grid gap-4">
           @for (q of questions; track q.id) {
-            <div class="bg-white p-4 rounded-xl border border-gray-100 shadow-sm flex items-center justify-between">
+            <div
+              class="bg-white p-4 rounded-xl border border-gray-100 shadow-sm flex items-center justify-between"
+            >
               <div class="flex items-center gap-4">
-                <div class="w-10 h-10 bg-blue-50 text-blue-500 rounded-lg flex items-center justify-center">
+                <div
+                  class="w-10 h-10 bg-blue-50 text-blue-500 rounded-lg flex items-center justify-center"
+                >
                   <span class="font-bold">{{ $index + 1 }}</span>
                 </div>
                 <div>
                   <h4 class="font-medium text-black-400">{{ q.text }}</h4>
                   <p class="text-sm text-gray-500">
-                    {{ q.type }} • {{ q.description?.substring(0, 50) }}{{ (q.description?.length || 0) > 50 ? '...' : '' }}
+                    {{ q.type }} • {{ q.description?.substring(0, 50)
+                    }}{{ (q.description?.length || 0) > 50 ? '...' : '' }}
                   </p>
                 </div>
               </div>
@@ -66,9 +75,9 @@
           }
         </div>
       </div>
-      
+
       <div class="mt-6 flex justify-end">
-        <button 
+        <button
           (click)="onCreateClick()"
           class="flex items-center gap-2 text-primary-500 font-medium hover:text-blue-600 transition-colors text-sm"
         >
@@ -87,16 +96,19 @@
     >
       Skip
     </button>
-
-    <button
-      (click)="onSubmit()"
-      [disabled]="isSubmitting"
-      class="flex items-center gap-2 px-9.5 py-3 rounded-lg bg-primary-500 text-white hover:bg-blue-600 disabled:opacity-50 text-sm transition-colors font-medium"
-    >
-      @if (isSubmitting) {
-        <span class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
-      }
-      Next Step
-    </button>
+    @if (questions.length !== 0) {
+      <button
+        (click)="onSubmit()"
+        [disabled]="isSubmitting"
+        class="flex items-center gap-2 px-9.5 py-3 rounded-lg bg-primary-500 text-white hover:bg-blue-600 disabled:opacity-50 text-sm transition-colors font-medium"
+      >
+        @if (isSubmitting) {
+          <span
+            class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"
+          ></span>
+        }
+        Next Step
+      </button>
+    }
   </div>
 </div>
